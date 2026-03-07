@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Validator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Validate JSON data instantly. Check for syntax errors, see line numbers, and get detailed error messages. Free online JSON lint tool.">
+<meta name="keywords" content="json validator, json lint, validate json online, json checker, json syntax checker, free online tool, toolpile">
+<meta property="og:title" content="JSON Validator — Free Online Tool">
+<meta property="og:description" content="Validate JSON data instantly with detailed error messages.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/json-validator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.9rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:200px;line-height:1.6}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.result{margin-top:1rem;padding:1rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.9rem;line-height:1.6}
+.result.valid{background:#064e3b;border:1px solid #10b981;color:#6ee7b7}
+.result.invalid{background:#450a0a;border:1px solid #ef4444;color:#fca5a5}
+.stats{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.stat{background:#0f172a;border-radius:8px;padding:.75rem 1rem;border:1px solid #334155;text-align:center;flex:1;min-width:80px}
+.stat-value{font-size:1.25rem;font-weight:700;color:#38bdf8}
+.stat-label{font-size:.75rem;color:#94a3b8;margin-top:.25rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>JSON Validator</h1>
+<p class="subtitle">Validate JSON syntax instantly — get detailed error messages with line numbers.</p>
+<div class="tool-area">
+<textarea id="input" placeholder='Paste JSON here to validate...
+{
+  "name": "John",
+  "age": 30,
+  "hobbies": ["reading", "coding"]
+}'></textarea>
+<div class="row">
+<button onclick="validate()">Validate JSON</button>
+<button class="btn-secondary" onclick="document.getElementById('input').value='';document.getElementById('result').innerHTML='';document.getElementById('stats').innerHTML=''">Clear</button>
+<button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+</div>
+<div id="result"></div>
+<div class="stats" id="stats"></div>
+</div>
+<script>
+function validate(){
+  const input=document.getElementById('input').value.trim();
+  const resultEl=document.getElementById('result');
+  const statsEl=document.getElementById('stats');
+  if(!input){resultEl.innerHTML='<div class="result invalid">⚠ Please enter JSON to validate.</div>';statsEl.innerHTML='';return;}
+  try{
+    const parsed=JSON.parse(input);
+    const type=Array.isArray(parsed)?'Array':typeof parsed==='object'&&parsed!==null?'Object':typeof parsed;
+    let keys=0,depth=0;
+    function countKeys(obj,d){if(d>depth)depth=d;if(Array.isArray(obj)){obj.forEach(v=>countKeys(v,d+1));}else if(typeof obj==='object'&&obj!==null){keys+=Object.keys(obj).length;Object.values(obj).forEach(v=>countKeys(v,d+1));}}
+    countKeys(parsed,0);
+    resultEl.innerHTML='<div class="result valid">✅ Valid JSON!</div>';
+    statsEl.innerHTML=`<div class="stat"><div class="stat-value">${type}</div><div class="stat-label">Type</div></div><div class="stat"><div class="stat-value">${keys}</div><div class="stat-label">Keys</div></div><div class="stat"><div class="stat-value">${depth}</div><div class="stat-label">Depth</div></div><div class="stat"><div class="stat-value">${input.length}</div><div class="stat-label">Chars</div></div>`;
+  }catch(e){
+    let msg=e.message;
+    const posMatch=msg.match(/position (\d+)/);
+    let lineInfo='';
+    if(posMatch){
+      const pos=parseInt(posMatch[1]);
+      const before=input.substring(0,pos);
+      const line=before.split('\n').length;
+      const col=pos-before.lastIndexOf('\n');
+      lineInfo=` (Line ${line}, Column ${col})`;
+    }
+    resultEl.innerHTML=`<div class="result invalid">❌ Invalid JSON${lineInfo}<br><br>${msg}</div>`;
+    statsEl.innerHTML='';
+  }
+}
+function loadSample(){document.getElementById('input').value='{\n  "name": "ToolPile",\n  "version": "1.0",\n  "tools": [\n    {"id": 1, "name": "JSON Validator"},\n    {"id": 2, "name": "Base64 Encoder"}\n  ],\n  "active": true\n}';validate();}
+document.getElementById('input').addEventListener('input',function(){if(this.value.trim())validate();});
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem"><a href="../index.html">← All Tools</a> · <a href="json-formatter.html">JSON Formatter</a> · <a href="json-to-csv.html">JSON to CSV</a></p>
+</footer>
+</div>
+</body>
+</html>

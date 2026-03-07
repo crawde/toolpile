@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morse Code Translator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Translate text to Morse code and Morse code to text. Listen to Morse code audio playback. Free online Morse code converter and decoder.">
+<meta name="keywords" content="morse code translator, morse code converter, text to morse code, morse code decoder, morse code audio, free online tool">
+<meta property="og:title" content="Morse Code Translator — Free Online Tool">
+<meta property="og:description" content="Convert text to Morse code and back with audio playback.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/morse-code-translator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#f59e0b,#eab308);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit;resize:vertical;min-height:100px}
+textarea:focus{outline:none;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.15)}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:60px;color:#f59e0b;font-family:'JetBrains Mono',monospace;font-size:1.1rem;white-space:pre-wrap;word-break:break-all;letter-spacing:.15em;line-height:2}
+button{background:linear-gradient(135deg,#f59e0b,#eab308);color:#0f172a;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155;color:#e2e8f0;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.swap-btn{background:#334155;color:#e2e8f0;font-size:1.5rem;padding:.5rem 1rem;border-radius:50%;margin:1rem auto;display:block;width:48px;height:48px;line-height:1}
+.ref-table{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:.5rem;padding-top:1.5rem;border-top:1px solid #334155}
+.ref-item{background:#0f172a;border:1px solid #334155;border-radius:6px;padding:.5rem;text-align:center}
+.ref-char{font-weight:700;color:#f59e0b;font-size:1rem}
+.ref-morse{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#94a3b8;margin-top:.25rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Morse Code Translator</h1>
+<p class="subtitle">Convert text to Morse code and back — with audio playback.</p>
+<div class="tool-area">
+<label>Text</label>
+<textarea id="textInput" placeholder="Type text here..."></textarea>
+<button class="swap-btn" onclick="swap()" title="Swap">⇅</button>
+<label>Morse Code</label>
+<textarea id="morseInput" placeholder="Or paste Morse code here (use . and - with space between letters, / between words)"></textarea>
+<div class="row">
+<button onclick="textToMorse()">Text → Morse</button>
+<button onclick="morseToText()">Morse → Text</button>
+<button class="btn-secondary" onclick="playMorse()">▶ Play</button>
+<button class="btn-secondary" onclick="copyMorse()">Copy</button>
+</div>
+<div id="playing" style="color:#f59e0b;margin-top:.5rem;display:none">Playing...</div>
+</div>
+<script>
+const MORSE={'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','.'  :'.-.-.-',','  :'--..--','?'  :'..--..','!'  :'-.-.--','/':'-..-.','+':'.-.-.','=':'-...-','-':'-....-','(':'-.--.',')'  :'-.--.-','&':'.-...',':'  :'---...','\"':'.-..-.','\'':'.----.',';':'-.-.-.',' ':' / '};
+const REVERSE={};Object.entries(MORSE).forEach(([k,v])=>{if(k!==' ')REVERSE[v.trim()]=k;});
+function textToMorse(){
+  const text=document.getElementById('textInput').value.toUpperCase();
+  const morse=text.split('').map(c=>MORSE[c]||'').filter(Boolean).join(' ');
+  document.getElementById('morseInput').value=morse;
+}
+function morseToText(){
+  const morse=document.getElementById('morseInput').value.trim();
+  const words=morse.split(/\s*\/\s*/);
+  const text=words.map(w=>w.split(/\s+/).map(c=>REVERSE[c]||'?').join('')).join(' ');
+  document.getElementById('textInput').value=text;
+}
+function swap(){
+  const t=document.getElementById('textInput').value;
+  document.getElementById('textInput').value=document.getElementById('morseInput').value;
+  document.getElementById('morseInput').value=t;
+}
+function copyMorse(){navigator.clipboard.writeText(document.getElementById('morseInput').value);}
+let playing=false;
+async function playMorse(){
+  if(playing)return;
+  const morse=document.getElementById('morseInput').value||'';
+  if(!morse)return;
+  playing=true;
+  document.getElementById('playing').style.display='block';
+  const ctx=new(window.AudioContext||window.webkitAudioContext)();
+  const dotLen=0.06;let t=ctx.currentTime;
+  for(const c of morse){
+    if(c==='.'){tone(ctx,t,dotLen);t+=dotLen+dotLen;}
+    else if(c==='-'){tone(ctx,t,dotLen*3);t+=dotLen*3+dotLen;}
+    else if(c==='/'){t+=dotLen*7;}
+    else if(c===' '){t+=dotLen*3;}
+  }
+  setTimeout(()=>{playing=false;document.getElementById('playing').style.display='none';},(t-ctx.currentTime)*1000+100);
+}
+function tone(ctx,start,dur){
+  const o=ctx.createOscillator();const g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.frequency.value=700;o.type='sine';
+  g.gain.setValueAtTime(.4,start);g.gain.setValueAtTime(0,start+dur);
+  o.start(start);o.stop(start+dur);
+}
+// Reference table
+const refEl=document.createElement('div');refEl.className='ref-table';
+Object.entries(MORSE).filter(([k])=>k!==' ').slice(0,36).forEach(([c,m])=>{
+  refEl.innerHTML+=`<div class="ref-item"><div class="ref-char">${c}</div><div class="ref-morse">${m}</div></div>`;
+});
+document.querySelector('.tool-area').appendChild(refEl);
+// Live translate
+document.getElementById('textInput').addEventListener('input',textToMorse);
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem"><a href="../index.html">← All Tools</a> · <a href="text-to-binary.html">Text to Binary</a> · <a href="hash-generator.html">Hash Generator</a></p>
+</footer>
+</div>
+</body>
+</html>

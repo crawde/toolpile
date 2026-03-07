@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro Timer — Free Online Tool | ToolPile</title>
+<meta name="description" content="Free online Pomodoro timer for productivity. 25-minute focus sessions with 5-minute breaks. Customizable intervals, sound alerts, and session tracking.">
+<meta name="keywords" content="pomodoro timer, pomodoro timer online, focus timer, productivity timer, 25 minute timer, study timer, free online tool">
+<meta property="og:title" content="Pomodoro Timer — Free Online Tool">
+<meta property="og:description" content="Free Pomodoro timer with customizable focus and break intervals.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/pomodoro-timer">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#f43f5e,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem;border:1px solid #334155;text-align:center}
+.timer-display{font-size:6rem;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;margin:1.5rem 0;transition:color .3s}
+.timer-display.focus{color:#f43f5e}
+.timer-display.break{color:#10b981}
+.timer-display.long-break{color:#6366f1}
+.mode-label{font-size:1.25rem;font-weight:600;text-transform:uppercase;letter-spacing:.2em;margin-bottom:1rem}
+.mode-label.focus{color:#f43f5e}
+.mode-label.break{color:#10b981}
+.mode-label.long-break{color:#6366f1}
+.progress-bar{width:100%;height:6px;background:#0f172a;border-radius:3px;margin:1rem 0;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .5s linear}
+.progress-fill.focus{background:linear-gradient(90deg,#f43f5e,#f97316)}
+.progress-fill.break{background:linear-gradient(90deg,#10b981,#34d399)}
+.progress-fill.long-break{background:linear-gradient(90deg,#6366f1,#818cf8)}
+.controls{display:flex;gap:1rem;justify-content:center;margin:1.5rem 0;flex-wrap:wrap}
+button{border:none;border-radius:8px;padding:.75rem 2rem;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-start{background:linear-gradient(135deg,#f43f5e,#f97316);color:#fff;font-size:1.25rem;padding:1rem 3rem}
+.btn-pause{background:#f59e0b;color:#0f172a;font-size:1.25rem;padding:1rem 3rem}
+.btn-reset{background:#334155;color:#e2e8f0}
+.btn-skip{background:#334155;color:#e2e8f0}
+.settings{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #334155}
+.setting{text-align:center}
+.setting label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:.5rem}
+.setting input{width:70px;background:#0f172a;border:1px solid #475569;border-radius:6px;padding:.5rem;color:#e2e8f0;font-size:1rem;text-align:center;font-family:'JetBrains Mono',monospace}
+.setting input:focus{outline:none;border-color:#f43f5e}
+.sessions{display:flex;gap:.5rem;justify-content:center;margin:1rem 0}
+.session-dot{width:12px;height:12px;border-radius:50%;background:#334155;transition:background .3s}
+.session-dot.done{background:#f43f5e}
+.session-dot.current{background:#f97316;box-shadow:0 0 8px rgba(249,115,22,.5)}
+.stats{display:flex;gap:1.5rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-value{font-size:1.5rem;font-weight:700;color:#38bdf8;font-family:'JetBrains Mono',monospace}
+.stat-label{font-size:.75rem;color:#94a3b8;margin-top:.25rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Pomodoro Timer</h1>
+<p class="subtitle">Stay focused with the Pomodoro technique — 25 min focus, 5 min break, repeat.</p>
+<div class="tool-area">
+<div class="mode-label focus" id="modeLabel">FOCUS</div>
+<div class="timer-display focus" id="timer">25:00</div>
+<div class="progress-bar"><div class="progress-fill focus" id="progress" style="width:100%"></div></div>
+<div class="sessions" id="sessions"></div>
+<div class="controls">
+<button class="btn-start" id="startBtn" onclick="toggleTimer()">Start</button>
+<button class="btn-reset" onclick="resetTimer()">Reset</button>
+<button class="btn-skip" onclick="skipPhase()">Skip →</button>
+</div>
+<div class="stats">
+<div class="stat"><div class="stat-value" id="completedCount">0</div><div class="stat-label">Completed</div></div>
+<div class="stat"><div class="stat-value" id="totalTime">0m</div><div class="stat-label">Focus Time</div></div>
+</div>
+<div class="settings">
+<div class="setting"><label>Focus (min)</label><input type="number" id="focusMin" value="25" min="1" max="120" onchange="updateSettings()"></div>
+<div class="setting"><label>Break (min)</label><input type="number" id="breakMin" value="5" min="1" max="30" onchange="updateSettings()"></div>
+<div class="setting"><label>Long Break</label><input type="number" id="longBreakMin" value="15" min="1" max="60" onchange="updateSettings()"></div>
+</div>
+</div>
+<script>
+let focusDuration=25*60,breakDuration=5*60,longBreakDuration=15*60;
+let timeLeft=focusDuration,totalDuration=focusDuration;
+let isRunning=false,interval=null;
+let mode='focus'; // focus, break, long-break
+let sessionCount=0,completedSessions=0,totalFocusSeconds=0;
+const SESSIONS_BEFORE_LONG=4;
+function updateDisplay(){
+  const m=Math.floor(timeLeft/60);
+  const s=timeLeft%60;
+  document.getElementById('timer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('progress').style.width=((timeLeft/totalDuration)*100)+'%';
+  document.title=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} — ${mode==='focus'?'Focus':'Break'} | ToolPile`;
+}
+function updateSessions(){
+  const el=document.getElementById('sessions');
+  let dots='';
+  for(let i=0;i<SESSIONS_BEFORE_LONG;i++){
+    if(i<sessionCount%SESSIONS_BEFORE_LONG)dots+=`<div class="session-dot done"></div>`;
+    else if(i===sessionCount%SESSIONS_BEFORE_LONG&&mode==='focus')dots+=`<div class="session-dot current"></div>`;
+    else dots+=`<div class="session-dot"></div>`;
+  }
+  el.innerHTML=dots;
+}
+function setMode(newMode){
+  mode=newMode;
+  const timer=document.getElementById('timer');
+  const label=document.getElementById('modeLabel');
+  const progress=document.getElementById('progress');
+  timer.className='timer-display '+mode;
+  label.className='mode-label '+mode;
+  progress.className='progress-fill '+mode;
+  if(mode==='focus'){timeLeft=focusDuration;totalDuration=focusDuration;label.textContent='FOCUS';}
+  else if(mode==='break'){timeLeft=breakDuration;totalDuration=breakDuration;label.textContent='SHORT BREAK';}
+  else{timeLeft=longBreakDuration;totalDuration=longBreakDuration;label.textContent='LONG BREAK';}
+  updateDisplay();updateSessions();
+}
+function toggleTimer(){
+  const btn=document.getElementById('startBtn');
+  if(isRunning){
+    clearInterval(interval);isRunning=false;
+    btn.textContent='Resume';btn.className='btn-start';
+  }else{
+    isRunning=true;btn.textContent='Pause';btn.className='btn-pause';
+    interval=setInterval(()=>{
+      timeLeft--;
+      if(mode==='focus')totalFocusSeconds++;
+      updateDisplay();
+      if(timeLeft<=0){
+        clearInterval(interval);isRunning=false;
+        btn.textContent='Start';btn.className='btn-start';
+        playAlarm();
+        if(mode==='focus'){
+          sessionCount++;completedSessions++;
+          document.getElementById('completedCount').textContent=completedSessions;
+          document.getElementById('totalTime').textContent=Math.floor(totalFocusSeconds/60)+'m';
+          setMode(sessionCount%SESSIONS_BEFORE_LONG===0?'long-break':'break');
+        }else{setMode('focus');}
+      }
+    },1000);
+  }
+}
+function resetTimer(){
+  clearInterval(interval);isRunning=false;
+  document.getElementById('startBtn').textContent='Start';
+  document.getElementById('startBtn').className='btn-start';
+  setMode(mode);
+}
+function skipPhase(){
+  clearInterval(interval);isRunning=false;
+  document.getElementById('startBtn').textContent='Start';
+  document.getElementById('startBtn').className='btn-start';
+  if(mode==='focus'){sessionCount++;setMode(sessionCount%SESSIONS_BEFORE_LONG===0?'long-break':'break');}
+  else{setMode('focus');}
+}
+function updateSettings(){
+  focusDuration=parseInt(document.getElementById('focusMin').value)*60||25*60;
+  breakDuration=parseInt(document.getElementById('breakMin').value)*60||5*60;
+  longBreakDuration=parseInt(document.getElementById('longBreakMin').value)*60||15*60;
+  if(!isRunning)setMode(mode);
+}
+function playAlarm(){
+  try{const ctx=new(window.AudioContext||window.webkitAudioContext)();
+  [0,.15,.3].forEach(t=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;o.type='sine';g.gain.setValueAtTime(.3,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.15);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.15);});}catch(e){}
+}
+updateSessions();
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem"><a href="../index.html">← All Tools</a> · <a href="meeting-cost.html">Meeting Cost Calculator</a></p>
+</footer>
+</div>
+</body>
+</html>

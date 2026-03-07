@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Beautifier — Free Online Tool | ToolPile</title>
+<meta name="description" content="Beautify and format HTML code online. Proper indentation, tag nesting, and attribute formatting. Free HTML prettifier and formatter.">
+<meta name="keywords" content="html beautifier, html formatter, html prettifier, format html online, indent html, free online tool">
+<meta property="og:title" content="HTML Beautifier — Free Online Tool">
+<meta property="og:description" content="Beautify and format HTML code with proper indentation.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/html-beautifier">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#f97316,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.9rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:150px;line-height:1.5;tab-size:2}
+textarea:focus{outline:none;border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.15)}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:100px;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:.9rem;white-space:pre;overflow-x:auto;line-height:1.5}
+button{background:linear-gradient(135deg,#f97316,#f43f5e);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8}
+select{background:#0f172a;border:1px solid #475569;border-radius:6px;padding:.5rem;color:#e2e8f0;font-size:.875rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>HTML Beautifier</h1>
+<p class="subtitle">Format and beautify HTML code with proper indentation and tag nesting.</p>
+<div class="tool-area">
+<textarea id="input" placeholder='Paste HTML here... e.g. <div><p>Hello <strong>World</strong></p></div>'></textarea>
+<div class="row">
+<label>Indent: <select id="indent"><option value="2" selected>2 spaces</option><option value="4">4 spaces</option><option value="tab">Tab</option></select></label>
+</div>
+<div class="row">
+<button onclick="beautify()">Beautify HTML</button>
+<button class="btn-secondary" onclick="minify()">Minify</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy</button>
+</div>
+<div class="output" id="output"></div>
+</div>
+<script>
+const VOID_ELEMENTS=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+const INLINE_ELEMENTS=new Set(['a','abbr','b','bdi','bdo','cite','code','data','dfn','em','i','kbd','mark','q','rp','rt','ruby','s','samp','small','span','strong','sub','sup','time','u','var','wbr']);
+function beautify(){
+  let html=document.getElementById('input').value;
+  if(!html.trim()){document.getElementById('output').textContent='';return;}
+  const indentVal=document.getElementById('indent').value;
+  const indent=indentVal==='tab'?'\t':' '.repeat(parseInt(indentVal));
+  // Normalize
+  html=html.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  // Add newlines around tags
+  html=html.replace(/>\s*</g,'>\n<');
+  const lines=html.split('\n');
+  let level=0;
+  const result=[];
+  for(let line of lines){
+    line=line.trim();
+    if(!line)continue;
+    // Check if closing tag
+    const closingMatch=line.match(/^<\/([a-zA-Z][a-zA-Z0-9]*)/);
+    if(closingMatch){level=Math.max(0,level-1);}
+    result.push(indent.repeat(level)+line);
+    // Check if opening tag (not self-closing, not void)
+    const openingMatch=line.match(/^<([a-zA-Z][a-zA-Z0-9]*)/);
+    if(openingMatch&&!closingMatch){
+      const tag=openingMatch[1].toLowerCase();
+      const isSelfClosing=line.match(/\/\s*>$/);
+      const hasClosingOnSameLine=line.includes('</'+openingMatch[1]);
+      if(!VOID_ELEMENTS.has(tag)&&!isSelfClosing&&!hasClosingOnSameLine){
+        level++;
+      }
+    }
+  }
+  document.getElementById('output').textContent=result.join('\n');
+}
+function minify(){
+  let html=document.getElementById('input').value;
+  html=html.replace(/\s+/g,' ').replace(/>\s+</g,'><').replace(/\s+>/g,'>').trim();
+  document.getElementById('output').textContent=html;
+}
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('output').textContent);}
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem"><a href="../index.html">← All Tools</a> · <a href="html-entity-encoder.html">HTML Entity Encoder</a> · <a href="html-to-text.html">HTML to Text</a></p>
+</footer>
+</div>
+</body>
+</html>

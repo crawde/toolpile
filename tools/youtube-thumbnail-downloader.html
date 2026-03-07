@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Thumbnail Downloader — Free Online Tool | ToolPile</title>
+<meta name="description" content="Download YouTube video thumbnails in all resolutions. Get HD, SD, and maxres thumbnails instantly. Free YouTube thumbnail grabber.">
+<meta name="keywords" content="youtube thumbnail downloader, youtube thumbnail grabber, download youtube thumbnail, get youtube thumbnail, free online tool">
+<meta property="og:title" content="YouTube Thumbnail Downloader — Free Online Tool">
+<meta property="og:description" content="Download YouTube video thumbnails in all resolutions instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/youtube-thumbnail-downloader">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#f43f5e,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="text"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus{outline:none;border-color:#f43f5e;box-shadow:0 0 0 3px rgba(244,63,94,.15)}
+button{background:linear-gradient(135deg,#f43f5e,#fb923c);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.thumbnails{margin-top:1.5rem;display:grid;gap:1rem}
+.thumb-card{background:#0f172a;border:1px solid #334155;border-radius:8px;overflow:hidden}
+.thumb-card img{width:100%;display:block;cursor:pointer}
+.thumb-info{padding:.75rem;display:flex;justify-content:space-between;align-items:center}
+.thumb-label{font-size:.875rem;color:#94a3b8}
+.thumb-size{font-size:.75rem;color:#64748b}
+.thumb-dl{background:#334155;color:#e2e8f0;border:none;border-radius:6px;padding:.5rem 1rem;font-size:.8rem;cursor:pointer;text-decoration:none;display:inline-block}
+.thumb-dl:hover{background:#475569}
+.error{color:#f87171;margin-top:.75rem;display:none}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>YouTube Thumbnail Downloader</h1>
+<p class="subtitle">Download any YouTube video thumbnail in all available resolutions.</p>
+<div class="tool-area">
+<input type="text" id="url" placeholder="Paste YouTube URL... e.g. https://youtube.com/watch?v=dQw4w9WgXcQ">
+<button onclick="getThumbnails()">Get Thumbnails</button>
+<div class="error" id="error"></div>
+<div class="thumbnails" id="thumbnails"></div>
+</div>
+<script>
+function extractVideoId(url){
+  const patterns=[
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/
+  ];
+  for(const p of patterns){const m=url.match(p);if(m)return m[1];}
+  return null;
+}
+function getThumbnails(){
+  const url=document.getElementById('url').value.trim();
+  const error=document.getElementById('error');
+  const container=document.getElementById('thumbnails');
+  if(!url){error.textContent='Please enter a YouTube URL.';error.style.display='block';container.innerHTML='';return;}
+  const videoId=extractVideoId(url);
+  if(!videoId){error.textContent='Could not extract video ID. Please check the URL.';error.style.display='block';container.innerHTML='';return;}
+  error.style.display='none';
+  const sizes=[
+    {key:'maxresdefault',label:'Max Resolution',size:'1920×1080'},
+    {key:'sddefault',label:'Standard',size:'640×480'},
+    {key:'hqdefault',label:'High Quality',size:'480×360'},
+    {key:'mqdefault',label:'Medium Quality',size:'320×180'},
+    {key:'default',label:'Default',size:'120×90'}
+  ];
+  container.innerHTML=sizes.map(s=>`
+    <div class="thumb-card">
+      <img src="https://img.youtube.com/vi/${videoId}/${s.key}.jpg" alt="${s.label} thumbnail" onerror="this.parentElement.style.display='none'">
+      <div class="thumb-info">
+        <div><span class="thumb-label">${s.label}</span><br><span class="thumb-size">${s.size}</span></div>
+        <a class="thumb-dl" href="https://img.youtube.com/vi/${videoId}/${s.key}.jpg" download="${videoId}_${s.key}.jpg" target="_blank">Download</a>
+      </div>
+    </div>
+  `).join('');
+}
+document.getElementById('url').addEventListener('keydown',e=>{if(e.key==='Enter')getThumbnails();});
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem"><a href="../index.html">← All Tools</a> · <a href="qr-code-generator.html">QR Code Generator</a> · <a href="image-compressor.html">Image Compressor</a></p>
+</footer>
+</div>
+</body>
+</html>

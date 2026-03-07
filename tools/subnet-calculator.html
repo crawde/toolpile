@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subnet Calculator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Calculate IP subnets instantly. Get network address, broadcast, host range, wildcard mask, and usable hosts for any CIDR notation. Free subnet calculator.">
+<meta name="keywords" content="subnet calculator, ip subnet calculator, cidr calculator, network calculator, subnet mask calculator, free online tool">
+<meta property="og:title" content="Subnet Calculator — Free Online Tool">
+<meta property="og:description" content="Calculate IP subnets, CIDR ranges, and network information instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/subnet-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#10b981,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="text"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:'JetBrains Mono',monospace}
+input:focus{outline:none;border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+button{background:linear-gradient(135deg,#10b981,#38bdf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+.results{margin-top:1.5rem;display:none}
+.result-grid{display:grid;gap:.75rem}
+.result-row{display:flex;justify-content:space-between;align-items:center;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem}
+.result-label{font-size:.875rem;color:#94a3b8}
+.result-value{font-family:'JetBrains Mono',monospace;color:#38bdf8;font-weight:600}
+.error{color:#f87171;margin-top:.75rem;display:none}
+.class-badge{display:inline-block;background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:700;margin-left:.5rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Subnet Calculator</h1>
+<p class="subtitle">Calculate network details from any IP address and CIDR prefix length.</p>
+<div class="tool-area">
+<input type="text" id="input" placeholder="Enter IP/CIDR... e.g. 192.168.1.0/24">
+<div class="row">
+<button onclick="calculate()">Calculate</button>
+<button class="btn-secondary" onclick="document.getElementById('input').value='10.0.0.0/8';calculate()">Class A</button>
+<button class="btn-secondary" onclick="document.getElementById('input').value='172.16.0.0/12';calculate()">Class B</button>
+<button class="btn-secondary" onclick="document.getElementById('input').value='192.168.1.0/24';calculate()">Class C</button>
+</div>
+<div class="error" id="error"></div>
+<div class="results" id="results">
+<div class="result-grid" id="grid"></div>
+</div>
+</div>
+<script>
+function ipToLong(ip){return ip.split('.').reduce((acc,o)=>(acc<<8)+parseInt(o),0)>>>0;}
+function longToIp(l){return [(l>>>24)&255,(l>>>16)&255,(l>>>8)&255,l&255].join('.');}
+function getClass(firstOctet){if(firstOctet<128)return 'A';if(firstOctet<192)return 'B';if(firstOctet<224)return 'C';if(firstOctet<240)return 'D';return 'E';}
+function calculate(){
+  const input=document.getElementById('input').value.trim();
+  const error=document.getElementById('error');
+  const results=document.getElementById('results');
+  const grid=document.getElementById('grid');
+  if(!input){error.textContent='Enter an IP/CIDR.';error.style.display='block';results.style.display='none';return;}
+  const match=input.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\/(\d{1,2})$/);
+  if(!match){error.textContent='Invalid format. Use IP/CIDR like 192.168.1.0/24';error.style.display='block';results.style.display='none';return;}
+  const octets=[parseInt(match[1]),parseInt(match[2]),parseInt(match[3]),parseInt(match[4])];
+  const prefix=parseInt(match[5]);
+  if(octets.some(o=>o>255)||prefix>32){error.textContent='Invalid IP or prefix length.';error.style.display='block';results.style.display='none';return;}
+  error.style.display='none';
+  const ip=ipToLong(octets.join('.'));
+  const mask=(prefix===0)?0:(0xFFFFFFFF<<(32-prefix))>>>0;
+  const wildcard=(~mask)>>>0;
+  const network=(ip&mask)>>>0;
+  const broadcast=(network|wildcard)>>>0;
+  const firstHost=prefix>=31?network:(network+1)>>>0;
+  const lastHost=prefix>=31?broadcast:(broadcast-1)>>>0;
+  const totalHosts=prefix>=31?(prefix===32?1:2):Math.pow(2,32-prefix)-2;
+  const ipClass=getClass(octets[0]);
+  const isPrivate=(octets[0]===10)||(octets[0]===172&&octets[1]>=16&&octets[1]<=31)||(octets[0]===192&&octets[1]===168);
+  const rows=[
+    ['IP Address',octets.join('.')],
+    ['Network Address',longToIp(network)],
+    ['Subnet Mask',longToIp(mask)],
+    ['Wildcard Mask',longToIp(wildcard)],
+    ['Broadcast Address',longToIp(broadcast)],
+    ['First Usable Host',longToIp(firstHost)],
+    ['Last Usable Host',longToIp(lastHost)],
+    ['Usable Hosts',totalHosts.toLocaleString()],
+    ['Total Addresses',Math.pow(2,32-prefix).toLocaleString()],
+    ['CIDR Notation','/'+prefix],
+    ['IP Class','Class '+ipClass],
+    ['IP Type',isPrivate?'Private (RFC 1918)':'Public'],
+    ['Binary Mask',mask.toString(2).padStart(32,'0').match(/.{8}/g).join('.')],
+  ];
+  grid.innerHTML=rows.map(([l,v])=>`<div class="result-row"><span class="result-label">${l}</span><span class="result-value">${v}</span></div>`).join('');
+  results.style.display='block';
+}
+document.getElementById('input').addEventListener('keydown',e=>{if(e.key==='Enter')calculate();});
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem"><a href="../index.html">← All Tools</a> · <a href="ip-lookup.html">IP Lookup</a> · <a href="hash-generator.html">Hash Generator</a></p>
+</footer>
+</div>
+</body>
+</html>

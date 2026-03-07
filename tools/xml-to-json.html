@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XML to JSON Converter — Free Online Tool | ToolPile</title>
+<meta name="description" content="Convert XML to JSON online instantly. Free XML to JSON converter with proper formatting, attribute handling, and error detection.">
+<meta name="keywords" content="xml to json, xml to json converter, convert xml to json online, xml parser, free online tool">
+<meta property="og:title" content="XML to JSON Converter — Free Online Tool">
+<meta property="og:description" content="Convert XML to JSON instantly with proper formatting.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/xml-to-json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.9rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:150px;line-height:1.5}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:100px;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:.9rem;white-space:pre-wrap;word-break:break-all;line-height:1.5}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+.error{color:#f87171;margin-top:.5rem;display:none}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>XML to JSON Converter</h1>
+<p class="subtitle">Convert XML data to JSON format instantly — handles attributes, nested elements, and arrays.</p>
+<div class="tool-area">
+<textarea id="input" placeholder='Paste XML here...
+<person>
+  <name>John</name>
+  <age>30</age>
+  <hobbies>
+    <hobby>Reading</hobby>
+    <hobby>Coding</hobby>
+  </hobbies>
+</person>'></textarea>
+<div class="row">
+<button onclick="convert()">Convert to JSON</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy JSON</button>
+<button class="btn-secondary" onclick="loadSample()">Sample</button>
+</div>
+<div class="error" id="error"></div>
+<div class="output" id="output"></div>
+</div>
+<script>
+function xmlToJson(xml){
+  const obj={};
+  if(xml.nodeType===1){
+    if(xml.attributes.length>0){
+      obj['@attributes']={};
+      for(let i=0;i<xml.attributes.length;i++){
+        const attr=xml.attributes.item(i);
+        obj['@attributes'][attr.nodeName]=attr.nodeValue;
+      }
+    }
+  }else if(xml.nodeType===3){
+    return xml.nodeValue.trim();
+  }
+  if(xml.hasChildNodes()){
+    for(let i=0;i<xml.childNodes.length;i++){
+      const item=xml.childNodes.item(i);
+      const nodeName=item.nodeName;
+      if(nodeName==='#text'){
+        const text=item.nodeValue.trim();
+        if(text){
+          if(xml.childNodes.length===1)return text;
+          if(!obj['#text'])obj['#text']=text;
+        }
+      }else{
+        const value=xmlToJson(item);
+        if(typeof obj[nodeName]==='undefined'){
+          obj[nodeName]=value;
+        }else{
+          if(!Array.isArray(obj[nodeName])){
+            obj[nodeName]=[obj[nodeName]];
+          }
+          obj[nodeName].push(value);
+        }
+      }
+    }
+  }
+  return obj;
+}
+function convert(){
+  const input=document.getElementById('input').value.trim();
+  const error=document.getElementById('error');
+  if(!input){error.textContent='Please enter XML.';error.style.display='block';document.getElementById('output').textContent='';return;}
+  try{
+    const parser=new DOMParser();
+    const xmlDoc=parser.parseFromString(input,'text/xml');
+    const parseError=xmlDoc.querySelector('parsererror');
+    if(parseError){throw new Error(parseError.textContent.split('\n')[0]);}
+    const json=xmlToJson(xmlDoc.documentElement);
+    const result={};
+    result[xmlDoc.documentElement.nodeName]=json;
+    document.getElementById('output').textContent=JSON.stringify(result,null,2);
+    error.style.display='none';
+  }catch(e){
+    error.textContent='XML Parse Error: '+e.message;
+    error.style.display='block';
+    document.getElementById('output').textContent='';
+  }
+}
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('output').textContent);}
+function loadSample(){document.getElementById('input').value='<bookstore>\n  <book category="fiction">\n    <title lang="en">Harry Potter</title>\n    <author>J.K. Rowling</author>\n    <year>2005</year>\n    <price>29.99</price>\n  </book>\n  <book category="web">\n    <title lang="en">Learning XML</title>\n    <author>Erik Ray</author>\n    <year>2003</year>\n    <price>39.95</price>\n  </book>\n</bookstore>';convert();}
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem"><a href="../index.html">← All Tools</a> · <a href="json-formatter.html">JSON Formatter</a> · <a href="csv-to-json.html">CSV to JSON</a></p>
+</footer>
+</div>
+</body>
+</html>

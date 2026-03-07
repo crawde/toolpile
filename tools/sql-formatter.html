@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Formatter — Free Online Tool | ToolPile</title>
+<meta name="description" content="Format and beautify SQL queries online. Supports SELECT, INSERT, UPDATE, DELETE and more. Free SQL beautifier with indentation.">
+<meta name="keywords" content="sql formatter, sql beautifier, format sql online, sql prettifier, sql indent, free online tool">
+<meta property="og:title" content="SQL Formatter — Free Online Tool">
+<meta property="og:description" content="Format and beautify SQL queries online with proper indentation.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/sql-formatter">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.9rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:150px;line-height:1.6}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:100px;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:.9rem;white-space:pre-wrap;word-break:break-all;line-height:1.6}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;margin-bottom:.5rem;display:block;margin-top:1rem}
+select{background:#0f172a;border:1px solid #475569;border-radius:6px;padding:.5rem;color:#e2e8f0;font-size:.875rem}
+.keyword{color:#c084fc}.string{color:#34d399}.number{color:#fb923c}.comment{color:#64748b}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>SQL Formatter</h1>
+<p class="subtitle">Format and beautify SQL queries with proper indentation and keyword uppercasing.</p>
+<div class="tool-area">
+<textarea id="input" placeholder="Paste SQL here... e.g. SELECT * FROM users WHERE age > 18 ORDER BY name"></textarea>
+<div class="row">
+<label style="margin:0">Indent: <select id="indent"><option value="2">2 spaces</option><option value="4" selected>4 spaces</option><option value="tab">Tab</option></select></label>
+<label style="margin:0">Keywords: <select id="kwcase"><option value="upper" selected>UPPERCASE</option><option value="lower">lowercase</option><option value="none">As-is</option></select></label>
+</div>
+<div class="row">
+<button onclick="formatSQL()">Format SQL</button>
+<button class="btn-secondary" onclick="minifySQL()">Minify</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy</button>
+</div>
+<div class="output" id="output"></div>
+</div>
+<script>
+const KEYWORDS=['SELECT','FROM','WHERE','AND','OR','ORDER BY','GROUP BY','HAVING','LIMIT','OFFSET','INSERT INTO','VALUES','UPDATE','SET','DELETE FROM','CREATE TABLE','ALTER TABLE','DROP TABLE','JOIN','INNER JOIN','LEFT JOIN','RIGHT JOIN','FULL JOIN','CROSS JOIN','ON','UNION','UNION ALL','AS','IN','NOT','IS','NULL','LIKE','BETWEEN','EXISTS','CASE','WHEN','THEN','ELSE','END','DISTINCT','COUNT','SUM','AVG','MIN','MAX','ASC','DESC','INTO','CREATE','ALTER','DROP','INDEX','VIEW','PRIMARY KEY','FOREIGN KEY','REFERENCES','CONSTRAINT','DEFAULT','CHECK','UNIQUE','CASCADE','TRUNCATE','EXPLAIN','WITH','RECURSIVE'];
+const NEWLINE_BEFORE=['SELECT','FROM','WHERE','AND','OR','ORDER BY','GROUP BY','HAVING','LIMIT','INSERT INTO','UPDATE','SET','DELETE FROM','JOIN','INNER JOIN','LEFT JOIN','RIGHT JOIN','FULL JOIN','CROSS JOIN','UNION','UNION ALL','ON','CASE','WHEN','THEN','ELSE','END'];
+function formatSQL(){
+  let sql=document.getElementById('input').value.trim();
+  if(!sql){document.getElementById('output').textContent='';return;}
+  const indentVal=document.getElementById('indent').value;
+  const indent=indentVal==='tab'?'\t':' '.repeat(parseInt(indentVal));
+  const kwCase=document.getElementById('kwcase').value;
+  // Normalize whitespace
+  sql=sql.replace(/\s+/g,' ').trim();
+  // Uppercase keywords for matching
+  let result=sql;
+  // Sort keywords by length (longest first) to avoid partial matches
+  const sortedKw=[...KEYWORDS].sort((a,b)=>b.length-a.length);
+  // Replace keywords case
+  if(kwCase!=='none'){
+    sortedKw.forEach(kw=>{
+      const regex=new RegExp('\\b'+kw.replace(/ /g,'\\s+')+'\\b','gi');
+      result=result.replace(regex,kwCase==='upper'?kw:kw.toLowerCase());
+    });
+  }
+  // Add newlines before major keywords
+  const nlKw=NEWLINE_BEFORE.map(k=>kwCase==='lower'?k.toLowerCase():k);
+  nlKw.forEach(kw=>{
+    const regex=new RegExp('\\s+'+kw.replace(/ /g,'\\s+')+'\\b','gi');
+    result=result.replace(regex,'\n'+kw);
+  });
+  // Indent lines after first
+  const lines=result.split('\n');
+  let indentLevel=0;
+  const formatted=lines.map((line,i)=>{
+    line=line.trim();
+    if(!line)return '';
+    const upperLine=line.toUpperCase();
+    if(i===0)return line;
+    if(upperLine.startsWith('SELECT')||upperLine.startsWith('FROM')||upperLine.startsWith('WHERE')||upperLine.startsWith('ORDER')||upperLine.startsWith('GROUP')||upperLine.startsWith('HAVING')||upperLine.startsWith('LIMIT'))return line;
+    if(upperLine.startsWith('AND')||upperLine.startsWith('OR'))return indent+line;
+    if(upperLine.match(/^(INNER |LEFT |RIGHT |FULL |CROSS )?JOIN/))return indent+line;
+    if(upperLine.startsWith('ON'))return indent+indent+line;
+    if(upperLine.startsWith('SET'))return line;
+    if(upperLine.startsWith('WHEN')||upperLine.startsWith('THEN'))return indent+indent+line;
+    if(upperLine.startsWith('ELSE'))return indent+line;
+    return indent+line;
+  });
+  document.getElementById('output').textContent=formatted.join('\n');
+}
+function minifySQL(){
+  let sql=document.getElementById('input').value.trim();
+  document.getElementById('output').textContent=sql.replace(/\s+/g,' ').replace(/\s*([,()])\s*/g,'$1').trim();
+}
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('output').textContent);}
+function loadSample(){document.getElementById('input').value="SELECT u.name, u.email, COUNT(o.id) AS order_count FROM users u INNER JOIN orders o ON u.id = o.user_id WHERE u.active = 1 AND o.created_at > '2024-01-01' GROUP BY u.name, u.email HAVING COUNT(o.id) > 5 ORDER BY order_count DESC LIMIT 10";formatSQL();}
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem"><a href="../index.html">← All Tools</a> · <a href="json-formatter.html">JSON Formatter</a> · <a href="css-minifier.html">CSS Minifier</a></p>
+</footer>
+</div>
+</body>
+</html>
