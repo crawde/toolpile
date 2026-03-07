@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unix File Permissions Calculator (chmod) — Free Online Tool | ToolPile</title>
+<meta name="description" content="Calculate Unix file permissions visually. Convert between symbolic (rwxr-xr-x) and numeric (755) notation. Interactive chmod calculator for Linux/macOS.">
+<meta name="keywords" content="chmod calculator, unix permissions, file permissions, linux permissions, rwx calculator, permission converter, 755 permission, toolpile">
+<meta property="og:title" content="Unix File Permissions Calculator (chmod)">
+<meta property="og:description" content="Calculate Unix file permissions visually. Convert between symbolic and numeric notation.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.io/tools/chmod-calculator">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Unix Permissions Calculator","url":"https://toolpile.io/tools/chmod-calculator","applicationCategory":"DeveloperApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does chmod 755 mean?","acceptedAnswer":{"@type":"Answer","text":"chmod 755 means: Owner can read, write, and execute (7=rwx). Group can read and execute (5=r-x). Others can read and execute (5=r-x). This is the standard permission for directories and executable scripts on Linux/Unix systems."}},{"@type":"Question","name":"What's the difference between 644 and 755?","acceptedAnswer":{"@type":"Answer","text":"644 (rw-r--r--) allows the owner to read and write, while group and others can only read. 755 (rwxr-xr-x) adds execute permission for all three. Use 644 for regular files and 755 for directories and scripts."}},{"@type":"Question","name":"What does the execute permission do for directories?","acceptedAnswer":{"@type":"Answer","text":"For directories, execute (x) permission means the ability to access and traverse the directory — list its contents and cd into it. Without execute permission on a directory, you cannot access any files inside it, even if those files have read permission."}}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+.perm-display{text-align:center;margin:1.5rem 0}
+.perm-display .numeric{font-size:3rem;font-weight:900;font-family:'SFMono-Regular',Consolas,monospace;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.perm-display .symbolic{font-size:1.5rem;font-family:'SFMono-Regular',Consolas,monospace;color:#94a3b8;margin-top:.25rem}
+.perm-display .command{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;font-family:'SFMono-Regular',Consolas,monospace;font-size:.9rem;color:#38bdf8;cursor:pointer;display:inline-block}
+.perm-display .command:hover{border-color:#818cf8}
+.grid{display:grid;grid-template-columns:auto repeat(3,1fr);gap:0;margin-top:1.5rem;border:1px solid #334155;border-radius:8px;overflow:hidden}
+.grid .cell{padding:.75rem;text-align:center;border-bottom:1px solid #1e293b;border-right:1px solid #1e293b;font-size:.85rem}
+.grid .cell:last-child{border-right:none}
+.grid .header{background:#0f172a;color:#94a3b8;font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:1px}
+.grid .label{background:#0f172a;color:#94a3b8;font-weight:600;text-align:left;padding-left:1rem}
+.grid .cell input[type="checkbox"]{width:22px;height:22px;accent-color:#818cf8;cursor:pointer}
+.grid .cell.on{background:rgba(129,140,248,.08)}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+input[type="text"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:'SFMono-Regular',Consolas,monospace;text-align:center}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.common-presets{margin-top:1.5rem}
+.common-presets h3{font-size:.9rem;color:#94a3b8;margin-bottom:.75rem}
+.presets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem}
+.preset{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.5rem .75rem;cursor:pointer;transition:all .2s;text-align:center}
+.preset:hover{border-color:#818cf8;background:rgba(129,140,248,.05)}
+.preset .val{font-family:'SFMono-Regular',Consolas,monospace;color:#38bdf8;font-weight:600;font-size:.9rem}
+.preset .desc{font-size:.7rem;color:#64748b;margin-top:.2rem}
+.faq{margin-top:2.5rem}
+.faq h2{font-size:1.3rem;font-weight:700;color:#e2e8f0;margin-bottom:1rem}
+.faq details{background:#1e293b;border-radius:8px;padding:1rem;margin-bottom:.5rem;border:1px solid #334155}
+.faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;list-style:none}
+.faq summary::before{content:'▸ ';color:#818cf8}
+.faq details[open] summary::before{content:'▾ '}
+.faq p{color:#94a3b8;margin-top:.5rem;line-height:1.6;font-size:.9rem}
+.related{margin-top:2rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.related a{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem 1rem;color:#818cf8;text-decoration:none;font-size:.85rem;transition:border-color .2s}
+.related a:hover{border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>chmod Calculator</h1>
+<p class="subtitle">Calculate Unix/Linux file permissions visually. Convert between numeric and symbolic notation.</p>
+<div class="tool-area">
+<div class="perm-display">
+<div class="numeric" id="numeric">755</div>
+<div class="symbolic" id="symbolic">rwxr-xr-x</div>
+<div class="command" id="command" onclick="navigator.clipboard.writeText(this.textContent)" title="Click to copy">chmod 755 filename</div>
+</div>
+
+<div class="grid">
+<div class="cell header"></div>
+<div class="cell header">Read (4)</div>
+<div class="cell header">Write (2)</div>
+<div class="cell header">Execute (1)</div>
+<div class="cell label">Owner</div>
+<div class="cell" id="c-or"><input type="checkbox" checked onchange="update()"></div>
+<div class="cell" id="c-ow"><input type="checkbox" checked onchange="update()"></div>
+<div class="cell" id="c-ox"><input type="checkbox" checked onchange="update()"></div>
+<div class="cell label">Group</div>
+<div class="cell" id="c-gr"><input type="checkbox" checked onchange="update()"></div>
+<div class="cell" id="c-gw"><input type="checkbox" onchange="update()"></div>
+<div class="cell" id="c-gx"><input type="checkbox" checked onchange="update()"></div>
+<div class="cell label">Others</div>
+<div class="cell" id="c-tr"><input type="checkbox" checked onchange="update()"></div>
+<div class="cell" id="c-tw"><input type="checkbox" onchange="update()"></div>
+<div class="cell" id="c-tx"><input type="checkbox" checked onchange="update()"></div>
+</div>
+
+<label>Or enter numeric value (e.g., 755)</label>
+<input type="text" id="numInput" value="755" maxlength="4" oninput="fromNumeric()" placeholder="755">
+
+<div class="common-presets">
+<h3>Common Permissions</h3>
+<div class="presets-grid">
+<div class="preset" onclick="setPerms(777)"><div class="val">777</div><div class="desc">Full access all</div></div>
+<div class="preset" onclick="setPerms(755)"><div class="val">755</div><div class="desc">Standard directory</div></div>
+<div class="preset" onclick="setPerms(750)"><div class="val">750</div><div class="desc">Group dir</div></div>
+<div class="preset" onclick="setPerms(700)"><div class="val">700</div><div class="desc">Owner only dir</div></div>
+<div class="preset" onclick="setPerms(644)"><div class="val">644</div><div class="desc">Standard file</div></div>
+<div class="preset" onclick="setPerms(640)"><div class="val">640</div><div class="desc">Group readable</div></div>
+<div class="preset" onclick="setPerms(600)"><div class="val">600</div><div class="desc">Owner only file</div></div>
+<div class="preset" onclick="setPerms(400)"><div class="val">400</div><div class="desc">Read-only owner</div></div>
+</div>
+</div>
+</div>
+
+<div class="faq">
+<h2>Frequently Asked Questions</h2>
+<details><summary>How do Unix file permissions work?</summary><p>Every file and directory in Unix/Linux has three permission groups: <strong>Owner</strong> (u), <strong>Group</strong> (g), and <strong>Others</strong> (o). Each group has three permissions: <strong>Read</strong> (r=4), <strong>Write</strong> (w=2), and <strong>Execute</strong> (x=1). The numeric value is the sum of enabled permissions for each group. For example, 7 = 4+2+1 = rwx (read + write + execute).</p></details>
+<details><summary>What are the most common permission settings?</summary><p><strong>755</strong> — standard for directories and executables (owner: full, others: read+execute). <strong>644</strong> — standard for files (owner: read+write, others: read-only). <strong>600</strong> — private files (owner only). <strong>700</strong> — private directories. <strong>777</strong> — full access for everyone (generally unsafe).</p></details>
+<details><summary>Why can't I access a directory with 644 permissions?</summary><p>Directories require <strong>execute</strong> permission to be traversed. Without it, you can't list contents or cd into the directory. That's why directories typically use 755 (rwxr-xr-x) while regular files use 644 (rw-r--r--).</p></details>
+</div>
+
+<div class="related">
+<a href="cron-parser.html">Cron Parser</a>
+<a href="hash-generator.html">Hash Generator</a>
+<a href="regex-tester.html">Regex Tester</a>
+<a href="password-generator.html">Password Generator</a>
+</div>
+
+<footer>
+<p><a href="../">← All ToolPile Tools</a></p>
+<p style="margin-top:.5rem">Free tool by <a href="https://toolpile.io">ToolPile</a> — 30+ free developer & productivity tools</p>
+</footer>
+</div>
+
+<script>
+const checks=[
+['c-or','c-ow','c-ox'],
+['c-gr','c-gw','c-gx'],
+['c-tr','c-tw','c-tx']
+];
+
+function getPerms(){
+return checks.map(group=>
+group.reduce((sum,id,i)=>{
+const cb=document.querySelector('#'+id+' input');
+return sum+(cb.checked?[4,2,1][i]:0);
+},0)
+);
+}
+
+function update(){
+const perms=getPerms();
+const num=perms.join('');
+const sym=perms.map(p=>(p&4?'r':'-')+(p&2?'w':'-')+(p&1?'x':'-')).join('');
+document.getElementById('numeric').textContent=num;
+document.getElementById('symbolic').textContent=sym;
+document.getElementById('command').textContent='chmod '+num+' filename';
+document.getElementById('numInput').value=num;
+// Highlight active cells
+checks.flat().forEach(id=>{
+const cell=document.getElementById(id);
+const checked=cell.querySelector('input').checked;
+cell.className='cell'+(checked?' on':'');
+});
+}
+
+function fromNumeric(){
+const val=document.getElementById('numInput').value;
+if(!/^[0-7]{3,4}$/.test(val))return;
+const digits=val.slice(-3).split('').map(Number);
+digits.forEach((d,gi)=>{
+[4,2,1].forEach((bit,bi)=>{
+document.querySelector('#'+checks[gi][bi]+' input').checked=!!(d&bit);
+});
+});
+update();
+}
+
+function setPerms(n){
+document.getElementById('numInput').value=n.toString();
+fromNumeric();
+}
+
+update();
+</script>
+</body>
+</html>

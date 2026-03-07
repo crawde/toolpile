@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lorem Ipsum Generator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Generate lorem ipsum placeholder text instantly. Choose paragraph count and words per paragraph.">
+<meta name="keywords" content="lorem ipsum generator, placeholder text, dummy text, toolpile">
+<meta property="og:title" content="Lorem Ipsum Generator — Free Online Tool">
+<meta property="og:description" content="Generate lorem ipsum placeholder text instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.com/tools/lorem-ipsum">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Lorem Ipsum Generator","url":"https://toolpile.com/tools/lorem-ipsum","applicationCategory":"UtilityApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea,input[type="text"],input[type="number"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{min-height:120px}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:60px;color:#38bdf8;font-family:'JetBrains Mono',monospace,monospace;white-space:pre-wrap;word-break:break-all}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Lorem Ipsum Generator</h1>
+<p class="subtitle">Generate placeholder text for your designs and mockups.</p>
+<div class="tool-area">
+<label>Paragraphs (1–20)</label>
+<input type="number" id="pCount" value="3" min="1" max="20">
+<label>Words per paragraph (approx)</label>
+<input type="number" id="wCount" value="50" min="10" max="200">
+<div class="row">
+<button onclick="generate()">Generate</button>
+<button class="btn-secondary" onclick="copyOut()">Copy</button>
+</div>
+<div class="output" id="output"></div>
+<script>
+const W="lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit".split(" ");
+function generate(){const pc=Math.max(1,Math.min(20,+document.getElementById('pCount').value||3));const wc=Math.max(10,Math.min(200,+document.getElementById('wCount').value||50));const paras=[];for(let p=0;p<pc;p++){const words=[];for(let i=0;i<wc;i++)words.push(W[(p*wc+i)%W.length]);words[0]=words[0][0].toUpperCase()+words[0].slice(1);paras.push(words.join(' ')+'.');}document.getElementById('output').textContent=paras.join('\n\n');}
+function copyOut(){navigator.clipboard.writeText(document.getElementById('output').textContent);}
+generate();
+</script>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.com">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>

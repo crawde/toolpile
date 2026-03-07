@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML to Text Converter — Strip HTML Tags Online | ToolPile</title>
+<meta name="description" content="Convert HTML to clean plain text instantly. Strips all tags, preserves text content and structure. Free online tool, no signup required.">
+<meta name="keywords" content="html to text, strip html tags, html stripper, html to plain text, remove html tags, text extractor, toolpile">
+<meta property="og:title" content="HTML to Text Converter — Strip HTML Tags Online">
+<meta property="og:description" content="Convert HTML to clean plain text instantly. Strips all tags and preserves content.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.io/tools/html-to-text">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"HTML to Text Converter","url":"https://toolpile.io/tools/html-to-text","applicationCategory":"UtilityApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:780px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.85rem;font-family:'SFMono-Regular',Consolas,monospace;resize:vertical}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.row{display:flex;gap:.5rem;align-items:center;margin:.75rem 0;flex-wrap:wrap}
+.options{display:flex;gap:1rem;flex-wrap:wrap;margin:.75rem 0}
+.options label{display:flex;align-items:center;gap:.4rem;margin:0;cursor:pointer}
+.options input[type="checkbox"]{accent-color:#818cf8;width:16px;height:16px}
+.stats{font-size:.8rem;color:#64748b;margin-top:.5rem}
+.preview{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;margin-top:1rem;max-height:200px;overflow-y:auto}
+.preview h3{font-size:.8rem;color:#64748b;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:1px}
+.preview .rendered{color:#94a3b8;font-size:.9rem;line-height:1.6}
+.faq{margin-top:2.5rem}
+.faq h2{font-size:1.3rem;font-weight:700;color:#e2e8f0;margin-bottom:1rem}
+.faq details{background:#1e293b;border-radius:8px;padding:1rem;margin-bottom:.5rem;border:1px solid #334155}
+.faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;list-style:none}
+.faq summary::before{content:'▸ ';color:#818cf8}
+.faq details[open] summary::before{content:'▾ '}
+.faq p{color:#94a3b8;margin-top:.5rem;line-height:1.6;font-size:.9rem}
+.related{margin-top:2rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.related a{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem 1rem;color:#818cf8;text-decoration:none;font-size:.85rem;transition:border-color .2s}
+.related a:hover{border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>HTML to Text Converter</h1>
+<p class="subtitle">Strip HTML tags and extract clean plain text from any HTML content.</p>
+<div class="tool-area">
+<label for="htmlInput">HTML Input</label>
+<textarea id="htmlInput" rows="8" oninput="convert()" placeholder="Paste HTML here…"><h1>Welcome to My Blog</h1>
+<p>This is a <strong>sample paragraph</strong> with <em>formatted text</em> and a <a href="https://example.com">link</a>.</p>
+<ul>
+  <li>First item</li>
+  <li>Second item</li>
+  <li>Third item</li>
+</ul>
+<p>Contact us at <a href="mailto:hello@example.com">hello@example.com</a></p>
+<script>alert('this should be removed')</script>
+<style>.hidden{display:none}</style></textarea>
+<div class="options">
+<label><input type="checkbox" id="preserveLinks" checked onchange="convert()"> Extract links</label>
+<label><input type="checkbox" id="preserveNewlines" checked onchange="convert()"> Preserve structure</label>
+<label><input type="checkbox" id="collapseSpaces" checked onchange="convert()"> Collapse whitespace</label>
+</div>
+<div class="row">
+<button onclick="convert()">Convert</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy Text</button>
+<button class="btn-secondary" onclick="clearAll()">Clear</button>
+</div>
+<label for="textOutput">Plain Text Output</label>
+<textarea id="textOutput" rows="8" readonly></textarea>
+<div id="stats" class="stats"></div>
+<div class="preview" id="renderPreview">
+<h3>HTML Preview</h3>
+<div class="rendered" id="rendered"></div>
+</div>
+</div>
+
+<div class="faq">
+<h2>Frequently Asked Questions</h2>
+<details><summary>What does this tool do?</summary><p>This tool strips all HTML tags from your input, leaving only the text content. It intelligently handles block elements (adding line breaks for paragraphs, headings, list items) and can optionally extract URLs from links. Script and style tags are completely removed including their content.</p></details>
+<details><summary>Does it handle malformed HTML?</summary><p>Yes. The tool uses the browser's built-in HTML parser (DOMParser) which gracefully handles unclosed tags, nested elements, and other common HTML issues — the same way a web browser would render the HTML.</p></details>
+<details><summary>Is my HTML data safe?</summary><p>All processing happens in your browser. No data is sent to any server. The HTML is never rendered as active content — it's parsed safely using DOMParser.</p></details>
+<details><summary>Can I convert text back to HTML?</summary><p>Check out our Markdown to HTML tool for converting formatted text to HTML. Markdown is much easier to write than raw HTML and produces clean, semantic output.</p></details>
+</div>
+
+<div class="related">
+<a href="html-entity-encoder.html">HTML Entity Encoder</a>
+<a href="markdown-to-html.html">Markdown to HTML</a>
+<a href="word-counter.html">Word Counter</a>
+<a href="text-diff.html">Text Diff</a>
+<a href="character-counter.html">Character Counter</a>
+</div>
+
+<footer>
+<p><a href="../">← All ToolPile Tools</a></p>
+<p style="margin-top:.5rem">Free tool by <a href="https://toolpile.io">ToolPile</a> — 30+ free developer & productivity tools</p>
+</footer>
+</div>
+
+<script>
+function convert(){
+const html=document.getElementById('htmlInput').value;
+const preserveLinks=document.getElementById('preserveLinks').checked;
+const preserveNewlines=document.getElementById('preserveNewlines').checked;
+const collapseSpaces=document.getElementById('collapseSpaces').checked;
+
+if(!html.trim()){document.getElementById('textOutput').value='';document.getElementById('stats').textContent='';return;}
+
+const parser=new DOMParser();
+const doc=parser.parseFromString(html,'text/html');
+
+// Remove script and style elements
+doc.querySelectorAll('script,style,noscript').forEach(el=>el.remove());
+
+let text='';
+const links=[];
+
+function walk(node){
+if(node.nodeType===3){text+=node.textContent;return;}
+if(node.nodeType!==1)return;
+const tag=node.tagName.toLowerCase();
+const blockTags=['p','div','h1','h2','h3','h4','h5','h6','li','br','hr','tr','blockquote','pre','section','article','header','footer','nav','main','aside','figure','figcaption','details','summary','table','thead','tbody','tfoot'];
+
+if(preserveNewlines&&blockTags.includes(tag))text+='\n';
+if(tag==='br'){text+='\n';return;}
+if(tag==='hr'){text+='\n---\n';return;}
+if(tag==='li')text+='• ';
+
+if(tag==='a'&&preserveLinks){
+const href=node.getAttribute('href');
+const linkText=node.textContent.trim();
+if(href&&!href.startsWith('#')&&!href.startsWith('javascript:')){
+links.push({text:linkText,url:href});
+node.childNodes.forEach(walk);
+text+=` [${href}]`;
+return;
+}
+}
+
+node.childNodes.forEach(walk);
+if(preserveNewlines&&blockTags.includes(tag))text+='\n';
+}
+
+walk(doc.body);
+
+if(collapseSpaces){
+text=text.replace(/[^\S\n]+/g,' ');
+text=text.replace(/\n{3,}/g,'\n\n');
+}
+text=text.trim();
+
+document.getElementById('textOutput').value=text;
+
+// Stats
+const words=text.split(/\s+/).filter(w=>w).length;
+const chars=text.length;
+const lineCount=text.split('\n').length;
+let statsText=`${words} words, ${chars} characters, ${lineCount} lines`;
+if(links.length)statsText+=`, ${links.length} links extracted`;
+document.getElementById('stats').textContent=statsText;
+
+// Safe preview
+const rendered=document.getElementById('rendered');
+rendered.textContent=text.substring(0,500)+(text.length>500?'…':'');
+}
+
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('textOutput').value);}
+function clearAll(){document.getElementById('htmlInput').value='';document.getElementById('textOutput').value='';document.getElementById('stats').textContent='';document.getElementById('rendered').textContent='';}
+
+convert();
+</script>
+</body>
+</html>

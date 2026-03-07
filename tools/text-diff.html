@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Diff Checker — Free Online Tool | ToolPile</title>
+<meta name="description" content="Compare two texts side-by-side and see additions, deletions, and changes highlighted inline.">
+<meta name="keywords" content="text diff, diff checker, compare text, text comparison, toolpile">
+<meta property="og:title" content="Text Diff Checker — Free Online Tool">
+<meta property="og:description" content="Compare two texts and see differences highlighted inline.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.com/tools/text-diff">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Text Diff Checker","url":"https://toolpile.com/tools/text-diff","applicationCategory":"UtilityApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.9rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:180px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem}
+.diff-out{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:1rem;margin-top:1rem;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.8;white-space:pre-wrap;word-break:break-all;max-height:400px;overflow:auto}
+.del{background:rgba(239,68,68,.2);color:#fca5a5;text-decoration:line-through}
+.add{background:rgba(34,197,94,.2);color:#86efac}
+.stats{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.stat{background:#1e293b;border-radius:8px;padding:.5rem 1rem;border:1px solid #334155;text-align:center;flex:1;min-width:80px}
+.stat-value{font-size:1.25rem;font-weight:700;color:#38bdf8}
+.stat-label{font-size:.7rem;color:#94a3b8;margin-top:.15rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Text Diff Checker</h1>
+<p class="subtitle">Compare two texts and see additions and deletions highlighted.</p>
+<div class="tool-area">
+<div class="cols">
+<div><label>Original Text</label><textarea id="textA" placeholder="Paste original text here...">The quick brown fox jumps over the lazy dog.</textarea></div>
+<div><label>Modified Text</label><textarea id="textB" placeholder="Paste modified text here...">The quick red fox leaps over the lazy cat.</textarea></div>
+</div>
+<button onclick="doDiff()">Compare</button>
+<div class="stats" id="statsRow" style="display:none">
+<div class="stat"><div class="stat-value" id="sAdd">0</div><div class="stat-label">Additions</div></div>
+<div class="stat"><div class="stat-value" id="sDel">0</div><div class="stat-label">Deletions</div></div>
+<div class="stat"><div class="stat-value" id="sUnc">0</div><div class="stat-label">Unchanged</div></div>
+</div>
+<div class="diff-out" id="output"></div>
+</div>
+<script>
+function doDiff(){const a=document.getElementById('textA').value.split(/\b/);const b=document.getElementById('textB').value.split(/\b/);const dp=[];for(let i=0;i<=a.length;i++){dp[i]=[];for(let j=0;j<=b.length;j++){if(i===0)dp[i][j]=j;else if(j===0)dp[i][j]=i;else if(a[i-1]===b[j-1])dp[i][j]=dp[i-1][j-1];else dp[i][j]=1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);}}
+let i=a.length,j=b.length;const ops=[];while(i>0||j>0){if(i>0&&j>0&&a[i-1]===b[j-1]){ops.unshift({type:'eq',val:a[i-1]});i--;j--;}else if(j>0&&(i===0||dp[i][j-1]<=dp[i-1][j])){ops.unshift({type:'add',val:b[j-1]});j--;}else{ops.unshift({type:'del',val:a[i-1]});i--;}}
+let html='',adds=0,dels=0,unc=0;for(const o of ops){const t=escH(o.val);if(o.type==='add'){html+=`<span class="add">${t}</span>`;adds++;}else if(o.type==='del'){html+=`<span class="del">${t}</span>`;dels++;}else{html+=t;unc++;}}
+document.getElementById('output').innerHTML=html;document.getElementById('statsRow').style.display='flex';document.getElementById('sAdd').textContent=adds;document.getElementById('sDel').textContent=dels;document.getElementById('sUnc').textContent=unc;}
+function escH(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+doDiff();
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.com">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Compressor — Compress Images Online Free | ToolPile</title>
+<meta name="description" content="Compress JPEG, PNG, and WebP images right in your browser. Reduce file size up to 90% while maintaining quality. Free, private, no uploads to any server.">
+<meta name="keywords" content="image compressor, compress image online, reduce image size, jpeg compressor, png compressor, webp converter, image optimizer, toolpile">
+<meta property="og:title" content="Image Compressor — Compress Images Online Free">
+<meta property="og:description" content="Compress images up to 90% in your browser. No uploads, no server, completely private.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.io/tools/image-compressor">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Image Compressor","url":"https://toolpile.io/tools/image-compressor","applicationCategory":"MultimediaApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does browser-based image compression work?","acceptedAnswer":{"@type":"Answer","text":"This tool uses the HTML5 Canvas API and the browser's built-in image codecs to re-encode images at a lower quality setting. By drawing the image onto a canvas and exporting it with reduced quality, file sizes can be reduced by 50-90% with minimal visible quality loss."}},{"@type":"Question","name":"Are my images uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All compression happens entirely in your browser using JavaScript. Your images never leave your device. This makes the tool completely private and works offline too."}},{"@type":"Question","name":"What formats are supported?","acceptedAnswer":{"@type":"Answer","text":"You can compress JPEG, PNG, WebP, GIF, and BMP images. Output can be JPEG, PNG, or WebP. For the best compression ratio, WebP is recommended as it typically produces 25-35% smaller files than JPEG at equivalent quality."}}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:780px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+.dropzone{border:2px dashed #475569;border-radius:12px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:1rem}
+.dropzone:hover,.dropzone.dragover{border-color:#818cf8;background:rgba(129,140,248,.05)}
+.dropzone .icon{font-size:3rem;margin-bottom:.5rem}
+.dropzone .text{color:#94a3b8;font-size:.9rem}
+.dropzone .text strong{color:#e2e8f0}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.controls{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin:1rem 0}
+.controls select,.controls input[type="number"]{background:#0f172a;border:1px solid #475569;border-radius:6px;padding:.4rem .6rem;color:#e2e8f0;font-size:.85rem}
+input[type="range"]{width:200px;accent-color:#818cf8}
+.results{display:none;margin-top:1rem}
+.comparison{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.comparison .side{flex:1;min-width:200px;text-align:center}
+.comparison img{max-width:100%;max-height:250px;border-radius:8px;border:1px solid #334155;background:#0f172a}
+.comparison .label{font-size:.8rem;color:#94a3b8;margin-top:.5rem}
+.savings{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:8px;padding:1rem;text-align:center;margin-top:1rem}
+.savings .pct{font-size:2rem;font-weight:800;color:#22c55e}
+.savings .detail{color:#94a3b8;font-size:.85rem;margin-top:.25rem}
+.batch-list{margin-top:1rem;max-height:200px;overflow-y:auto}
+.batch-item{display:flex;align-items:center;gap:.75rem;padding:.5rem;border-bottom:1px solid #1e293b;font-size:.85rem}
+.batch-item .name{flex:1;color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.batch-item .size{color:#94a3b8;min-width:80px;text-align:right}
+.batch-item .saved{color:#22c55e;min-width:50px;text-align:right}
+.faq{margin-top:2.5rem}
+.faq h2{font-size:1.3rem;font-weight:700;color:#e2e8f0;margin-bottom:1rem}
+.faq details{background:#1e293b;border-radius:8px;padding:1rem;margin-bottom:.5rem;border:1px solid #334155}
+.faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;list-style:none}
+.faq summary::before{content:'▸ ';color:#818cf8}
+.faq details[open] summary::before{content:'▾ '}
+.faq p{color:#94a3b8;margin-top:.5rem;line-height:1.6;font-size:.9rem}
+.related{margin-top:2rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.related a{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem 1rem;color:#818cf8;text-decoration:none;font-size:.85rem;transition:border-color .2s}
+.related a:hover{border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Image Compressor</h1>
+<p class="subtitle">Compress images up to 90% in your browser. No uploads, completely private.</p>
+<div class="tool-area">
+<div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+<div class="icon">📁</div>
+<div class="text">Drop images here or <strong>click to browse</strong><br>Supports JPEG, PNG, WebP, GIF, BMP</div>
+</div>
+<input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFiles(this.files)">
+<div class="controls">
+<label style="margin:0">Quality: <strong id="qualVal">75</strong>%
+<input type="range" id="quality" min="10" max="100" value="75" oninput="document.getElementById('qualVal').textContent=this.value">
+</label>
+<label style="margin:0">Format:
+<select id="format"><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option><option value="image/png">PNG</option></select>
+</label>
+<label style="margin:0">Max width:
+<input type="number" id="maxWidth" value="0" min="0" step="100" style="width:80px" placeholder="0=no limit">
+</label>
+</div>
+<div class="results" id="results">
+<div class="savings" id="savings"></div>
+<div class="comparison" id="comparison"></div>
+<div style="margin-top:1rem;display:flex;gap:.5rem">
+<button onclick="downloadAll()">Download All</button>
+<button class="btn-secondary" onclick="reset()">Clear</button>
+</div>
+<div class="batch-list" id="batchList"></div>
+</div>
+</div>
+
+<div class="faq">
+<h2>Frequently Asked Questions</h2>
+<details><summary>How much can I compress?</summary><p>JPEG images can typically be compressed 50-80% with minimal quality loss at the 75% quality setting. WebP format offers even better compression — typically 25-35% smaller than JPEG at the same quality. PNG compression is lossless and less dramatic. The actual savings depend on the image content and original compression level.</p></details>
+<details><summary>Will I lose image quality?</summary><p>JPEG and WebP use lossy compression — some quality is sacrificed for smaller file sizes. At 75% quality, the difference is nearly imperceptible for most images. You can compare the original and compressed versions side-by-side in this tool. PNG compression is lossless.</p></details>
+<details><summary>Is there a file size or count limit?</summary><p>No hard limits — everything runs in your browser. However, very large images (>50MP) or many images at once may be slow depending on your device. Each image is processed independently.</p></details>
+<details><summary>Can I resize images too?</summary><p>Yes! Set a maximum width in the controls. Images wider than the max will be proportionally scaled down. Set to 0 or leave empty for no resizing.</p></details>
+</div>
+
+<div class="related">
+<a href="image-to-base64.html">Image to Base64</a>
+<a href="qr-code-generator.html">QR Code Generator</a>
+<a href="color-converter.html">Color Converter</a>
+<a href="base64-encoder.html">Base64 Encoder</a>
+</div>
+
+<footer>
+<p><a href="../">← All ToolPile Tools</a></p>
+<p style="margin-top:.5rem">Free tool by <a href="https://toolpile.io">ToolPile</a> — 30+ free developer & productivity tools</p>
+</footer>
+</div>
+
+<script>
+const dz=document.getElementById('dropzone');
+let compressed=[];
+
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');handleFiles(e.dataTransfer.files);});
+
+function formatSize(bytes){
+if(bytes<1024)return bytes+' B';
+if(bytes<1048576)return(bytes/1024).toFixed(1)+' KB';
+return(bytes/1048576).toFixed(2)+' MB';
+}
+
+async function compressImage(file){
+return new Promise((resolve)=>{
+const img=new Image();
+const reader=new FileReader();
+reader.onload=e=>{
+img.onload=()=>{
+const canvas=document.createElement('canvas');
+let w=img.width,h=img.height;
+const maxW=parseInt(document.getElementById('maxWidth').value)||0;
+if(maxW>0&&w>maxW){h=Math.round(h*(maxW/w));w=maxW;}
+canvas.width=w;canvas.height=h;
+const ctx=canvas.getContext('2d');
+ctx.drawImage(img,0,0,w,h);
+const format=document.getElementById('format').value;
+const quality=parseInt(document.getElementById('quality').value)/100;
+canvas.toBlob(blob=>{
+resolve({
+name:file.name,
+originalSize:file.size,
+compressedSize:blob.size,
+blob,
+originalUrl:e.target.result,
+compressedUrl:URL.createObjectURL(blob),
+width:w,height:h
+});
+},format,quality);
+};
+img.src=e.target.result;
+};
+reader.readAsDataURL(file);
+});
+}
+
+async function handleFiles(files){
+if(!files.length)return;
+compressed=[];
+const results=document.getElementById('results');
+results.style.display='block';
+
+let totalOrig=0,totalComp=0;
+const items=[];
+
+for(const file of files){
+if(!file.type.startsWith('image/'))continue;
+const result=await compressImage(file);
+compressed.push(result);
+totalOrig+=result.originalSize;
+totalComp+=result.compressedSize;
+items.push(result);
+}
+
+// Savings
+const saved=totalOrig-totalComp;
+const pct=totalOrig>0?Math.round((saved/totalOrig)*100):0;
+document.getElementById('savings').innerHTML=`
+<div class="pct">${pct}% smaller</div>
+<div class="detail">${formatSize(totalOrig)} → ${formatSize(totalComp)} (saved ${formatSize(saved)})</div>
+`;
+
+// Comparison (show first image)
+if(items.length>0){
+const first=items[0];
+document.getElementById('comparison').innerHTML=`
+<div class="side"><img src="${first.originalUrl}" alt="Original"><div class="label">Original — ${formatSize(first.originalSize)}</div></div>
+<div class="side"><img src="${first.compressedUrl}" alt="Compressed"><div class="label">Compressed — ${formatSize(first.compressedSize)}</div></div>
+`;
+}
+
+// Batch list
+document.getElementById('batchList').innerHTML=items.map(i=>{
+const pct=Math.round((1-i.compressedSize/i.originalSize)*100);
+return`<div class="batch-item"><span class="name">${i.name}</span><span class="size">${formatSize(i.originalSize)} → ${formatSize(i.compressedSize)}</span><span class="saved">-${pct}%</span></div>`;
+}).join('');
+}
+
+function downloadAll(){
+compressed.forEach(item=>{
+const a=document.createElement('a');
+const ext=document.getElementById('format').value.split('/')[1];
+a.download=item.name.replace(/\.[^.]+$/,'')+'.compressed.'+ext;
+a.href=item.compressedUrl;
+a.click();
+});
+}
+
+function reset(){
+compressed=[];
+document.getElementById('results').style.display='none';
+document.getElementById('fileInput').value='';
+}
+</script>
+</body>
+</html>

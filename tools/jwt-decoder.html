@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JWT Decoder — Free Online JWT Token Debugger | ToolPile</title>
+<meta name="description" content="Decode and inspect JWT tokens instantly. View header, payload, and signature. Verify expiration and claims. Free, no signup, runs in your browser.">
+<meta name="keywords" content="jwt decoder, jwt debugger, json web token, jwt parser, jwt inspector, jwt.io alternative, toolpile">
+<meta property="og:title" content="JWT Decoder — Free Online JWT Token Debugger">
+<meta property="og:description" content="Decode and inspect JWT tokens instantly. View header, payload, signature, and expiration.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.io/tools/jwt-decoder">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔑</text></svg>">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JWT Decoder","url":"https://toolpile.io/tools/jwt-decoder","applicationCategory":"DeveloperApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a JWT?","acceptedAnswer":{"@type":"Answer","text":"A JSON Web Token (JWT) is a compact, URL-safe token format used for securely transmitting information between parties. It consists of three parts: a header (algorithm and type), a payload (claims/data), and a signature. JWTs are commonly used for authentication and authorization in web applications."}},{"@type":"Question","name":"Can this tool verify JWT signatures?","acceptedAnswer":{"@type":"Answer","text":"This tool decodes and displays the JWT contents. Signature verification requires the secret key or public key, which should never be shared in a browser tool. Use this tool for inspecting and debugging tokens, not for cryptographic verification."}},{"@type":"Question","name":"Is it safe to paste my JWT here?","acceptedAnswer":{"@type":"Answer","text":"Yes. All decoding happens entirely in your browser. No data is sent to any server. However, JWTs may contain sensitive information — never share production tokens publicly."}}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:780px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#f59e0b;font-size:.85rem;font-family:'SFMono-Regular',Consolas,monospace;resize:vertical;min-height:80px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.section{margin-top:1rem}
+.section-title{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.section-title .badge{font-size:.7rem;font-weight:600;padding:.2rem .6rem;border-radius:4px;text-transform:uppercase}
+.badge-header{background:rgba(239,68,68,.15);color:#ef4444}
+.badge-payload{background:rgba(168,85,247,.15);color:#a855f7}
+.badge-sig{background:rgba(56,189,248,.15);color:#38bdf8}
+.badge-expired{background:rgba(239,68,68,.2);color:#ef4444;font-size:.75rem;padding:.2rem .5rem;border-radius:4px;margin-left:.5rem}
+.badge-valid{background:rgba(34,197,94,.2);color:#22c55e;font-size:.75rem;padding:.2rem .5rem;border-radius:4px;margin-left:.5rem}
+pre{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;font-family:'SFMono-Regular',Consolas,monospace;font-size:.8rem;overflow-x:auto;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+pre .key{color:#38bdf8}
+pre .str{color:#a78bfa}
+pre .num{color:#f59e0b}
+pre .bool{color:#fb923c}
+pre .null{color:#64748b}
+.claims-table{width:100%;margin-top:.75rem;border-collapse:collapse}
+.claims-table td{padding:.4rem .6rem;font-size:.8rem;border-bottom:1px solid #1e293b}
+.claims-table td:first-child{color:#38bdf8;font-weight:600;width:80px;font-family:'SFMono-Regular',Consolas,monospace}
+.claims-table td:last-child{color:#94a3b8}
+.error{color:#ef4444;font-size:.9rem;margin-top:1rem}
+.faq{margin-top:2.5rem}
+.faq h2{font-size:1.3rem;font-weight:700;color:#e2e8f0;margin-bottom:1rem}
+.faq details{background:#1e293b;border-radius:8px;padding:1rem;margin-bottom:.5rem;border:1px solid #334155}
+.faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;list-style:none}
+.faq summary::before{content:'▸ ';color:#818cf8}
+.faq details[open] summary::before{content:'▾ '}
+.faq p{color:#94a3b8;margin-top:.5rem;line-height:1.6;font-size:.9rem}
+.related{margin-top:2rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.related a{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem 1rem;color:#818cf8;text-decoration:none;font-size:.85rem;transition:border-color .2s}
+.related a:hover{border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>JWT Decoder</h1>
+<p class="subtitle">Decode and inspect JSON Web Tokens. View header, payload, claims, and expiration.</p>
+<div class="tool-area">
+<label for="jwt">Paste JWT Token</label>
+<textarea id="jwt" rows="4" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" oninput="decode()">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxOTAwMDAwMDAwfQ.ct0VLbMLkz0Eo8KPMjv7bNXGA9GXsgmPTdFMFVJmGm0</textarea>
+<div id="output"></div>
+<div id="error" class="error"></div>
+</div>
+
+<div class="faq">
+<h2>Frequently Asked Questions</h2>
+<details><summary>What is a JSON Web Token (JWT)?</summary><p>A JWT is a compact, self-contained token format defined in RFC 7519. It's widely used in OAuth 2.0, OpenID Connect, and API authentication. A JWT contains three Base64URL-encoded parts separated by dots: the header (algorithm), the payload (claims), and the signature.</p></details>
+<details><summary>What are common JWT claims?</summary><p><strong>iss</strong> (issuer), <strong>sub</strong> (subject), <strong>aud</strong> (audience), <strong>exp</strong> (expiration time), <strong>nbf</strong> (not before), <strong>iat</strong> (issued at), and <strong>jti</strong> (JWT ID) are the registered claims. Applications can define custom claims for any additional data.</p></details>
+<details><summary>Is my token safe here?</summary><p>Yes. All decoding happens in your browser using JavaScript. Nothing is sent to any server. However, be cautious with production tokens containing sensitive data — this tool is intended for development and debugging.</p></details>
+<details><summary>Can I create JWTs with this tool?</summary><p>This tool is for decoding/inspecting only. Creating properly signed JWTs requires a secret key or private key, which should be handled server-side. For testing, you can use jwt.io or create tokens programmatically.</p></details>
+</div>
+
+<div class="related">
+<a href="json-formatter.html">JSON Formatter</a>
+<a href="base64-encoder.html">Base64 Encoder</a>
+<a href="hash-generator.html">Hash Generator</a>
+<a href="timestamp-converter.html">Timestamp Converter</a>
+</div>
+
+<footer>
+<p><a href="../">← All ToolPile Tools</a></p>
+<p style="margin-top:.5rem">Free tool by <a href="https://toolpile.io">ToolPile</a> — 30+ free developer & productivity tools</p>
+</footer>
+</div>
+
+<script>
+function b64decode(str){str=str.replace(/-/g,'+').replace(/_/g,'/');while(str.length%4)str+='=';return JSON.parse(atob(str));}
+
+function syntaxHighlight(obj){
+return JSON.stringify(obj,null,2).replace(/(".*?")\s*:/g,'<span class="key">$1</span>:').replace(/:\s*(".*?")/g,': <span class="str">$1</span>').replace(/:\s*(\d+\.?\d*)/g,': <span class="num">$1</span>').replace(/:\s*(true|false)/g,': <span class="bool">$1</span>').replace(/:\s*(null)/g,': <span class="null">$1</span>');
+}
+
+function formatClaims(payload){
+const known={iss:'Issuer',sub:'Subject',aud:'Audience',exp:'Expiration',nbf:'Not Before',iat:'Issued At',jti:'JWT ID'};
+let html='<table class="claims-table">';
+for(const[k,v]of Object.entries(payload)){
+const label=known[k]||k;
+let display=v;
+if((k==='exp'||k==='iat'||k==='nbf')&&typeof v==='number'){
+display=new Date(v*1000).toLocaleString()+' ('+v+')';
+}
+html+=`<tr><td>${k}</td><td>${label}: ${typeof display==='object'?JSON.stringify(display):display}</td></tr>`;
+}
+html+='</table>';
+return html;
+}
+
+function decode(){
+const jwt=document.getElementById('jwt').value.trim();
+const out=document.getElementById('output');
+const err=document.getElementById('error');
+err.textContent='';out.innerHTML='';
+if(!jwt)return;
+const parts=jwt.split('.');
+if(parts.length!==3){err.textContent='Invalid JWT: expected 3 parts separated by dots, got '+parts.length;return;}
+try{
+const header=b64decode(parts[0]);
+const payload=b64decode(parts[1]);
+let expStatus='';
+if(payload.exp){
+const now=Math.floor(Date.now()/1000);
+expStatus=payload.exp>now?'<span class="badge-valid">Valid (expires '+new Date(payload.exp*1000).toLocaleString()+')</span>':'<span class="badge-expired">Expired ('+new Date(payload.exp*1000).toLocaleString()+')</span>';
+}
+out.innerHTML=`
+<div class="section"><div class="section-title"><span class="badge badge-header">Header</span></div><pre>${syntaxHighlight(header)}</pre></div>
+<div class="section"><div class="section-title"><span class="badge badge-payload">Payload</span>${expStatus}</div><pre>${syntaxHighlight(payload)}</pre>${formatClaims(payload)}</div>
+<div class="section"><div class="section-title"><span class="badge badge-sig">Signature</span></div><pre style="color:#64748b">${parts[2]}</pre></div>
+`;
+}catch(e){err.textContent='Failed to decode: '+e.message;}
+}
+decode();
+</script>
+</body>
+</html>

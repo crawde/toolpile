@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSV to JSON Converter — Free Online Tool | ToolPile</title>
+<meta name="description" content="Convert CSV data to JSON format instantly. Supports custom delimiters, headers detection, and pretty printing. Free online tool, no signup required.">
+<meta name="keywords" content="csv to json, csv converter, csv parser, json converter, data conversion, toolpile">
+<meta property="og:title" content="CSV to JSON Converter — Free Online Tool">
+<meta property="og:description" content="Convert CSV data to JSON format instantly. Custom delimiters and pretty print support.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.io/tools/csv-to-json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"CSV to JSON Converter","url":"https://toolpile.io/tools/csv-to-json","applicationCategory":"UtilityApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:780px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.85rem;font-family:'SFMono-Regular',Consolas,monospace;resize:vertical}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.row{display:flex;gap:.5rem;align-items:center;margin:.75rem 0;flex-wrap:wrap}
+.options{display:flex;gap:1rem;align-items:center;margin:.75rem 0;flex-wrap:wrap}
+.options label{margin:0;display:flex;align-items:center;gap:.4rem}
+.options select,.options input[type="text"]{background:#0f172a;border:1px solid #475569;border-radius:6px;padding:.4rem .6rem;color:#e2e8f0;font-size:.85rem}
+.stats{font-size:.8rem;color:#64748b;margin-top:.5rem}
+.preview-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.8rem;overflow-x:auto;display:block}
+.preview-table th{background:#334155;color:#38bdf8;padding:.4rem .6rem;text-align:left;position:sticky;top:0}
+.preview-table td{padding:.4rem .6rem;border-bottom:1px solid #1e293b;color:#94a3b8}
+.preview-table tr:hover td{background:rgba(129,140,248,.05)}
+.faq{margin-top:2.5rem}
+.faq h2{font-size:1.3rem;font-weight:700;color:#e2e8f0;margin-bottom:1rem}
+.faq details{background:#1e293b;border-radius:8px;padding:1rem;margin-bottom:.5rem;border:1px solid #334155}
+.faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;list-style:none}
+.faq summary::before{content:'▸ ';color:#818cf8}
+.faq details[open] summary::before{content:'▾ '}
+.faq p{color:#94a3b8;margin-top:.5rem;line-height:1.6;font-size:.9rem}
+.related{margin-top:2rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.related a{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem 1rem;color:#818cf8;text-decoration:none;font-size:.85rem;transition:border-color .2s}
+.related a:hover{border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CSV to JSON Converter</h1>
+<p class="subtitle">Convert CSV data to JSON format instantly. Paste CSV or upload a file.</p>
+<div class="tool-area">
+<label>CSV Input</label>
+<textarea id="csvInput" rows="8" placeholder="name,email,age&#10;John Doe,john@example.com,30&#10;Jane Smith,jane@example.com,25" oninput="convert()">name,email,age
+John Doe,john@example.com,30
+Jane Smith,jane@example.com,25
+Bob Wilson,bob@example.com,35</textarea>
+<div class="options">
+<label>Delimiter: <select id="delimiter" onchange="convert()"><option value=",">Comma (,)</option><option value="&#9;">Tab</option><option value=";">Semicolon (;)</option><option value="|">Pipe (|)</option></select></label>
+<label><input type="checkbox" id="hasHeaders" checked onchange="convert()"> First row is headers</label>
+<label><input type="checkbox" id="trimValues" checked onchange="convert()"> Trim whitespace</label>
+</div>
+<div class="row">
+<button onclick="convert()">Convert</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy JSON</button>
+<button class="btn-secondary" onclick="downloadJSON()">Download .json</button>
+<button class="btn-secondary" onclick="document.getElementById('fileInput').click()">Upload CSV</button>
+<input type="file" id="fileInput" accept=".csv,.tsv,.txt" style="display:none" onchange="loadFile(event)">
+</div>
+<div id="stats" class="stats"></div>
+<label>JSON Output</label>
+<textarea id="jsonOutput" rows="10" readonly></textarea>
+<div id="preview"></div>
+</div>
+
+<div class="faq">
+<h2>Frequently Asked Questions</h2>
+<details><summary>What CSV formats are supported?</summary><p>This tool supports comma-separated, tab-separated, semicolon-separated, and pipe-separated values. It also handles quoted fields containing delimiters or newlines (RFC 4180 compliant).</p></details>
+<details><summary>Can I convert JSON back to CSV?</summary><p>This tool converts CSV → JSON. For JSON → CSV, check out our JSON Formatter tool which can help you inspect and restructure JSON data.</p></details>
+<details><summary>What happens with special characters?</summary><p>The converter properly handles quoted fields, escaped quotes (""), and fields containing the delimiter character. Unicode characters including emojis are fully supported.</p></details>
+<details><summary>Is there a file size limit?</summary><p>Since everything runs in your browser, there's no server-imposed limit. However, very large files (>50MB) may cause your browser to slow down. For most use cases, the tool handles files instantly.</p></details>
+</div>
+
+<div class="related">
+<a href="json-formatter.html">JSON Formatter</a>
+<a href="base64-encoder.html">Base64 Encoder</a>
+<a href="url-encoder.html">URL Encoder</a>
+<a href="markdown-to-html.html">Markdown to HTML</a>
+</div>
+
+<footer>
+<p><a href="../">← All ToolPile Tools</a></p>
+<p style="margin-top:.5rem">Free tool by <a href="https://toolpile.io">ToolPile</a> — 30+ free developer & productivity tools</p>
+</footer>
+</div>
+
+<script>
+function parseCSV(text,delim,trim){
+const rows=[];let row=[];let field='';let inQuote=false;
+for(let i=0;i<text.length;i++){
+const c=text[i];
+if(inQuote){
+if(c==='"'&&text[i+1]==='"'){field+='"';i++;}
+else if(c==='"'){inQuote=false;}
+else{field+=c;}
+}else{
+if(c==='"'){inQuote=true;}
+else if(c===delim){row.push(trim?field.trim():field);field='';}
+else if(c==='\n'||(c==='\r'&&text[i+1]==='\n')){
+if(c==='\r')i++;
+row.push(trim?field.trim():field);field='';
+if(row.some(f=>f!==''))rows.push(row);row=[];
+}else{field+=c;}
+}
+}
+row.push(trim?field.trim():field);
+if(row.some(f=>f!==''))rows.push(row);
+return rows;
+}
+
+function convert(){
+const csv=document.getElementById('csvInput').value;
+const delim=document.getElementById('delimiter').value;
+const hasHeaders=document.getElementById('hasHeaders').checked;
+const trim=document.getElementById('trimValues').checked;
+const rows=parseCSV(csv,delim,trim);
+if(!rows.length){document.getElementById('jsonOutput').value='[]';return;}
+let result;
+if(hasHeaders&&rows.length>1){
+const headers=rows[0];
+result=rows.slice(1).map(row=>{
+const obj={};
+headers.forEach((h,i)=>{
+const val=row[i]||'';
+obj[h]=isNaN(val)||val===''?val:Number(val);
+});
+return obj;
+});
+}else{result=rows;}
+const json=JSON.stringify(result,null,2);
+document.getElementById('jsonOutput').value=json;
+document.getElementById('stats').textContent=`${rows.length-(hasHeaders?1:0)} records, ${rows[0]?.length||0} fields, ${json.length} bytes`;
+// Preview table
+if(hasHeaders&&rows.length>1){
+let html='<table class="preview-table"><tr>'+rows[0].map(h=>`<th>${h}</th>`).join('')+'</tr>';
+rows.slice(1,11).forEach(r=>{html+='<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>';});
+if(rows.length>11)html+=`<tr><td colspan="${rows[0].length}" style="text-align:center;color:#64748b">… ${rows.length-11} more rows</td></tr>`;
+html+='</table>';
+document.getElementById('preview').innerHTML=html;
+}
+}
+
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('jsonOutput').value);}
+function downloadJSON(){
+const blob=new Blob([document.getElementById('jsonOutput').value],{type:'application/json'});
+const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='data.json';a.click();
+}
+function loadFile(e){
+const file=e.target.files[0];if(!file)return;
+const reader=new FileReader();
+reader.onload=()=>{document.getElementById('csvInput').value=reader.result;convert();};
+reader.readAsText(file);
+}
+convert();
+</script>
+</body>
+</html>

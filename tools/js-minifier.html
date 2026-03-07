@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Minifier — Minify JS Online Free | ToolPile</title>
+<meta name="description" content="Minify JavaScript code online for free. Remove comments, whitespace, and reduce file size for faster page loads. Browser-based, no server upload.">
+<meta name="keywords" content="javascript minifier, minify js, js compressor, javascript compressor, uglify js, js minification, toolpile">
+<meta property="og:title" content="JavaScript Minifier — Minify JS Online Free">
+<meta property="og:description" content="Minify JavaScript code instantly. Remove comments and whitespace for production.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.io/tools/js-minifier">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JavaScript Minifier","url":"https://toolpile.io/tools/js-minifier","applicationCategory":"DeveloperApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:780px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.8rem;font-family:'SFMono-Regular',Consolas,monospace;resize:vertical;tab-size:2}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.row{display:flex;gap:.5rem;align-items:center;margin:.75rem 0;flex-wrap:wrap}
+.stats{display:flex;gap:1.5rem;margin-top:.75rem;flex-wrap:wrap}
+.stat-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;text-align:center;flex:1;min-width:100px}
+.stat-box .val{font-size:1.3rem;font-weight:700;color:#38bdf8}
+.stat-box .lbl{font-size:.7rem;color:#64748b;text-transform:uppercase;margin-top:.25rem}
+.stat-box.saved .val{color:#22c55e}
+.mode-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid #475569;margin-bottom:1rem}
+.mode-toggle button{border-radius:0;border:none;flex:1;padding:.6rem;font-size:.85rem}
+.mode-toggle button.active{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.mode-toggle button:not(.active){background:#1e293b;color:#94a3b8}
+.faq{margin-top:2.5rem}
+.faq h2{font-size:1.3rem;font-weight:700;color:#e2e8f0;margin-bottom:1rem}
+.faq details{background:#1e293b;border-radius:8px;padding:1rem;margin-bottom:.5rem;border:1px solid #334155}
+.faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;list-style:none}
+.faq summary::before{content:'▸ ';color:#818cf8}
+.faq details[open] summary::before{content:'▾ '}
+.faq p{color:#94a3b8;margin-top:.5rem;line-height:1.6;font-size:.9rem}
+.related{margin-top:2rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.related a{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem 1rem;color:#818cf8;text-decoration:none;font-size:.85rem;transition:border-color .2s}
+.related a:hover{border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>JavaScript Minifier</h1>
+<p class="subtitle">Minify or beautify JavaScript code. Remove comments and whitespace for production.</p>
+<div class="tool-area">
+<div class="mode-toggle">
+<button class="active" onclick="setMode('minify')" id="mMin">Minify</button>
+<button onclick="setMode('beautify')" id="mBeau">Beautify</button>
+</div>
+<label for="input">JavaScript Input</label>
+<textarea id="input" rows="12" oninput="process()" placeholder="Paste JavaScript here…">/**
+ * Calculate the factorial of a number
+ * @param {number} n - The number
+ * @returns {number} The factorial
+ */
+function factorial(n) {
+    // Base case
+    if (n <= 1) {
+        return 1;
+    }
+    
+    // Recursive case
+    return n * factorial(n - 1);
+}
+
+// Array utilities
+const utils = {
+    // Sum all elements
+    sum: function(arr) {
+        return arr.reduce((acc, val) => acc + val, 0);
+    },
+    
+    // Find average
+    average: function(arr) {
+        if (arr.length === 0) return 0;
+        return this.sum(arr) / arr.length;
+    },
+    
+    // Filter unique values
+    unique: function(arr) {
+        return [...new Set(arr)];
+    }
+};
+
+console.log(factorial(5));  // 120
+console.log(utils.sum([1, 2, 3, 4, 5]));  // 15</textarea>
+<div class="row">
+<button onclick="process()">Process</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy Output</button>
+<button class="btn-secondary" onclick="swapFields()">⇅ Swap</button>
+<button class="btn-secondary" onclick="clearAll()">Clear</button>
+</div>
+<label for="output">Output</label>
+<textarea id="output" rows="6" readonly></textarea>
+<div class="stats" id="stats"></div>
+</div>
+
+<div class="faq">
+<h2>Frequently Asked Questions</h2>
+<details><summary>What does JavaScript minification do?</summary><p>JS minification removes all unnecessary characters: comments (// and /* */), whitespace, newlines, and reduces code formatting while preserving functionality. This reduces file size typically 30-60%, resulting in faster downloads and page loads.</p></details>
+<details><summary>Does minification rename variables?</summary><p>This basic minifier removes comments and whitespace but does not rename variables (that's called "mangling"). For production use with variable renaming, use tools like Terser, UglifyJS, or esbuild which can achieve even smaller output.</p></details>
+<details><summary>Will minified code still work the same?</summary><p>Yes. Minification only removes formatting characters that JavaScript ignores during execution. The logic, variables, and behavior remain identical. Always test your minified code to be safe.</p></details>
+<details><summary>Can I minify TypeScript or JSX?</summary><p>This tool works with standard JavaScript. TypeScript and JSX need to be compiled to JS first (using tsc or Babel) before minification. The resulting JS can then be minified here.</p></details>
+</div>
+
+<div class="related">
+<a href="css-minifier.html">CSS Minifier</a>
+<a href="json-formatter.html">JSON Formatter</a>
+<a href="regex-tester.html">Regex Tester</a>
+<a href="base64-encoder.html">Base64 Encoder</a>
+</div>
+
+<footer>
+<p><a href="../">← All ToolPile Tools</a></p>
+<p style="margin-top:.5rem">Free tool by <a href="https://toolpile.io">ToolPile</a> — 30+ free developer & productivity tools</p>
+</footer>
+</div>
+
+<script>
+let mode='minify';
+
+function setMode(m){
+mode=m;
+document.getElementById('mMin').className=m==='minify'?'active':'';
+document.getElementById('mBeau').className=m==='beautify'?'active':'';
+process();
+}
+
+function minifyJS(code){
+let result='';
+let i=0;
+let inString=false;
+let stringChar='';
+let inTemplate=false;
+let lastNonSpace='';
+
+while(i<code.length){
+// Single-line comment
+if(!inString&&!inTemplate&&code[i]==='/'&&code[i+1]==='/'){
+while(i<code.length&&code[i]!=='\n')i++;
+continue;
+}
+// Multi-line comment
+if(!inString&&!inTemplate&&code[i]==='/'&&code[i+1]==='*'){
+i+=2;
+while(i<code.length&&!(code[i-1]==='*'&&code[i]==='/'))i++;
+i++;
+continue;
+}
+// Template literal
+if(!inString&&code[i]==='`'){
+inTemplate=!inTemplate;
+result+=code[i];i++;continue;
+}
+// String
+if(!inTemplate&&!inString&&(code[i]==='"'||code[i]==="'")){
+inString=true;stringChar=code[i];
+result+=code[i];i++;
+while(i<code.length&&!(code[i]===stringChar&&code[i-1]!=='\\')){result+=code[i];i++;}
+if(i<code.length){result+=code[i];i++;}
+inString=false;continue;
+}
+// In template literal — preserve content
+if(inTemplate){result+=code[i];i++;continue;}
+// Whitespace
+if(!inString&&!inTemplate&&/\s/.test(code[i])){
+// Need space between identifiers/keywords
+const before=result[result.length-1]||'';
+// Look ahead to next non-whitespace
+let j=i;while(j<code.length&&/\s/.test(code[j]))j++;
+const after=code[j]||'';
+if(/[a-zA-Z0-9_$]/.test(before)&&/[a-zA-Z0-9_$]/.test(after)){
+result+=' ';
+}else if((before==='+'&&after==='+')||(before==='-'&&after==='-')){
+result+=' ';
+}
+i=j;continue;
+}
+result+=code[i];
+i++;
+}
+return result.trim();
+}
+
+function beautifyJS(code){
+code=minifyJS(code);
+let result='';let indent=0;let inStr=false;let strCh='';
+for(let i=0;i<code.length;i++){
+const c=code[i];
+if(inStr){
+result+=c;
+if(c===strCh&&code[i-1]!=='\\')inStr=false;
+continue;
+}
+if(c==='"'||c==="'"||c==='`'){inStr=true;strCh=c;result+=c;continue;}
+if(c==='{'||c==='['){
+result+=c+'\n';indent++;result+='  '.repeat(indent);
+}else if(c==='}'||c===']'){
+indent=Math.max(0,indent-1);
+result+='\n'+'  '.repeat(indent)+c;
+}else if(c===';'){
+result+=';\n'+'  '.repeat(indent);
+}else if(c===','&&indent>0){
+result+=',\n'+'  '.repeat(indent);
+}else{
+result+=c;
+}
+}
+return result.replace(/\n{3,}/g,'\n\n').replace(/\n\s+\n/g,'\n').trim();
+}
+
+function process(){
+const input=document.getElementById('input').value;
+const output=mode==='minify'?minifyJS(input):beautifyJS(input);
+document.getElementById('output').value=output;
+
+const origSize=new Blob([input]).size;
+const newSize=new Blob([output]).size;
+const saved=origSize-newSize;
+const pct=origSize>0?Math.round(Math.abs(saved)/origSize*100):0;
+
+document.getElementById('stats').innerHTML=`
+<div class="stat-box"><div class="val">${origSize}</div><div class="lbl">Original (bytes)</div></div>
+<div class="stat-box"><div class="val">${newSize}</div><div class="lbl">Output (bytes)</div></div>
+<div class="stat-box ${saved>0?'saved':''}"><div class="val">${saved>0?'-':''}${pct}%</div><div class="lbl">${saved>0?'Saved':'Change'}</div></div>
+`;
+}
+
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('output').value);}
+function swapFields(){const i=document.getElementById('input'),o=document.getElementById('output');const t=i.value;i.value=o.value;o.value=t;}
+function clearAll(){document.getElementById('input').value='';document.getElementById('output').value='';document.getElementById('stats').innerHTML='';}
+
+process();
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HEX to RGB Converter — Free Online Tool | ToolPile</title>
+<meta name="description" content="Convert colors between HEX, RGB, and HSL formats with live preview.">
+<meta name="keywords" content="hex to rgb converter, free online tool, toolpile">
+<meta property="og:title" content="HEX to RGB Converter — Free Online Tool">
+<meta property="og:description" content="Convert colors between HEX, RGB, and HSL formats with live preview.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.com/tools/hex-to-rgb-converter">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea,input[type="text"],input[type="number"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{min-height:120px}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:60px;color:#38bdf8;font-family:'JetBrains Mono',monospace,monospace;white-space:pre-wrap;word-break:break-all}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.stats{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap}
+.stat{background:#1e293b;border-radius:8px;padding:.75rem 1rem;border:1px solid #334155;text-align:center;flex:1;min-width:100px}
+.stat-value{font-size:1.5rem;font-weight:700;color:#38bdf8}
+.stat-label{font-size:.75rem;color:#94a3b8;margin-top:.25rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>HEX to RGB Converter</h1>
+<p class="subtitle">Convert colors between HEX, RGB, and HSL formats with live preview.</p>
+<div class="tool-area">
+<label>HEX Color</label>
+<div class="row">
+<input type="text" id="hex" value="#6366f1" oninput="fromHex()">
+<div id="preview" style="width:60px;height:40px;border-radius:8px;background:#6366f1;border:2px solid #475569"></div>
+</div>
+<label>RGB</label>
+<div class="output" id="rgb">rgb(99, 102, 241)</div>
+<label>HSL</label>
+<div class="output" id="hsl">hsl(239, 84%, 67%)</div>
+<button onclick="navigator.clipboard.writeText(document.getElementById('hex').value)">Copy HEX</button>
+<button class="btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('rgb').textContent)">Copy RGB</button>
+<script>
+function fromHex(){let h=document.getElementById('hex').value.replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+if(h.length!==6)return;const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);
+document.getElementById('rgb').textContent='rgb('+r+', '+g+', '+b+')';
+document.getElementById('preview').style.background='#'+h;
+const rn=r/255,gn=g/255,bn=b/255,mx=Math.max(rn,gn,bn),mn=Math.min(rn,gn,bn),l=(mx+mn)/2;
+let s=0,hue=0;if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);
+if(mx===rn)hue=((gn-bn)/d+(gn<bn?6:0))/6;else if(mx===gn)hue=((bn-rn)/d+2)/6;else hue=((rn-gn)/d+4)/6;}
+document.getElementById('hsl').textContent='hsl('+Math.round(hue*360)+', '+Math.round(s*100)+'%, '+Math.round(l*100)+'%)';}
+fromHex();
+</script>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.com">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>

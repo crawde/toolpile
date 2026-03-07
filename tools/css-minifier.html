@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Minifier — Minify CSS Online Free | ToolPile</title>
+<meta name="description" content="Minify CSS code instantly. Remove comments, whitespace, and optimize selectors for smaller file sizes. Free online CSS minification tool.">
+<meta name="keywords" content="css minifier, minify css, css compressor, css optimizer, css beautifier, reduce css size, toolpile">
+<meta property="og:title" content="CSS Minifier — Minify CSS Online Free">
+<meta property="og:description" content="Minify CSS code instantly. Remove comments, whitespace, and optimize for production.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.io/tools/css-minifier">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"CSS Minifier","url":"https://toolpile.io/tools/css-minifier","applicationCategory":"DeveloperApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:780px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.8rem;font-family:'SFMono-Regular',Consolas,monospace;resize:vertical;tab-size:2}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.row{display:flex;gap:.5rem;align-items:center;margin:.75rem 0;flex-wrap:wrap}
+.stats{display:flex;gap:1.5rem;margin-top:.75rem;flex-wrap:wrap}
+.stat-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;text-align:center;flex:1;min-width:100px}
+.stat-box .val{font-size:1.3rem;font-weight:700;color:#38bdf8}
+.stat-box .lbl{font-size:.7rem;color:#64748b;text-transform:uppercase;margin-top:.25rem}
+.stat-box.saved .val{color:#22c55e}
+.mode-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid #475569;margin-bottom:1rem}
+.mode-toggle button{border-radius:0;border:none;flex:1;padding:.6rem;font-size:.85rem}
+.mode-toggle button.active{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.mode-toggle button:not(.active){background:#1e293b;color:#94a3b8}
+.faq{margin-top:2.5rem}
+.faq h2{font-size:1.3rem;font-weight:700;color:#e2e8f0;margin-bottom:1rem}
+.faq details{background:#1e293b;border-radius:8px;padding:1rem;margin-bottom:.5rem;border:1px solid #334155}
+.faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;list-style:none}
+.faq summary::before{content:'▸ ';color:#818cf8}
+.faq details[open] summary::before{content:'▾ '}
+.faq p{color:#94a3b8;margin-top:.5rem;line-height:1.6;font-size:.9rem}
+.related{margin-top:2rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.related a{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem 1rem;color:#818cf8;text-decoration:none;font-size:.85rem;transition:border-color .2s}
+.related a:hover{border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CSS Minifier</h1>
+<p class="subtitle">Minify or beautify CSS code instantly. Remove comments, whitespace, and optimize for production.</p>
+<div class="tool-area">
+<div class="mode-toggle">
+<button class="active" onclick="setMode('minify')" id="mMin">Minify</button>
+<button onclick="setMode('beautify')" id="mBeau">Beautify</button>
+</div>
+<label for="input">CSS Input</label>
+<textarea id="input" rows="10" oninput="process()" placeholder="Paste CSS here…">/* Main layout styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    text-decoration: none;
+}
+
+/* Navigation */
+.nav a {
+    color: #6b7280;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    transition: color 0.2s;
+}
+
+.nav a:hover {
+    color: #111827;
+}</textarea>
+<div class="row">
+<button onclick="process()">Process</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy Output</button>
+<button class="btn-secondary" onclick="swapFields()">⇅ Swap</button>
+<button class="btn-secondary" onclick="clearAll()">Clear</button>
+</div>
+<label for="output">Output</label>
+<textarea id="output" rows="6" readonly></textarea>
+<div class="stats" id="stats"></div>
+</div>
+
+<div class="faq">
+<h2>Frequently Asked Questions</h2>
+<details><summary>What does CSS minification do?</summary><p>CSS minification removes all unnecessary characters from CSS code without changing its functionality: comments, whitespace, newlines, and redundant semicolons. This reduces file size, resulting in faster page loads. Typical savings are 20-50% depending on coding style.</p></details>
+<details><summary>Does minification change how my CSS works?</summary><p>No. Minified CSS is functionally identical to the original. Only cosmetic formatting is removed. The browser interprets both versions exactly the same way.</p></details>
+<details><summary>What does the Beautify mode do?</summary><p>Beautify (or "prettify") does the opposite of minification — it takes compressed CSS and adds proper indentation, newlines, and spacing to make it human-readable. Useful for debugging minified production CSS.</p></details>
+<details><summary>Should I use this for production?</summary><p>For production builds, integrating minification into your build pipeline (PostCSS, cssnano, webpack) is recommended. This tool is great for quick one-off minification, debugging, and learning how minification works.</p></details>
+</div>
+
+<div class="related">
+<a href="json-formatter.html">JSON Formatter</a>
+<a href="html-entity-encoder.html">HTML Entity Encoder</a>
+<a href="markdown-to-html.html">Markdown to HTML</a>
+<a href="color-converter.html">Color Converter</a>
+</div>
+
+<footer>
+<p><a href="../">← All ToolPile Tools</a></p>
+<p style="margin-top:.5rem">Free tool by <a href="https://toolpile.io">ToolPile</a> — 30+ free developer & productivity tools</p>
+</footer>
+</div>
+
+<script>
+let mode='minify';
+
+function setMode(m){
+mode=m;
+document.getElementById('mMin').className=m==='minify'?'active':'';
+document.getElementById('mBeau').className=m==='beautify'?'active':'';
+process();
+}
+
+function minifyCSS(css){
+// Remove comments
+css=css.replace(/\/\*[\s\S]*?\*\//g,'');
+// Remove whitespace around selectors and properties
+css=css.replace(/\s*\n\s*/g,'');
+css=css.replace(/\s*{\s*/g,'{');
+css=css.replace(/\s*}\s*/g,'}');
+css=css.replace(/\s*:\s*/g,':');
+css=css.replace(/\s*;\s*/g,';');
+css=css.replace(/\s*,\s*/g,',');
+// Remove last semicolon before }
+css=css.replace(/;}/g,'}');
+// Collapse multiple spaces
+css=css.replace(/\s{2,}/g,' ');
+// Remove spaces around > + ~ combinators
+css=css.replace(/\s*>\s*/g,'>');
+css=css.replace(/\s*\+\s*/g,'+');
+css=css.replace(/\s*~\s*/g,'~');
+return css.trim();
+}
+
+function beautifyCSS(css){
+// First minify to normalize
+css=minifyCSS(css);
+let result='';
+let indent=0;
+let inValue=false;
+for(let i=0;i<css.length;i++){
+const c=css[i];
+if(c==='{'){
+result+=' {\n';
+indent++;
+result+='  '.repeat(indent);
+inValue=false;
+}else if(c==='}'){
+indent=Math.max(0,indent-1);
+result+='\n'+'  '.repeat(indent)+'}\n';
+if(indent>0)result+='  '.repeat(indent);
+else result+='\n';
+inValue=false;
+}else if(c===';'){
+result+=';\n'+'  '.repeat(indent);
+inValue=false;
+}else if(c===':'&&!inValue){
+result+=': ';
+inValue=true;
+}else if(c===','&&!inValue){
+result+=', ';
+}else{
+result+=c;
+}
+}
+// Clean up extra whitespace
+result=result.replace(/\n{3,}/g,'\n\n');
+result=result.replace(/\n\s+\n/g,'\n');
+return result.trim();
+}
+
+function process(){
+const input=document.getElementById('input').value;
+const output=mode==='minify'?minifyCSS(input):beautifyCSS(input);
+document.getElementById('output').value=output;
+
+const origSize=new Blob([input]).size;
+const newSize=new Blob([output]).size;
+const saved=origSize-newSize;
+const pct=origSize>0?Math.round(Math.abs(saved)/origSize*100):0;
+
+document.getElementById('stats').innerHTML=`
+<div class="stat-box"><div class="val">${origSize}</div><div class="lbl">Original (bytes)</div></div>
+<div class="stat-box"><div class="val">${newSize}</div><div class="lbl">Output (bytes)</div></div>
+<div class="stat-box ${saved>0?'saved':''}"><div class="val">${saved>0?'-':''}${pct}%</div><div class="lbl">${saved>0?'Saved':'Change'}</div></div>
+`;
+}
+
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('output').value);}
+function swapFields(){const i=document.getElementById('input'),o=document.getElementById('output');const t=i.value;i.value=o.value;o.value=t;}
+function clearAll(){document.getElementById('input').value='';document.getElementById('output').value='';document.getElementById('stats').innerHTML='';}
+
+process();
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Entity Encoder/Decoder — Free Online Tool | ToolPile</title>
+<meta name="description" content="Encode and decode HTML entities instantly. Reference table of common HTML entities included.">
+<meta name="keywords" content="html entity encoder, html decoder, html entities, special characters, toolpile">
+<meta property="og:title" content="HTML Entity Encoder/Decoder — Free Online Tool">
+<meta property="og:description" content="Encode and decode HTML entities instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.com/tools/html-entity-encoder">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"HTML Entity Encoder/Decoder","url":"https://toolpile.com/tools/html-entity-encoder","applicationCategory":"UtilityApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:100px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+table{width:100%;margin-top:1rem;border-collapse:collapse;font-size:.85rem}
+th{text-align:left;padding:.5rem;color:#94a3b8;border-bottom:1px solid #334155}
+td{padding:.5rem;border-bottom:1px solid #1e293b;font-family:'JetBrains Mono',monospace;color:#38bdf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>HTML Entity Encoder/Decoder</h1>
+<p class="subtitle">Encode special characters to HTML entities or decode them back.</p>
+<div class="tool-area">
+<label>Input</label>
+<textarea id="input" placeholder='e.g. <div class="hello">&amp; more'></textarea>
+<div class="row">
+<button onclick="enc()">Encode →</button>
+<button class="btn-secondary" onclick="dec()">← Decode</button>
+<button class="btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('output').value)">Copy Output</button>
+</div>
+<label>Output</label>
+<textarea id="output" readonly></textarea>
+<label style="margin-top:1.5rem">Common HTML Entities</label>
+<table>
+<tr><th>Character</th><th>Entity</th><th>Name</th></tr>
+<tr><td>&lt;</td><td>&amp;lt;</td><td>Less than</td></tr>
+<tr><td>&gt;</td><td>&amp;gt;</td><td>Greater than</td></tr>
+<tr><td>&amp;</td><td>&amp;amp;</td><td>Ampersand</td></tr>
+<tr><td>&quot;</td><td>&amp;quot;</td><td>Double quote</td></tr>
+<tr><td>&#39;</td><td>&amp;#39;</td><td>Single quote</td></tr>
+<tr><td>&nbsp;</td><td>&amp;nbsp;</td><td>Non-breaking space</td></tr>
+<tr><td>©</td><td>&amp;copy;</td><td>Copyright</td></tr>
+<tr><td>®</td><td>&amp;reg;</td><td>Registered</td></tr>
+<tr><td>™</td><td>&amp;trade;</td><td>Trademark</td></tr>
+<tr><td>€</td><td>&amp;euro;</td><td>Euro</td></tr>
+</table>
+</div>
+<script>
+function enc(){const t=document.getElementById('input').value;document.getElementById('output').value=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function dec(){const t=document.getElementById('input').value;const el=document.createElement('textarea');el.innerHTML=t;document.getElementById('output').value=el.value;}
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.com">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>

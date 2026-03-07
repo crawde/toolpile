@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regex Tester — Free Online Tool | ToolPile</title>
+<meta name="description" content="Test regular expressions in real-time. Highlights matches, shows capture groups, supports g/i/m flags.">
+<meta name="keywords" content="regex tester, regular expression, regex online, pattern matcher, toolpile">
+<meta property="og:title" content="Regex Tester — Free Online Tool">
+<meta property="og:description" content="Test regular expressions in real-time with match highlighting.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.com/tools/regex-tester">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Regex Tester","url":"https://toolpile.com/tools/regex-tester","applicationCategory":"UtilityApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea,input[type="text"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:'JetBrains Mono',monospace;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{min-height:120px}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.flags{display:flex;gap:1rem;margin-top:.75rem}
+.flags label{display:flex;align-items:center;gap:.35rem;margin:0;cursor:pointer}
+.flags input{accent-color:#818cf8;width:16px;height:16px}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:60px;color:#e2e8f0;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-all;line-height:1.6}
+.output mark{background:rgba(56,189,248,.25);color:#38bdf8;border-radius:3px;padding:0 2px}
+.match-info{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:.75rem;color:#94a3b8;font-size:.85rem;font-family:'JetBrains Mono',monospace;white-space:pre-wrap}
+.error{color:#f87171}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Regex Tester</h1>
+<p class="subtitle">Test regular expressions with real-time match highlighting.</p>
+<div class="tool-area">
+<label>Pattern</label>
+<input type="text" id="pattern" placeholder="e.g. (\w+)@(\w+)\.(\w+)" oninput="test()">
+<div class="flags">
+<label><input type="checkbox" id="fg" checked onchange="test()"> g (global)</label>
+<label><input type="checkbox" id="fi" onchange="test()"> i (case-insensitive)</label>
+<label><input type="checkbox" id="fm" onchange="test()"> m (multiline)</label>
+</div>
+<label>Test String</label>
+<textarea id="testStr" placeholder="Enter text to test against..." oninput="test()">user@example.com and admin@site.org</textarea>
+<label>Matches</label>
+<div class="output" id="output"></div>
+<div class="match-info" id="groups"></div>
+</div>
+<script>
+function test(){const p=document.getElementById('pattern').value;const s=document.getElementById('testStr').value;const out=document.getElementById('output');const grp=document.getElementById('groups');if(!p){out.innerHTML=escHtml(s);grp.textContent='Enter a pattern above';return;}
+let flags='';if(document.getElementById('fg').checked)flags+='g';if(document.getElementById('fi').checked)flags+='i';if(document.getElementById('fm').checked)flags+='m';
+try{const re=new RegExp(p,flags);const matches=[...s.matchAll(new RegExp(p,flags.includes('g')?flags:flags+'g'))];if(!matches.length){out.innerHTML=escHtml(s);grp.textContent='No matches found';return;}
+let html='',last=0;const allMatches=[];for(const m of matches){html+=escHtml(s.slice(last,m.index));html+=`<mark>${escHtml(m[0])}</mark>`;last=m.index+m[0].length;const info=[`Match: "${m[0]}" at index ${m.index}`];for(let i=1;i<m.length;i++)info.push(`  Group ${i}: "${m[i]}"`);allMatches.push(info.join('\n'));}
+html+=escHtml(s.slice(last));out.innerHTML=html;grp.textContent=`${matches.length} match${matches.length>1?'es':''} found\n\n${allMatches.join('\n\n')}`;}
+catch(e){out.innerHTML=escHtml(s);grp.innerHTML=`<span class="error">Invalid regex: ${escHtml(e.message)}</span>`;}}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+test();
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.com">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>

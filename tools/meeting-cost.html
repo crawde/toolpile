@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeting Cost Calculator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Calculate the true cost of meetings. Input attendees, hourly rate and duration to see total, per-minute, and annual costs.">
+<meta name="keywords" content="meeting cost calculator, meeting expense, cost per meeting, productivity tool, toolpile">
+<meta property="og:title" content="Meeting Cost Calculator — Free Online Tool">
+<meta property="og:description" content="Calculate the true cost of your meetings instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.com/tools/meeting-cost">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Meeting Cost Calculator","url":"https://toolpile.com/tools/meeting-cost","applicationCategory":"UtilityApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="number"],select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.stats{display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap}
+.stat{background:#0f172a;border-radius:8px;padding:1rem;border:1px solid #475569;text-align:center;flex:1;min-width:120px}
+.stat-value{font-size:1.5rem;font-weight:700;color:#38bdf8}
+.stat-label{font-size:.75rem;color:#94a3b8;margin-top:.25rem}
+.stat.highlight{border-color:#818cf8;background:rgba(99,102,241,.1)}
+.stat.highlight .stat-value{font-size:2rem;color:#818cf8}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Meeting Cost Calculator</h1>
+<p class="subtitle">Discover the true cost of your meetings.</p>
+<div class="tool-area">
+<label>Number of Attendees</label>
+<input type="number" id="attendees" value="6" min="1" max="500" oninput="calc()">
+<label>Average Hourly Rate ($)</label>
+<input type="number" id="rate" value="75" min="1" max="10000" oninput="calc()">
+<label>Meeting Duration (minutes)</label>
+<input type="number" id="duration" value="60" min="1" max="480" oninput="calc()">
+<label>Recurring (times per week)</label>
+<input type="number" id="recurring" value="1" min="0" max="40" oninput="calc()">
+<div class="stats">
+<div class="stat highlight"><div class="stat-value" id="total">$0</div><div class="stat-label">Total Meeting Cost</div></div>
+</div>
+<div class="stats">
+<div class="stat"><div class="stat-value" id="perMin">$0</div><div class="stat-label">Cost / Minute</div></div>
+<div class="stat"><div class="stat-value" id="perPerson">$0</div><div class="stat-label">Cost / Person</div></div>
+<div class="stat"><div class="stat-value" id="monthly">$0</div><div class="stat-label">Monthly Cost</div></div>
+<div class="stat"><div class="stat-value" id="annual">$0</div><div class="stat-label">Annual Cost</div></div>
+</div>
+</div>
+<script>
+function fmt(n){return'$'+n.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function calc(){const a=+document.getElementById('attendees').value||1;const r=+document.getElementById('rate').value||0;const d=+document.getElementById('duration').value||0;const rec=+document.getElementById('recurring').value||0;const total=a*(r/60)*d;const perMin=total/Math.max(d,1);document.getElementById('total').textContent=fmt(total);document.getElementById('perMin').textContent=fmt(perMin);document.getElementById('perPerson').textContent=fmt(total/a);document.getElementById('monthly').textContent=fmt(total*rec*4.33);document.getElementById('annual').textContent=fmt(total*rec*52);}
+calc();
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.com">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>

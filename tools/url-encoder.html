@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL Encoder / Decoder — Free Online Tool | ToolPile</title>
+<meta name="description" content="Encode or decode URLs instantly. Supports full URI encoding, component encoding, and batch processing. Free, no signup required.">
+<meta name="keywords" content="url encoder, url decoder, percent encoding, uri encode, urlencode online, toolpile">
+<meta property="og:title" content="URL Encoder / Decoder — Free Online Tool">
+<meta property="og:description" content="Encode or decode URLs instantly. Supports full URI and component encoding.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.io/tools/url-encoder">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"URL Encoder / Decoder","url":"https://toolpile.io/tools/url-encoder","applicationCategory":"UtilityApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is URL encoding?","acceptedAnswer":{"@type":"Answer","text":"URL encoding (percent-encoding) converts special characters into a format that can be transmitted over the internet. Characters like spaces become %20, ampersands become %26, etc."}},{"@type":"Question","name":"When should I use encodeURI vs encodeURIComponent?","acceptedAnswer":{"@type":"Answer","text":"Use encodeURI for complete URLs — it preserves :, /, ?, #, etc. Use encodeURIComponent for individual query parameters — it encodes everything except letters, digits, and - _ . ~"}},{"@type":"Question","name":"Is this tool free?","acceptedAnswer":{"@type":"Answer","text":"Yes, completely free with no signup required. All processing happens in your browser — nothing is sent to any server."}}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.95rem;font-family:'SFMono-Regular',Consolas,monospace;resize:vertical;min-height:100px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155}
+.row{display:flex;gap:.5rem;align-items:center;margin:.75rem 0;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.mode-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid #475569;margin-bottom:1rem}
+.mode-toggle button{border-radius:0;border:none;flex:1;padding:.6rem;font-size:.85rem}
+.mode-toggle button.active{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.mode-toggle button:not(.active){background:#1e293b;color:#94a3b8}
+.swap-btn{background:#334155;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.2rem;cursor:pointer;border:1px solid #475569}
+.swap-btn:hover{background:#475569}
+.faq{margin-top:2.5rem}
+.faq h2{font-size:1.3rem;font-weight:700;color:#e2e8f0;margin-bottom:1rem}
+.faq details{background:#1e293b;border-radius:8px;padding:1rem;margin-bottom:.5rem;border:1px solid #334155}
+.faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;list-style:none}
+.faq summary::before{content:'▸ ';color:#818cf8}
+.faq details[open] summary::before{content:'▾ '}
+.faq p{color:#94a3b8;margin-top:.5rem;line-height:1.6;font-size:.9rem}
+.related{margin-top:2rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.related a{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem 1rem;color:#818cf8;text-decoration:none;font-size:.85rem;transition:border-color .2s}
+.related a:hover{border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>URL Encoder / Decoder</h1>
+<p class="subtitle">Encode or decode URLs and query parameters instantly.</p>
+<div class="tool-area">
+<div class="mode-toggle">
+<button class="active" onclick="setMode('component')" id="mComp">Component</button>
+<button onclick="setMode('uri')" id="mUri">Full URI</button>
+</div>
+<label for="input">Input</label>
+<textarea id="input" placeholder="Enter text or URL to encode/decode…">Hello World! How are you?</textarea>
+<div class="row" style="justify-content:center;margin:1rem 0">
+<button onclick="doEncode()">Encode ↓</button>
+<button class="btn-secondary" onclick="doDecode()">Decode ↓</button>
+<button class="btn-secondary" onclick="swapFields()">⇅ Swap</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy</button>
+</div>
+<label for="output">Output</label>
+<textarea id="output" readonly placeholder="Result will appear here…"></textarea>
+</div>
+
+<div class="faq">
+<h2>Frequently Asked Questions</h2>
+<details><summary>What is URL encoding?</summary><p>URL encoding (also called percent-encoding) replaces special characters with a % sign followed by two hex digits. For example, a space becomes %20. This ensures URLs are transmitted correctly over the internet since URLs can only contain ASCII characters.</p></details>
+<details><summary>What's the difference between Component and Full URI mode?</summary><p><strong>Component mode</strong> (encodeURIComponent) encodes everything except letters, digits, and - _ . ~ — ideal for encoding individual query parameter values. <strong>Full URI mode</strong> (encodeURI) preserves characters that have special meaning in URLs like :, /, ?, #, &, = — ideal for encoding complete URLs while keeping the structure intact.</p></details>
+<details><summary>Is my data safe?</summary><p>Yes. All encoding and decoding happens entirely in your browser using JavaScript. No data is ever sent to any server. You can even use this tool offline.</p></details>
+<details><summary>Can I encode special characters like emojis?</summary><p>Yes! This tool handles the full Unicode character set including emojis, CJK characters, and other multibyte characters. They are encoded using UTF-8 percent-encoding.</p></details>
+</div>
+
+<div class="related">
+<a href="base64-encoder.html">Base64 Encoder</a>
+<a href="html-entity-encoder.html">HTML Entity Encoder</a>
+<a href="slug-generator.html">URL Slug Generator</a>
+<a href="json-formatter.html">JSON Formatter</a>
+<a href="qr-code-generator.html">QR Code Generator</a>
+</div>
+
+<footer>
+<p><a href="../">← All ToolPile Tools</a></p>
+<p style="margin-top:.5rem">Free tool by <a href="https://toolpile.io">ToolPile</a> — 30+ free developer & productivity tools</p>
+</footer>
+</div>
+
+<script>
+let mode='component';
+function setMode(m){mode=m;document.getElementById('mComp').className=m==='component'?'active':'';document.getElementById('mUri').className=m==='uri'?'active':'';doEncode();}
+function doEncode(){const v=document.getElementById('input').value;try{document.getElementById('output').value=mode==='component'?encodeURIComponent(v):encodeURI(v);}catch(e){document.getElementById('output').value='Error: '+e.message;}}
+function doDecode(){const v=document.getElementById('input').value;try{document.getElementById('output').value=mode==='component'?decodeURIComponent(v):decodeURI(v);}catch(e){document.getElementById('output').value='Error: '+e.message;}}
+function swapFields(){const i=document.getElementById('input'),o=document.getElementById('output');const t=i.value;i.value=o.value;o.value=t;}
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('output').value);}
+doEncode();
+</script>
+</body>
+</html>
