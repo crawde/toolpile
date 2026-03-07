@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Number Generator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Generate random numbers instantly. Set min/max range, quantity, and choose between integers or decimals. Cryptographically secure. Free online tool.">
+<meta name="keywords" content="random number generator, random number, rng, random integer, random decimal, dice roller, free online tool, toolpile">
+<meta property="og:title" content="Random Number Generator — Free Online Tool">
+<meta property="og:description" content="Generate random numbers with custom range and quantity. Cryptographically secure.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/random-number-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="number"],select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:1rem;margin-top:1rem;min-height:80px;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:1.25rem;text-align:center;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;align-items:center}
+.output .num{background:#334155;border-radius:6px;padding:.5rem .75rem;font-weight:700}
+.big-num{font-size:3rem;font-weight:900;color:#38bdf8;text-align:center;padding:1.5rem 0}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.preset-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem}
+.preset{background:#334155;border:1px solid #475569;border-radius:6px;padding:.4rem .75rem;font-size:.8rem;color:#94a3b8;cursor:pointer;transition:all .15s}
+.preset:hover{border-color:#818cf8;color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+.info{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:1rem;margin-top:2rem;font-size:.875rem;color:#94a3b8;line-height:1.6}
+.info h2{font-size:1.1rem;color:#e2e8f0;margin-bottom:.5rem}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Random Number Generator</h1>
+<p class="subtitle">Generate cryptographically secure random numbers — integers or decimals</p>
+<div class="tool-area">
+<div class="grid">
+<div><label for="min">Minimum</label><input type="number" id="min" value="1"></div>
+<div><label for="max">Maximum</label><input type="number" id="max" value="100"></div>
+<div><label for="qty">Quantity</label><input type="number" id="qty" value="1" min="1" max="1000"></div>
+<div><label for="type">Type</label><select id="type"><option value="int">Integer</option><option value="dec">Decimal (2 places)</option></select></div>
+</div>
+<div class="preset-row">
+<span class="preset" onclick="setPreset(1,6,1)">🎲 Dice (1-6)</span>
+<span class="preset" onclick="setPreset(1,10,1)">1-10</span>
+<span class="preset" onclick="setPreset(1,100,1)">1-100</span>
+<span class="preset" onclick="setPreset(0,1,1)">Coin Flip</span>
+<span class="preset" onclick="setPreset(1,1000000,1)">1-1M</span>
+<span class="preset" onclick="setPreset(1,6,5)">5 Dice</span>
+<span class="preset" onclick="setPreset(1,49,6)">Lottery (6)</span>
+</div>
+<div class="row">
+<button onclick="generate()">Generate</button>
+<button class="btn-secondary" onclick="navigator.clipboard.writeText(results.join(', '))">Copy All</button>
+</div>
+<div id="bigDisplay" class="big-num">—</div>
+<div class="output" id="output" style="display:none"></div>
+</div>
+<div class="info">
+<h2>About This Tool</h2>
+<p>Uses <code style="color:#38bdf8">crypto.getRandomValues()</code> for cryptographically secure randomness — suitable for passwords, tokens, games, and simulations. Results are generated entirely in your browser. No data is sent to any server.</p>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+let results=[];
+function setPreset(min,max,qty){
+  document.getElementById('min').value=min;
+  document.getElementById('max').value=max;
+  document.getElementById('qty').value=qty;
+  generate();
+}
+function secureRandom(){
+  const arr=new Uint32Array(1);
+  crypto.getRandomValues(arr);
+  return arr[0]/4294967296;
+}
+function generate(){
+  const min=parseFloat(document.getElementById('min').value)||0;
+  const max=parseFloat(document.getElementById('max').value)||100;
+  const qty=Math.min(parseInt(document.getElementById('qty').value)||1,1000);
+  const isInt=document.getElementById('type').value==='int';
+  const lo=Math.min(min,max),hi=Math.max(min,max);
+  results=[];
+  for(let i=0;i<qty;i++){
+    const r=secureRandom();
+    if(isInt){
+      results.push(Math.floor(r*(hi-lo+1))+lo);
+    }else{
+      results.push(+(r*(hi-lo)+lo).toFixed(2));
+    }
+  }
+  const big=document.getElementById('bigDisplay');
+  const out=document.getElementById('output');
+  if(qty===1){
+    big.style.display='block';
+    big.textContent=results[0];
+    out.style.display='none';
+  }else{
+    big.style.display='none';
+    out.style.display='flex';
+    out.innerHTML=results.map(n=>`<span class="num">${n}</span>`).join('');
+  }
+}
+generate();
+</script>
+</body>
+</html>

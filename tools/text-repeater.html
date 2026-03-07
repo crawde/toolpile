@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Repeater — Repeat Text Multiple Times | ToolPile</title>
+<meta name="description" content="Repeat any text or string multiple times with custom separator. Free online text repeater tool for developers, testers, and social media.">
+<meta name="keywords" content="text repeater, repeat text, string repeater, copy paste repeater, repeat words, multiply text, free online tool, toolpile">
+<meta property="og:title" content="Text Repeater — Free Online Tool">
+<meta property="og:description" content="Repeat any text multiple times with custom separator. Free and instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/text-repeater">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea,input[type="text"],input[type="number"],select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit;resize:vertical}
+textarea:focus,input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{min-height:100px;font-family:'JetBrains Mono',monospace}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:80px;max-height:300px;overflow-y:auto;color:#38bdf8;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-word;font-size:.9rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.stats{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap}
+.stat{background:#1e293b;border-radius:8px;padding:.75rem 1rem;border:1px solid #334155;text-align:center;flex:1;min-width:80px}
+.stat-value{font-size:1.5rem;font-weight:700;color:#38bdf8}
+.stat-label{font-size:.75rem;color:#94a3b8;margin-top:.25rem}
+.presets{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+.preset{background:#334155;border:1px solid #475569;border-radius:6px;padding:.3rem .6rem;font-size:.75rem;color:#94a3b8;cursor:pointer;transition:all .15s}
+.preset:hover{border-color:#818cf8;color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Text Repeater</h1>
+<p class="subtitle">Repeat any text multiple times with custom separator — perfect for testing, social media, and data generation</p>
+<div class="tool-area">
+<label for="text">Text to Repeat</label>
+<textarea id="text" placeholder="Enter text to repeat..." oninput="repeat()">Hello World</textarea>
+<div class="grid">
+<div>
+<label for="count">Repeat Count</label>
+<input type="number" id="count" value="5" min="1" max="10000" oninput="repeat()">
+</div>
+<div>
+<label for="sep">Separator</label>
+<select id="sep" onchange="repeat()">
+<option value="\n">New Line</option>
+<option value=" ">Space</option>
+<option value=", ">Comma</option>
+<option value="">None</option>
+<option value=" | ">Pipe</option>
+<option value="; ">Semicolon</option>
+<option value="\t">Tab</option>
+<option value="custom">Custom...</option>
+</select>
+</div>
+</div>
+<div id="customSepRow" style="display:none">
+<label for="customSep">Custom Separator</label>
+<input type="text" id="customSep" placeholder="Enter separator" oninput="repeat()">
+</div>
+<div class="presets">
+<span class="preset" onclick="setQuick(10)">×10</span>
+<span class="preset" onclick="setQuick(50)">×50</span>
+<span class="preset" onclick="setQuick(100)">×100</span>
+<span class="preset" onclick="setQuick(500)">×500</span>
+<span class="preset" onclick="setQuick(1000)">×1000</span>
+</div>
+<div class="row">
+<button onclick="repeat()">Repeat</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy Output</button>
+<button class="btn-secondary" onclick="document.getElementById('text').value='';document.getElementById('output').textContent='';repeat()">Clear</button>
+</div>
+<div class="output" id="output"></div>
+<div class="stats">
+<div class="stat"><div class="stat-value" id="totalChars">0</div><div class="stat-label">Total Chars</div></div>
+<div class="stat"><div class="stat-value" id="totalLines">0</div><div class="stat-label">Lines</div></div>
+<div class="stat"><div class="stat-value" id="totalBytes">0</div><div class="stat-label">Bytes</div></div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+const sepSelect=document.getElementById('sep');
+sepSelect.addEventListener('change',()=>{
+  document.getElementById('customSepRow').style.display=sepSelect.value==='custom'?'block':'none';
+});
+function getSep(){
+  const v=sepSelect.value;
+  if(v==='custom')return document.getElementById('customSep').value;
+  if(v==='\\n')return '\n';
+  if(v==='\\t')return '\t';
+  return v;
+}
+function setQuick(n){document.getElementById('count').value=n;repeat();}
+function repeat(){
+  const text=document.getElementById('text').value;
+  const count=Math.min(parseInt(document.getElementById('count').value)||1,10000);
+  const sep=getSep();
+  const result=Array(count).fill(text).join(sep);
+  const out=document.getElementById('output');
+  if(result.length>50000){
+    out.textContent=result.slice(0,50000)+'\n\n... (truncated display, full text available via Copy)';
+  }else{
+    out.textContent=result;
+  }
+  window._fullResult=result;
+  document.getElementById('totalChars').textContent=result.length.toLocaleString();
+  document.getElementById('totalLines').textContent=(result.match(/\n/g)||[]).length+1;
+  document.getElementById('totalBytes').textContent=new Blob([result]).size.toLocaleString();
+}
+function copyOutput(){navigator.clipboard.writeText(window._fullResult||'');}
+repeat();
+</script>
+</body>
+</html>

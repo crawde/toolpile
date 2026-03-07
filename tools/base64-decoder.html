@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base64 Decoder — Free Online Base64 Decode Tool | ToolPile</title>
+<meta name="description" content="Decode Base64 encoded strings instantly. Free online Base64 decoder with file download support and error detection.">
+<meta name="keywords" content="base64 decoder, base64 decode, decode base64, base64 to text, base64 decode online, free online tool, toolpile">
+<meta property="og:title" content="Base64 Decoder — Free Online Tool">
+<meta property="og:description" content="Decode Base64 strings to text instantly. Free online Base64 decoder.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/base64-decoder">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:'JetBrains Mono',monospace;resize:vertical;min-height:120px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:80px;color:#38bdf8;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-all}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.error{color:#f87171;font-size:.875rem;margin-top:.5rem}
+.stats{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap}
+.stat{background:#1e293b;border-radius:8px;padding:.75rem 1rem;border:1px solid #334155;text-align:center;flex:1;min-width:100px}
+.stat-value{font-size:1.5rem;font-weight:700;color:#38bdf8}
+.stat-label{font-size:.75rem;color:#94a3b8;margin-top:.25rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.info{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:1rem;margin-top:2rem;font-size:.875rem;color:#94a3b8;line-height:1.6}
+.info h2{font-size:1.1rem;color:#e2e8f0;margin-bottom:.5rem}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Base64 Decoder</h1>
+<p class="subtitle">Decode Base64 encoded strings back to plain text — instant, free, private</p>
+<div class="tool-area">
+<label for="input">Base64 Encoded String</label>
+<textarea id="input" placeholder="Paste your Base64 encoded text here (e.g. SGVsbG8gV29ybGQ=)..." oninput="decode()"></textarea>
+<label>Decoded Output</label>
+<div class="output" id="output"></div>
+<div class="error" id="error"></div>
+<div class="row">
+<button onclick="decode()">Decode</button>
+<button class="btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('output').textContent)">Copy Output</button>
+<button class="btn-secondary" onclick="document.getElementById('input').value='';document.getElementById('output').textContent='';document.getElementById('error').textContent=''">Clear</button>
+</div>
+<div class="stats">
+<div class="stat"><div class="stat-value" id="inLen">0</div><div class="stat-label">Input Chars</div></div>
+<div class="stat"><div class="stat-value" id="outLen">0</div><div class="stat-label">Output Chars</div></div>
+<div class="stat"><div class="stat-value" id="ratio">0%</div><div class="stat-label">Compression</div></div>
+</div>
+</div>
+<div class="info">
+<h2>What is Base64?</h2>
+<p>Base64 is a binary-to-text encoding scheme that converts binary data into a printable ASCII string. It's commonly used in email attachments, data URIs, API tokens, and transmitting binary data over text-only protocols. Each Base64 character represents 6 bits of data, making the encoded output ~33% larger than the original.</p>
+<p style="margin-top:.5rem">Also try our <a href="/tools/base64-encoder" style="color:#818cf8">Base64 Encoder</a> to encode text to Base64.</p>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+function decode(){
+  const input=document.getElementById('input').value.trim();
+  const output=document.getElementById('output');
+  const error=document.getElementById('error');
+  error.textContent='';
+  if(!input){output.textContent='';updateStats(0,0);return;}
+  try{
+    const decoded=atob(input.replace(/\s/g,''));
+    output.textContent=decoded;
+    updateStats(input.length,decoded.length);
+  }catch(e){
+    output.textContent='';
+    error.textContent='Invalid Base64 string. Make sure your input contains only valid Base64 characters (A-Z, a-z, 0-9, +, /) and proper padding (=).';
+    updateStats(input.length,0);
+  }
+}
+function updateStats(inL,outL){
+  document.getElementById('inLen').textContent=inL;
+  document.getElementById('outLen').textContent=outL;
+  document.getElementById('ratio').textContent=inL>0?Math.round((1-outL/inL)*100)+'%':'0%';
+}
+</script>
+</body>
+</html>

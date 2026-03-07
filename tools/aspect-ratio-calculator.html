@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aspect Ratio Calculator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Calculate aspect ratios, resize dimensions proportionally, and find common video/image ratios. Free online aspect ratio calculator for designers and content creators.">
+<meta name="keywords" content="aspect ratio calculator, aspect ratio, image ratio, video aspect ratio, screen ratio, 16:9, 4:3, resize proportionally, toolpile">
+<meta property="og:title" content="Aspect Ratio Calculator — Free Online Tool">
+<meta property="og:description" content="Calculate and convert aspect ratios. Resize images proportionally.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/aspect-ratio-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="number"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.grid{display:grid;grid-template-columns:1fr auto 1fr;gap:.75rem;align-items:end}
+.x-sep{font-size:1.5rem;font-weight:700;color:#64748b;padding-bottom:.75rem;text-align:center}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.result{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:1.25rem;margin-top:1rem;text-align:center}
+.ratio-display{font-size:2.5rem;font-weight:900;color:#38bdf8;font-family:'JetBrains Mono',monospace}
+.ratio-decimal{font-size:1rem;color:#94a3b8;margin-top:.25rem}
+.preview{width:100%;max-width:300px;margin:1rem auto;aspect-ratio:var(--ar);background:linear-gradient(135deg,#6366f1,#38bdf8);border-radius:8px;opacity:.3;transition:all .3s}
+.presets{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.preset{background:#334155;border:1px solid #475569;border-radius:6px;padding:.4rem .75rem;font-size:.8rem;color:#94a3b8;cursor:pointer;transition:all .15s}
+.preset:hover{border-color:#818cf8;color:#e2e8f0}
+.preset.active{border-color:#818cf8;color:#38bdf8;background:#1e293b}
+.common-table{width:100%;margin-top:1.5rem;border-collapse:collapse}
+.common-table th,.common-table td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid #334155;font-size:.85rem}
+.common-table th{color:#94a3b8;font-weight:600}
+.common-table td{color:#e2e8f0}
+.section-title{font-size:1rem;color:#94a3b8;margin-top:1.5rem;margin-bottom:.5rem;font-weight:600}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Aspect Ratio Calculator</h1>
+<p class="subtitle">Calculate aspect ratios and resize dimensions proportionally</p>
+<div class="tool-area">
+<p class="section-title">Original Dimensions</p>
+<div class="grid">
+<div><label for="w1">Width</label><input type="number" id="w1" value="1920" oninput="calc()"></div>
+<div class="x-sep">×</div>
+<div><label for="h1">Height</label><input type="number" id="h1" value="1080" oninput="calc()"></div>
+</div>
+<div class="result">
+<div class="ratio-display" id="ratioDisplay">16:9</div>
+<div class="ratio-decimal" id="ratioDecimal">1.778 (Widescreen)</div>
+<div class="preview" id="preview" style="--ar:16/9"></div>
+</div>
+<div class="presets">
+<span class="preset" onclick="setRatio(1,1)">1:1</span>
+<span class="preset" onclick="setRatio(4,3)">4:3</span>
+<span class="preset" onclick="setRatio(3,2)">3:2</span>
+<span class="preset active" onclick="setRatio(16,9)">16:9</span>
+<span class="preset" onclick="setRatio(21,9)">21:9</span>
+<span class="preset" onclick="setRatio(9,16)">9:16</span>
+<span class="preset" onclick="setRatio(4,5)">4:5</span>
+<span class="preset" onclick="setRatio(2,3)">2:3</span>
+</div>
+<p class="section-title" style="margin-top:1.5rem">Resize by Width or Height</p>
+<div class="grid">
+<div><label for="w2">New Width</label><input type="number" id="w2" placeholder="e.g. 1280" oninput="resizeByW()"></div>
+<div class="x-sep">×</div>
+<div><label for="h2">New Height</label><input type="number" id="h2" placeholder="auto" oninput="resizeByH()"></div>
+</div>
+</div>
+<table class="common-table">
+<tr><th>Ratio</th><th>Resolution</th><th>Use Case</th></tr>
+<tr><td>16:9</td><td>1920×1080</td><td>YouTube, TV, Monitors</td></tr>
+<tr><td>4:3</td><td>1024×768</td><td>Old TVs, iPads</td></tr>
+<tr><td>1:1</td><td>1080×1080</td><td>Instagram Posts</td></tr>
+<tr><td>9:16</td><td>1080×1920</td><td>Stories, TikTok, Reels</td></tr>
+<tr><td>4:5</td><td>1080×1350</td><td>Instagram Portrait</td></tr>
+<tr><td>21:9</td><td>2560×1080</td><td>Ultrawide, Cinema</td></tr>
+<tr><td>3:2</td><td>1440×960</td><td>DSLR Photos</td></tr>
+<tr><td>2:3</td><td>1000×1500</td><td>Pinterest Pins</td></tr>
+</table>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+function gcd(a,b){return b?gcd(b,a%b):a;}
+function calc(){
+  const w=parseInt(document.getElementById('w1').value)||0;
+  const h=parseInt(document.getElementById('h1').value)||0;
+  if(!w||!h)return;
+  const g=gcd(w,h);
+  const rw=w/g,rh=h/g;
+  const dec=(w/h).toFixed(3);
+  let name='';
+  const r=w/h;
+  if(Math.abs(r-16/9)<0.01)name='Widescreen';
+  else if(Math.abs(r-4/3)<0.01)name='Standard';
+  else if(Math.abs(r-1)<0.01)name='Square';
+  else if(Math.abs(r-21/9)<0.02)name='Ultrawide';
+  else if(Math.abs(r-9/16)<0.01)name='Vertical';
+  else if(Math.abs(r-3/2)<0.01)name='Photo';
+  document.getElementById('ratioDisplay').textContent=rw+':'+rh;
+  document.getElementById('ratioDecimal').textContent=dec+(name?' ('+name+')':'');
+  document.getElementById('preview').style.setProperty('--ar',rw+'/'+rh);
+  document.querySelectorAll('.preset').forEach(p=>{
+    p.classList.toggle('active',p.textContent===rw+':'+rh);
+  });
+}
+function setRatio(rw,rh){
+  const h=parseInt(document.getElementById('h1').value)||1080;
+  document.getElementById('h1').value=h;
+  document.getElementById('w1').value=Math.round(h*rw/rh);
+  calc();
+}
+function resizeByW(){
+  const w1=parseInt(document.getElementById('w1').value)||1;
+  const h1=parseInt(document.getElementById('h1').value)||1;
+  const w2=parseInt(document.getElementById('w2').value);
+  if(!w2)return;
+  document.getElementById('h2').value=Math.round(w2*h1/w1);
+}
+function resizeByH(){
+  const w1=parseInt(document.getElementById('w1').value)||1;
+  const h1=parseInt(document.getElementById('h1').value)||1;
+  const h2=parseInt(document.getElementById('h2').value);
+  if(!h2)return;
+  document.getElementById('w2').value=Math.round(h2*w1/h1);
+}
+calc();
+</script>
+</body>
+</html>

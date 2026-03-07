@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PX to REM Converter — Free Online Tool | ToolPile</title>
+<meta name="description" content="Convert pixels (px) to rem and rem to px instantly. Set custom base font size. Free bidirectional px/rem converter for web developers.">
+<meta name="keywords" content="px to rem, rem to px, pixel to rem converter, css unit converter, rem calculator, font size converter, free online tool, toolpile">
+<meta property="og:title" content="PX to REM Converter — Free Online Tool">
+<meta property="og:description" content="Convert between px and rem units instantly. Custom base font size support.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/px-to-rem">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="number"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1.25rem;font-family:'JetBrains Mono',monospace}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.converter{display:grid;grid-template-columns:1fr auto 1fr;gap:.75rem;align-items:end;margin-bottom:1.5rem}
+.arrow{font-size:1.5rem;color:#64748b;padding-bottom:.75rem;text-align:center;cursor:pointer;transition:color .15s}
+.arrow:hover{color:#38bdf8}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem}
+.unit{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.base-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
+.base-row label{margin:0;white-space:nowrap}
+.base-row input{max-width:100px;font-size:1rem;padding:.5rem}
+.table-wrap{overflow-x:auto;margin-top:1.5rem}
+table{width:100%;border-collapse:collapse}
+th,td{padding:.5rem .75rem;text-align:left;border-bottom:1px solid #334155;font-size:.85rem;font-family:'JetBrains Mono',monospace}
+th{color:#94a3b8;font-weight:600;font-family:inherit}
+td{color:#e2e8f0}
+td:first-child{color:#38bdf8}
+.highlight{background:#1e293b}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+.info{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:1rem;margin-top:2rem;font-size:.875rem;color:#94a3b8;line-height:1.6}
+.info h2{font-size:1.1rem;color:#e2e8f0;margin-bottom:.5rem}
+code{color:#38bdf8;background:#0f172a;padding:.15rem .4rem;border-radius:4px;font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>PX to REM Converter</h1>
+<p class="subtitle">Convert between pixels and rem units — bidirectional, with custom base font size</p>
+<div class="tool-area">
+<div class="base-row">
+<label>Base font size:</label>
+<input type="number" id="base" value="16" min="1" oninput="convertFromPx()">
+<span class="unit">px (default: 16px)</span>
+</div>
+<div class="converter">
+<div>
+<label for="px">Pixels (px)</label>
+<input type="number" id="px" value="16" step="any" oninput="convertFromPx()">
+</div>
+<div class="arrow" onclick="swap()">⇄</div>
+<div>
+<label for="rem">REM</label>
+<input type="number" id="rem" value="1" step="any" oninput="convertFromRem()">
+</div>
+</div>
+</div>
+<div class="table-wrap">
+<table id="refTable">
+<thead><tr><th>px</th><th>rem</th><th>pt</th><th>Use Case</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+<div class="info">
+<h2>What is REM?</h2>
+<p><code>rem</code> stands for "root em" — a CSS unit relative to the root element's font size (usually 16px by default). Using <code>rem</code> instead of <code>px</code> makes your designs scalable and accessible, respecting user font-size preferences.</p>
+<p style="margin-top:.5rem"><strong>Formula:</strong> <code>rem = px ÷ base</code> · <code>px = rem × base</code></p>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+const common=[8,10,11,12,13,14,16,18,20,24,28,32,36,40,48,56,64,72,80,96];
+const uses={8:'xs caption',10:'small caption',11:'footnote',12:'small text',13:'body small',14:'body text',16:'base / body',18:'h6 / lead',20:'h5',24:'h4',28:'h3 small',32:'h3',36:'h2',40:'h2 large',48:'h1',56:'display',64:'hero sm',72:'hero md',80:'hero lg',96:'hero xl'};
+function convertFromPx(){
+  const base=parseFloat(document.getElementById('base').value)||16;
+  const px=parseFloat(document.getElementById('px').value);
+  if(isNaN(px))return;
+  document.getElementById('rem').value=+(px/base).toFixed(4);
+  buildTable(base);
+}
+function convertFromRem(){
+  const base=parseFloat(document.getElementById('base').value)||16;
+  const rem=parseFloat(document.getElementById('rem').value);
+  if(isNaN(rem))return;
+  document.getElementById('px').value=+(rem*base).toFixed(2);
+  buildTable(base);
+}
+function swap(){
+  const px=document.getElementById('px').value;
+  const rem=document.getElementById('rem').value;
+  document.getElementById('px').value=rem;
+  document.getElementById('rem').value=px;
+}
+function buildTable(base){
+  const currentPx=parseFloat(document.getElementById('px').value);
+  const tbody=document.getElementById('refTable').querySelector('tbody');
+  tbody.innerHTML=common.map(px=>{
+    const isHL=px===Math.round(currentPx);
+    return `<tr${isHL?' class="highlight"':''}>
+      <td>${px}px</td>
+      <td>${(px/base).toFixed(4)}rem</td>
+      <td>${(px*0.75).toFixed(1)}pt</td>
+      <td style="color:#94a3b8;font-family:inherit">${uses[px]||''}</td>
+    </tr>`;
+  }).join('');
+}
+convertFromPx();
+</script>
+</body>
+</html>
