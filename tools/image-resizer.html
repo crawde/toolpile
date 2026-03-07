@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Resizer — Free Online Image Resize Tool | ToolPile</title>
+<meta name="description" content="Resize images online for free. Change dimensions, maintain aspect ratio, and download resized images instantly. No upload required — works in your browser.">
+<meta name="keywords" content="image resizer, resize image online, image resize tool, resize photo, change image dimensions">
+<meta property="og:title" content="Image Resizer — Free Online Tool">
+<meta property="og:description" content="Resize images online for free. Runs entirely in your browser — no upload to any server.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/image-resizer">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="number"],select{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155}
+.row{display:flex;gap:.75rem;align-items:end;flex-wrap:wrap}
+.row > div{flex:1;min-width:100px}
+.drop-zone{border:2px dashed #475569;border-radius:12px;padding:3rem 1.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.drop-zone:hover,.drop-zone.over{border-color:#818cf8;background:rgba(129,140,248,.05)}
+.drop-zone p{color:#94a3b8;margin-top:.5rem}
+.preview{max-width:100%;max-height:300px;border-radius:8px;margin-top:1rem;display:none}
+.info{font-size:.75rem;color:#64748b;margin-top:.5rem}
+.presets{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem}
+.presets button{font-size:.75rem;padding:.4rem .75rem;margin:0;background:#334155}
+.presets button:hover{background:#475569}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+.check-row{display:flex;align-items:center;gap:.5rem;margin-top:.75rem}
+.check-row input[type="checkbox"]{accent-color:#818cf8}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Image Resizer</h1>
+<p class="subtitle">Resize images instantly in your browser. No upload to any server — 100% private.</p>
+<div class="tool-area">
+<div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+<p>Drop an image here or click to browse</p>
+<p style="font-size:.75rem;color:#64748b">Supports JPG, PNG, WebP, GIF</p>
+</div>
+<input type="file" id="fileInput" accept="image/*" style="display:none">
+<img class="preview" id="preview">
+<div id="controls" style="display:none">
+<div id="origInfo" class="info"></div>
+<div class="row" style="margin-top:1rem">
+<div><label>Width (px)</label><input type="number" id="w" min="1" oninput="onDim('w')"></div>
+<div><label>Height (px)</label><input type="number" id="h" min="1" oninput="onDim('h')"></div>
+</div>
+<div class="check-row">
+<input type="checkbox" id="lock" checked><label for="lock" style="margin:0;cursor:pointer">Lock aspect ratio</label>
+</div>
+<div class="presets">
+<button onclick="preset(1920,1080)">1920×1080</button>
+<button onclick="preset(1280,720)">1280×720</button>
+<button onclick="preset(800,600)">800×600</button>
+<button onclick="preset(500,500)">500×500</button>
+<button onclick="preset(256,256)">256×256</button>
+<button onclick="preset(64,64)">64×64</button>
+</div>
+<label>Output Format</label>
+<select id="fmt" style="width:100%">
+<option value="image/png">PNG</option>
+<option value="image/jpeg">JPEG</option>
+<option value="image/webp">WebP</option>
+</select>
+<label id="qLabel" style="display:none">Quality: <span id="qVal">90</span>%</label>
+<input type="range" id="quality" min="10" max="100" value="90" style="width:100%;display:none;accent-color:#818cf8" oninput="document.getElementById('qVal').textContent=this.value">
+<button onclick="resize()" style="width:100%;margin-top:1rem">Resize & Download</button>
+</div>
+</div>
+<div style="margin-top:2rem;color:#94a3b8;font-size:.875rem;line-height:1.6">
+<h2 style="color:#e2e8f0;font-size:1.25rem;margin-bottom:.75rem">About This Image Resizer</h2>
+<p>This tool resizes images directly in your browser using the HTML5 Canvas API. Your images are never uploaded to any server — everything happens locally on your device. Supports PNG, JPEG, WebP, and GIF formats with adjustable quality for lossy formats.</p>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+let img=null,ratio=1;
+const dz=document.getElementById('dropZone'),fi=document.getElementById('fileInput');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);});
+fi.addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);});
+document.getElementById('fmt').addEventListener('change',function(){
+const show=this.value!=='image/png';
+document.getElementById('quality').style.display=show?'':'none';
+document.getElementById('qLabel').style.display=show?'':'none';
+});
+function loadFile(f){
+const r=new FileReader();
+r.onload=function(e){
+img=new Image();
+img.onload=function(){
+ratio=img.width/img.height;
+document.getElementById('w').value=img.width;
+document.getElementById('h').value=img.height;
+document.getElementById('origInfo').textContent=`Original: ${img.width} × ${img.height} px — ${(f.size/1024).toFixed(1)} KB`;
+document.getElementById('preview').src=e.target.result;
+document.getElementById('preview').style.display='block';
+document.getElementById('controls').style.display='block';
+dz.style.display='none';
+};
+img.src=e.target.result;
+};
+r.readAsDataURL(f);
+}
+function onDim(which){
+if(!document.getElementById('lock').checked)return;
+if(which==='w'){
+document.getElementById('h').value=Math.round(document.getElementById('w').value/ratio);
+}else{
+document.getElementById('w').value=Math.round(document.getElementById('h').value*ratio);
+}
+}
+function preset(w,h){
+document.getElementById('w').value=w;
+document.getElementById('h').value=h;
+}
+function resize(){
+if(!img)return;
+const w=parseInt(document.getElementById('w').value),h=parseInt(document.getElementById('h').value);
+const c=document.createElement('canvas');c.width=w;c.height=h;
+const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);
+const fmt=document.getElementById('fmt').value;
+const q=parseInt(document.getElementById('quality').value)/100;
+c.toBlob(blob=>{
+const a=document.createElement('a');
+a.href=URL.createObjectURL(blob);
+const ext=fmt.split('/')[1]==='jpeg'?'jpg':fmt.split('/')[1];
+a.download=`resized-${w}x${h}.${ext}`;
+a.click();
+URL.revokeObjectURL(a.href);
+},fmt,q);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON to YAML Converter — Free Online Tool | ToolPile</title>
+<meta name="description" content="Convert JSON to YAML and YAML to JSON instantly. Free online converter with syntax highlighting and error detection.">
+<meta name="keywords" content="json to yaml, yaml to json, json yaml converter, convert json to yaml online, yaml converter">
+<meta property="og:title" content="JSON to YAML Converter — Free Online Tool">
+<meta property="og:description" content="Convert between JSON and YAML formats instantly. Free, runs in your browser.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/json-to-yaml">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.875rem;font-family:'SF Mono','JetBrains Mono',monospace;resize:vertical;min-height:200px;line-height:1.5}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155}
+.btn-group{display:flex;gap:.5rem;margin:1rem 0;flex-wrap:wrap}
+.btn-group button{flex:1;min-width:120px}
+.error{color:#ef4444;font-size:.8rem;margin-top:.5rem;display:none}
+.swap-btn{background:#334155;border:none;color:#94a3b8;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.25rem;transition:transform .2s}
+.swap-btn:hover{transform:rotate(180deg);color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>JSON ↔ YAML Converter</h1>
+<p class="subtitle">Convert between JSON and YAML formats instantly. Runs entirely in your browser.</p>
+<div class="tool-area">
+<label>JSON Input</label>
+<textarea id="jsonInput" placeholder='{"name": "John", "age": 30, "hobbies": ["reading", "coding"]}'>{
+  "name": "John Doe",
+  "age": 30,
+  "email": "john@example.com",
+  "address": {
+    "street": "123 Main St",
+    "city": "Springfield",
+    "state": "IL"
+  },
+  "hobbies": ["reading", "coding", "hiking"],
+  "active": true
+}</textarea>
+<div class="error" id="jsonError"></div>
+<div style="display:flex;justify-content:center;margin:1rem 0">
+<button class="swap-btn" onclick="swap()">&#8645;</button>
+</div>
+<label>YAML Output</label>
+<textarea id="yamlOutput" placeholder="name: John&#10;age: 30&#10;hobbies:&#10;  - reading&#10;  - coding"></textarea>
+<div class="error" id="yamlError"></div>
+<div class="btn-group">
+<button onclick="jsonToYaml()">JSON → YAML</button>
+<button onclick="yamlToJson()">YAML → JSON</button>
+<button class="btn-secondary" onclick="copyResult('yamlOutput')">Copy YAML</button>
+<button class="btn-secondary" onclick="copyResult('jsonInput')">Copy JSON</button>
+</div>
+</div>
+<div style="margin-top:2rem;color:#94a3b8;font-size:.875rem;line-height:1.6">
+<h2 style="color:#e2e8f0;font-size:1.25rem;margin-bottom:.75rem">About JSON and YAML</h2>
+<p><strong>JSON</strong> (JavaScript Object Notation) uses braces and brackets with strict syntax. <strong>YAML</strong> (YAML Ain't Markup Language) uses indentation, making it more human-readable. YAML is commonly used for configuration files (Docker, Kubernetes, CI/CD), while JSON is standard for APIs and data exchange.</p>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+// Lightweight JSON to YAML converter (no external deps)
+function toYaml(obj,indent=0){
+if(obj===null)return'null';
+if(typeof obj==='boolean')return obj?'true':'false';
+if(typeof obj==='number')return String(obj);
+if(typeof obj==='string'){
+if(obj.includes('\n')||obj.includes(':')||obj.includes('#')||obj.includes('"')||obj.includes("'")||obj==='true'||obj==='false'||obj==='null'||!isNaN(obj))
+return JSON.stringify(obj);
+return obj;
+}
+const pad='  '.repeat(indent);
+if(Array.isArray(obj)){
+if(obj.length===0)return'[]';
+return obj.map(item=>{
+const val=toYaml(item,indent+1);
+if(typeof item==='object'&&item!==null&&!Array.isArray(item)){
+const lines=val.split('\n');
+return pad+'- '+lines[0]+'\n'+lines.slice(1).map(l=>pad+'  '+l).join('\n');
+}
+return pad+'- '+val;
+}).join('\n');
+}
+if(typeof obj==='object'){
+const keys=Object.keys(obj);
+if(keys.length===0)return'{}';
+return keys.map(key=>{
+const val=obj[key];
+const yamlKey=key.includes(':')||key.includes(' ')?JSON.stringify(key):key;
+if(typeof val==='object'&&val!==null){
+return pad+yamlKey+':\n'+toYaml(val,indent+1);
+}
+return pad+yamlKey+': '+toYaml(val,indent+1);
+}).join('\n');
+}
+return String(obj);
+}
+// Lightweight YAML to JSON parser (handles common cases)
+function parseYaml(text){
+const lines=text.split('\n');
+return parseBlock(lines,0,0).value;
+}
+function parseBlock(lines,start,baseIndent){
+let i=start;
+const isArray=()=>{
+for(let j=i;j<lines.length;j++){
+const l=lines[j];if(!l.trim()||l.trim().startsWith('#'))continue;
+return l.trimStart().startsWith('- ');
+}
+return false;
+};
+if(isArray()){
+const arr=[];
+while(i<lines.length){
+const line=lines[i];
+if(!line.trim()||line.trim().startsWith('#')){i++;continue;}
+const indent=line.length-line.trimStart().length;
+if(indent<baseIndent)break;
+if(!line.trimStart().startsWith('- ')){break;}
+const content=line.trimStart().slice(2);
+if(content.includes(': ')||content.includes(':')){
+// Inline object or nested
+const fakeLines=[content,...lines.slice(i+1)];
+const res=parseBlock(fakeLines,0,0);
+arr.push(res.value);
+i+=1;
+while(i<lines.length&&lines[i].trim()&&(lines[i].length-lines[i].trimStart().length)>indent){i++;}
+}else{
+arr.push(parseScalar(content));
+i++;
+}
+}
+return{value:arr,end:i};
+}
+const obj={};
+while(i<lines.length){
+const line=lines[i];
+if(!line.trim()||line.trim().startsWith('#')){i++;continue;}
+const indent=line.length-line.trimStart().length;
+if(indent<baseIndent)break;
+const match=line.trimStart().match(/^([^:]+?):\s*(.*)$/);
+if(!match){i++;continue;}
+let key=match[1].trim();
+if(key.startsWith('"')&&key.endsWith('"'))key=JSON.parse(key);
+const rest=match[2].trim();
+if(rest){
+obj[key]=parseScalar(rest);
+i++;
+}else{
+// Block value
+i++;
+if(i<lines.length){
+const nextLine=lines[i];
+if(nextLine&&nextLine.trim()){
+const nextIndent=nextLine.length-nextLine.trimStart().length;
+if(nextIndent>indent){
+const res=parseBlock(lines,i,nextIndent);
+obj[key]=res.value;
+i=res.end;
+continue;
+}
+}
+}
+obj[key]=null;
+}
+}
+return{value:obj,end:i};
+}
+function parseScalar(s){
+s=s.trim();
+if(s===''||s==='null'||s==='~')return null;
+if(s==='true')return true;
+if(s==='false')return false;
+if(s.startsWith('"')&&s.endsWith('"'))try{return JSON.parse(s);}catch(e){return s.slice(1,-1);}
+if(s.startsWith("'")&&s.endsWith("'"))return s.slice(1,-1);
+if(s.startsWith('['))try{return JSON.parse(s);}catch(e){return s;}
+if(s.startsWith('{'))try{return JSON.parse(s);}catch(e){return s;}
+if(!isNaN(s)&&s!=='')return Number(s);
+return s;
+}
+function jsonToYaml(){
+const err=document.getElementById('jsonError');
+err.style.display='none';
+try{
+const obj=JSON.parse(document.getElementById('jsonInput').value);
+document.getElementById('yamlOutput').value=toYaml(obj);
+}catch(e){
+err.textContent='Invalid JSON: '+e.message;
+err.style.display='block';
+}
+}
+function yamlToJson(){
+const err=document.getElementById('yamlError');
+err.style.display='none';
+try{
+const obj=parseYaml(document.getElementById('yamlOutput').value);
+document.getElementById('jsonInput').value=JSON.stringify(obj,null,2);
+}catch(e){
+err.textContent='Invalid YAML: '+e.message;
+err.style.display='block';
+}
+}
+function swap(){
+const j=document.getElementById('jsonInput').value;
+const y=document.getElementById('yamlOutput').value;
+document.getElementById('jsonInput').value=y;
+document.getElementById('yamlOutput').value=j;
+}
+function copyResult(id){
+navigator.clipboard.writeText(document.getElementById(id).value);
+}
+// Auto-convert on load
+jsonToYaml();
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMI Calculator — Free Online Body Mass Index Tool | ToolPile</title>
+<meta name="description" content="Calculate your Body Mass Index (BMI) instantly. Enter height and weight to get your BMI score, category, and healthy weight range.">
+<meta name="keywords" content="bmi calculator, body mass index, bmi checker, healthy weight, bmi tool, free bmi calculator">
+<meta property="og:title" content="BMI Calculator — Free Online Tool">
+<meta property="og:description" content="Calculate your BMI instantly with height and weight. Get your score, category, and healthy weight range.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/bmi-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="number"],select{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:1.25rem;margin-top:1rem;text-align:center}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s;width:100%}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.row{display:flex;gap:.75rem;align-items:end;flex-wrap:wrap}
+.row > div{flex:1;min-width:120px}
+.bmi-val{font-size:3rem;font-weight:800;margin:.5rem 0}
+.bmi-cat{font-size:1.25rem;font-weight:600;margin-bottom:.5rem}
+.bmi-range{font-size:.875rem;color:#94a3b8}
+.meter{height:12px;border-radius:6px;background:linear-gradient(90deg,#38bdf8,#22c55e,#eab308,#f97316,#ef4444);margin:1rem 0;position:relative}
+.meter-dot{width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid #0f172a;position:absolute;top:-3px;transition:left .3s}
+.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-top:1rem;font-size:.75rem;text-align:center}
+.cat-item{padding:.5rem;border-radius:6px;border:1px solid #334155}
+.cat-item.active{border-color:#818cf8;background:rgba(129,140,248,.1)}
+.toggle{display:flex;background:#0f172a;border-radius:8px;border:1px solid #475569;overflow:hidden;margin-bottom:1rem}
+.toggle button{background:none;border:none;color:#94a3b8;padding:.5rem 1rem;cursor:pointer;font-size:.875rem;flex:1;border-radius:0;margin:0;font-weight:500}
+.toggle button.active{background:#334155;color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>BMI Calculator</h1>
+<p class="subtitle">Calculate your Body Mass Index instantly. Enter your height and weight to get your BMI score and category.</p>
+<div class="tool-area">
+<div class="toggle" id="unitToggle">
+<button class="active" onclick="setUnit('imperial')">Imperial (lb/ft)</button>
+<button onclick="setUnit('metric')">Metric (kg/cm)</button>
+</div>
+<div id="imperialInputs">
+<div class="row">
+<div><label>Height (feet)</label><input type="number" id="feet" value="5" min="1" max="8" oninput="calc()"></div>
+<div><label>Height (inches)</label><input type="number" id="inches" value="10" min="0" max="11" oninput="calc()"></div>
+<div><label>Weight (lbs)</label><input type="number" id="lbs" value="160" min="1" oninput="calc()"></div>
+</div>
+</div>
+<div id="metricInputs" style="display:none">
+<div class="row">
+<div><label>Height (cm)</label><input type="number" id="cm" value="178" min="50" max="250" oninput="calc()"></div>
+<div><label>Weight (kg)</label><input type="number" id="kg" value="73" min="1" oninput="calc()"></div>
+</div>
+</div>
+<div class="output" id="result">
+<div class="bmi-val" id="bmiVal">23.0</div>
+<div class="bmi-cat" id="bmiCat">Normal weight</div>
+<div class="meter"><div class="meter-dot" id="dot" style="left:40%"></div></div>
+<div class="categories">
+<div class="cat-item" id="c1"><div style="color:#38bdf8">Underweight</div>&lt; 18.5</div>
+<div class="cat-item active" id="c2"><div style="color:#22c55e">Normal</div>18.5–24.9</div>
+<div class="cat-item" id="c3"><div style="color:#eab308">Overweight</div>25–29.9</div>
+<div class="cat-item" id="c4"><div style="color:#ef4444">Obese</div>30+</div>
+</div>
+<div class="bmi-range" id="range"></div>
+</div>
+</div>
+<div style="margin-top:2rem;color:#94a3b8;font-size:.875rem;line-height:1.6">
+<h2 style="color:#e2e8f0;font-size:1.25rem;margin-bottom:.75rem">What is BMI?</h2>
+<p>Body Mass Index (BMI) is a measure of body fat based on height and weight. It applies to adult men and women and is widely used as a simple screening tool for weight categories. While BMI doesn't directly measure body fat, it correlates with more direct measures of body fat.</p>
+<h2 style="color:#e2e8f0;font-size:1.25rem;margin:1.25rem 0 .75rem">BMI Categories</h2>
+<ul style="padding-left:1.5rem">
+<li><strong>Underweight:</strong> BMI less than 18.5</li>
+<li><strong>Normal weight:</strong> BMI 18.5 to 24.9</li>
+<li><strong>Overweight:</strong> BMI 25 to 29.9</li>
+<li><strong>Obesity:</strong> BMI 30 or greater</li>
+</ul>
+<p style="margin-top:1rem"><em>Note: BMI is a screening tool and does not directly assess body composition. Consult a healthcare provider for medical advice.</em></p>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+let unit='imperial';
+function setUnit(u){
+unit=u;
+document.getElementById('imperialInputs').style.display=u==='imperial'?'':'none';
+document.getElementById('metricInputs').style.display=u==='metric'?'':'none';
+document.querySelectorAll('#unitToggle button').forEach(b=>b.classList.remove('active'));
+event.target.classList.add('active');
+calc();
+}
+function calc(){
+let bmi;
+if(unit==='imperial'){
+const h=(parseFloat(document.getElementById('feet').value||0)*12+parseFloat(document.getElementById('inches').value||0));
+const w=parseFloat(document.getElementById('lbs').value||0);
+bmi=h>0?(w/(h*h))*703:0;
+}else{
+const h=parseFloat(document.getElementById('cm').value||0)/100;
+const w=parseFloat(document.getElementById('kg').value||0);
+bmi=h>0?w/(h*h):0;
+}
+document.getElementById('bmiVal').textContent=bmi.toFixed(1);
+let cat,color,pct;
+if(bmi<18.5){cat='Underweight';color='#38bdf8';pct=Math.max(5,bmi/18.5*25);}
+else if(bmi<25){cat='Normal weight';color='#22c55e';pct=25+(bmi-18.5)/(25-18.5)*25;}
+else if(bmi<30){cat='Overweight';color='#eab308';pct=50+(bmi-25)/(30-25)*25;}
+else{cat='Obese';color='#ef4444';pct=Math.min(95,75+(bmi-30)/15*25);}
+document.getElementById('bmiCat').textContent=cat;
+document.getElementById('bmiCat').style.color=color;
+document.getElementById('dot').style.left=pct+'%';
+['c1','c2','c3','c4'].forEach(c=>document.getElementById(c).classList.remove('active'));
+if(bmi<18.5)document.getElementById('c1').classList.add('active');
+else if(bmi<25)document.getElementById('c2').classList.add('active');
+else if(bmi<30)document.getElementById('c3').classList.add('active');
+else document.getElementById('c4').classList.add('active');
+// healthy weight range
+let hM;
+if(unit==='imperial'){
+const h=(parseFloat(document.getElementById('feet').value||0)*12+parseFloat(document.getElementById('inches').value||0));
+const lo=(18.5*h*h/703).toFixed(0),hi=(24.9*h*h/703).toFixed(0);
+hM=`Healthy weight range for your height: ${lo}–${hi} lbs`;
+}else{
+const h=parseFloat(document.getElementById('cm').value||0)/100;
+const lo=(18.5*h*h).toFixed(1),hi=(24.9*h*h).toFixed(1);
+hM=`Healthy weight range for your height: ${lo}–${hi} kg`;
+}
+document.getElementById('range').textContent=hM;
+}
+calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch — Free Online Stopwatch Timer | ToolPile</title>
+<meta name="description" content="Free online stopwatch with lap timer. Start, stop, and record lap times with millisecond precision. Simple and fast.">
+<meta name="keywords" content="stopwatch, online stopwatch, timer, lap timer, stopwatch timer, millisecond timer">
+<meta property="og:title" content="Stopwatch — Free Online Stopwatch Timer">
+<meta property="og:description" content="Precise online stopwatch with lap recording. Millisecond accuracy, keyboard shortcuts.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/stopwatch">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155;text-align:center}
+.time-display{font-size:4.5rem;font-weight:800;font-variant-numeric:tabular-nums;font-family:'SF Mono','JetBrains Mono',monospace;margin:1.5rem 0;letter-spacing:2px}
+.time-display .ms{font-size:2.5rem;color:#94a3b8}
+.btn-row{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn{border:none;border-radius:12px;padding:1rem 2rem;font-size:1.125rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;min-width:120px}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn-start{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.btn-stop{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.btn-lap{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff}
+.btn-reset{background:#334155;color:#94a3b8}
+.laps{margin-top:1.5rem;text-align:left;max-height:300px;overflow-y:auto}
+.lap{display:flex;justify-content:space-between;padding:.5rem .75rem;border-bottom:1px solid #334155;font-family:'SF Mono','JetBrains Mono',monospace;font-size:.875rem}
+.lap:first-child{border-top:1px solid #334155}
+.lap .num{color:#94a3b8;width:60px}
+.lap .split{color:#38bdf8}
+.lap .total{color:#e2e8f0;font-weight:600}
+.lap.best .split{color:#22c55e}
+.lap.worst .split{color:#ef4444}
+.hint{color:#64748b;font-size:.75rem;margin-top:1rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Stopwatch</h1>
+<p class="subtitle">Precise stopwatch with lap recording. Press Space to start/stop, L for lap.</p>
+<div class="tool-area">
+<div class="time-display" id="display">00:00:00<span class="ms">.000</span></div>
+<div class="btn-row">
+<button class="btn btn-start" id="startBtn" onclick="toggle()">Start</button>
+<button class="btn btn-lap" onclick="lap()" id="lapBtn" disabled>Lap</button>
+<button class="btn btn-reset" onclick="reset()">Reset</button>
+</div>
+<div class="laps" id="laps"></div>
+<div class="hint">Space = Start/Stop · L = Lap · R = Reset</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 50+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+let running=false,startTime=0,elapsed=0,interval=null,lapTimes=[],lastLapTime=0;
+function formatTime(ms){
+const h=Math.floor(ms/3600000);
+const m=Math.floor(ms%3600000/60000);
+const s=Math.floor(ms%60000/1000);
+const mi=ms%1000;
+return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}<span class="ms">.${String(mi).padStart(3,'0')}</span>`;
+}
+function updateDisplay(){
+const total=elapsed+(running?Date.now()-startTime:0);
+document.getElementById('display').innerHTML=formatTime(total);
+document.title=formatTime(total).replace(/<[^>]*>/g,'')+ ' — Stopwatch';
+}
+function toggle(){
+if(running){
+elapsed+=Date.now()-startTime;
+running=false;
+clearInterval(interval);
+document.getElementById('startBtn').textContent='Resume';
+document.getElementById('startBtn').className='btn btn-start';
+document.getElementById('lapBtn').disabled=true;
+}else{
+startTime=Date.now();
+running=true;
+interval=setInterval(updateDisplay,31);
+document.getElementById('startBtn').textContent='Stop';
+document.getElementById('startBtn').className='btn btn-stop';
+document.getElementById('lapBtn').disabled=false;
+}
+}
+function lap(){
+if(!running)return;
+const total=elapsed+Date.now()-startTime;
+const split=total-lastLapTime;
+lapTimes.push({split,total});
+lastLapTime=total;
+renderLaps();
+}
+function reset(){
+running=false;elapsed=0;startTime=0;lastLapTime=0;lapTimes=[];
+clearInterval(interval);
+document.getElementById('display').innerHTML=formatTime(0);
+document.getElementById('startBtn').textContent='Start';
+document.getElementById('startBtn').className='btn btn-start';
+document.getElementById('lapBtn').disabled=true;
+document.getElementById('laps').innerHTML='';
+document.title='Stopwatch — ToolPile';
+}
+function renderLaps(){
+if(lapTimes.length===0){document.getElementById('laps').innerHTML='';return;}
+const splits=lapTimes.map(l=>l.split);
+const best=Math.min(...splits),worst=Math.max(...splits);
+document.getElementById('laps').innerHTML=lapTimes.slice().reverse().map((l,ri)=>{
+const i=lapTimes.length-1-ri;
+let cls='lap';
+if(lapTimes.length>2){
+if(l.split===best)cls+=' best';
+else if(l.split===worst)cls+=' worst';
+}
+return `<div class="${cls}"><span class="num">Lap ${i+1}</span><span class="split">${formatMS(l.split)}</span><span class="total">${formatMS(l.total)}</span></div>`;
+}).join('');
+}
+function formatMS(ms){
+const m=Math.floor(ms/60000);
+const s=Math.floor(ms%60000/1000);
+const mi=ms%1000;
+return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(mi).padStart(3,'0')}`;
+}
+document.addEventListener('keydown',e=>{
+if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+if(e.code==='Space'){e.preventDefault();toggle();}
+else if(e.code==='KeyL')lap();
+else if(e.code==='KeyR')reset();
+});
+</script>
+</body>
+</html>
