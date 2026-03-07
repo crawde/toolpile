@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favicon Generator — Free Emoji & Text Favicon Maker | ToolPile</title>
+<meta name="description" content="Generate favicons from text or emoji. Pick colors, preview live, and download as PNG. No signup required.">
+<meta name="keywords" content="favicon generator, emoji favicon, text favicon, favicon maker, ico generator, website icon generator">
+<meta property="og:title" content="Favicon Generator — Free Emoji & Text Favicon Maker">
+<meta property="og:description" content="Create favicons from text or emoji with custom colors. Download as PNG. Free tool.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/favicon-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+input[type="color"]{height:44px;padding:4px;cursor:pointer}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.preview-area{margin-top:1.5rem;text-align:center}
+.preview-sizes{display:flex;gap:1.5rem;justify-content:center;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.5rem}
+.preview-item{text-align:center}
+.preview-item canvas{border-radius:4px;image-rendering:pixelated}
+.preview-item p{font-size:.7rem;color:#64748b;margin-top:.25rem}
+.download-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.download-btns .btn{width:auto;padding:.6rem 1.2rem;font-size:.85rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Favicon Generator</h1>
+<p class="subtitle">Create favicons from text or emoji with custom colors</p>
+<div class="tool-area">
+  <div class="field"><label>Text / Emoji</label><input type="text" id="text" value="🔥" maxlength="4" oninput="render()"></div>
+  <div class="row">
+    <div><label>Background Color</label><input type="color" id="bg" value="#6366f1" oninput="render()"></div>
+    <div><label>Text Color</label><input type="color" id="fg" value="#ffffff" oninput="render()"></div>
+  </div>
+  <div class="row">
+    <div><label>Shape</label>
+      <select id="shape" onchange="render()"><option value="square">Square</option><option value="rounded">Rounded</option><option value="circle">Circle</option></select>
+    </div>
+    <div><label>Font Size Factor</label><input type="range" id="fontScale" min="30" max="90" value="65" oninput="render()" style="padding:.5rem 0;background:transparent;border:none"></div>
+  </div>
+  <div class="preview-area" id="previewArea">
+    <div class="preview-sizes" id="previews"></div>
+    <div class="download-btns">
+      <button class="btn" onclick="download(16)">16×16</button>
+      <button class="btn" onclick="download(32)">32×32</button>
+      <button class="btn" onclick="download(48)">48×48</button>
+      <button class="btn" onclick="download(64)">64×64</button>
+      <button class="btn" onclick="download(128)">128×128</button>
+      <button class="btn" onclick="download(256)">256×256</button>
+    </div>
+  </div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+const sizes=[16,32,48,64,128];
+function drawFavicon(size){
+  const c=document.createElement('canvas');c.width=size;c.height=size;
+  const ctx=c.getContext('2d');
+  const bg=document.getElementById('bg').value;
+  const fg=document.getElementById('fg').value;
+  const text=document.getElementById('text').value||'A';
+  const shape=document.getElementById('shape').value;
+  const scale=parseInt(document.getElementById('fontScale').value)/100;
+  ctx.clearRect(0,0,size,size);
+  ctx.fillStyle=bg;
+  if(shape==='circle'){ctx.beginPath();ctx.arc(size/2,size/2,size/2,0,Math.PI*2);ctx.fill()}
+  else if(shape==='rounded'){const r=size*0.2;ctx.beginPath();ctx.moveTo(r,0);ctx.lineTo(size-r,0);ctx.quadraticCurveTo(size,0,size,r);ctx.lineTo(size,size-r);ctx.quadraticCurveTo(size,size,size-r,size);ctx.lineTo(r,size);ctx.quadraticCurveTo(0,size,0,size-r);ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();ctx.fill()}
+  else{ctx.fillRect(0,0,size,size)}
+  const fontSize=Math.round(size*scale);
+  ctx.fillStyle=fg;ctx.font='bold '+fontSize+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(text,size/2,size/2+(size*0.04));
+  return c;
+}
+function render(){
+  const container=document.getElementById('previews');container.innerHTML='';
+  sizes.forEach(s=>{
+    const div=document.createElement('div');div.className='preview-item';
+    const c=drawFavicon(s);
+    const display=document.createElement('canvas');display.width=Math.max(s,48);display.height=Math.max(s,48);display.style.width=Math.max(s,48)+'px';display.style.height=Math.max(s,48)+'px';
+    const dctx=display.getContext('2d');dctx.imageSmoothingEnabled=false;
+    dctx.drawImage(c,(display.width-s)/2,(display.height-s)/2);
+    div.appendChild(display);
+    const p=document.createElement('p');p.textContent=s+'×'+s;div.appendChild(p);
+    container.appendChild(div);
+  });
+}
+function download(size){
+  const c=drawFavicon(size);
+  const a=document.createElement('a');a.download='favicon-'+size+'x'+size+'.png';a.href=c.toDataURL('image/png');a.click();
+}
+render();
+</script>
+</body>
+</html>

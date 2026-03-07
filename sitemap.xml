@@ -60,4 +60,20 @@
   <url><loc>https://toolpile.tools/tools/stopwatch.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://toolpile.tools/tools/typing-speed-test.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://toolpile.tools/tools/unit-converter.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/tip-calculator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/loan-calculator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/discount-calculator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/meta-tags-generator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://toolpile.tools/tools/robots-txt-generator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://toolpile.tools/tools/og-preview.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://toolpile.tools/tools/favicon-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/binary-to-decimal.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/epoch-converter.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/color-blindness-simulator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://toolpile.tools/tools/svg-to-png.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/css-gradient-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/htaccess-generator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://toolpile.tools/tools/gitignore-generator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://toolpile.tools/tools/barcode-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/dpi-calculator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Gradient Generator — Free Visual Gradient Builder | ToolPile</title>
+<meta name="description" content="Create beautiful CSS gradients with a visual editor. Linear and radial gradients, multiple color stops, angle control. Copy CSS code instantly.">
+<meta name="keywords" content="css gradient generator, gradient builder, linear gradient, radial gradient, css gradient tool, color gradient maker">
+<meta property="og:title" content="CSS Gradient Generator — Free Visual Gradient Builder">
+<meta property="og:description" content="Build beautiful CSS gradients visually. Linear, radial, multiple stops. Copy CSS instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/css-gradient-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+input[type="color"]{width:50px;height:38px;padding:2px;cursor:pointer;border-radius:6px}
+input[type="range"]{background:transparent;border:none;padding:0}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.btn-sm{padding:.5rem 1rem;font-size:.85rem;width:auto;border-radius:8px}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem;align-items:flex-end}
+.row > *{flex:1}
+.preview{height:200px;border-radius:12px;border:1px solid #334155;margin-bottom:1.5rem}
+.stop-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;background:#0f172a;padding:.5rem;border-radius:6px}
+.stop-row input[type="color"]{flex-shrink:0}
+.stop-row input[type="number"]{width:70px;flex-shrink:0}
+.stop-row .del{background:#334155;border:none;color:#f87171;padding:.35rem .5rem;border-radius:6px;cursor:pointer;font-size:.75rem;flex-shrink:0}
+.stop-row .del:hover{background:#ef4444;color:#fff}
+.stops-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.result{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.85rem;white-space:pre-wrap;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:#334155;border:none;color:#94a3b8;padding:.3rem .6rem;border-radius:6px;cursor:pointer;font-size:.75rem}
+.copy-btn:hover{background:#475569;color:#e2e8f0}
+.presets{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.preset{width:40px;height:40px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:border-color .15s}
+.preset:hover,.preset.active{border-color:#fff}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CSS Gradient Generator</h1>
+<p class="subtitle">Build beautiful gradients with a visual editor and get CSS code</p>
+<div class="tool-area">
+  <div class="preview" id="preview"></div>
+  <div class="field">
+    <label>Presets</label>
+    <div class="presets" id="presets"></div>
+  </div>
+  <div class="row">
+    <div><label>Type</label>
+      <select id="type" onchange="render()"><option value="linear">Linear</option><option value="radial">Radial</option></select>
+    </div>
+    <div><label>Angle (°)</label><input type="number" id="angle" value="135" min="0" max="360" oninput="render()"></div>
+  </div>
+  <div class="field">
+    <div class="stops-label"><label style="margin:0">Color Stops</label><button class="btn btn-sm" onclick="addStop()">+ Add Stop</button></div>
+    <div id="stops"></div>
+  </div>
+  <div class="result" id="output"><button class="copy-btn" onclick="copyCSS()">Copy</button><span id="cssCode"></span></div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+let stops=[{color:'#6366f1',pos:0},{color:'#38bdf8',pos:100}];
+const presetData=[
+  [{color:'#667eea',pos:0},{color:'#764ba2',pos:100}],
+  [{color:'#f093fb',pos:0},{color:'#f5576c',pos:100}],
+  [{color:'#4facfe',pos:0},{color:'#00f2fe',pos:100}],
+  [{color:'#43e97b',pos:0},{color:'#38f9d7',pos:100}],
+  [{color:'#fa709a',pos:0},{color:'#fee140',pos:100}],
+  [{color:'#a18cd1',pos:0},{color:'#fbc2eb',pos:100}],
+  [{color:'#fccb90',pos:0},{color:'#d57eeb',pos:100}],
+  [{color:'#0c3483',pos:0},{color:'#a2b6df',pos:50},{color:'#6b8cce',pos:100}]
+];
+function initPresets(){
+  const c=document.getElementById('presets');
+  presetData.forEach((p,i)=>{
+    const d=document.createElement('div');d.className='preset';
+    const grad='linear-gradient(135deg,'+p.map(s=>s.color+' '+s.pos+'%').join(',')+')';
+    d.style.background=grad;
+    d.onclick=()=>{stops=JSON.parse(JSON.stringify(p));renderStops();render()};
+    c.appendChild(d);
+  });
+}
+function renderStops(){
+  const c=document.getElementById('stops');c.innerHTML='';
+  stops.forEach((s,i)=>{
+    const row=document.createElement('div');row.className='stop-row';
+    row.innerHTML='<input type="color" value="'+s.color+'" onchange="stops['+i+'].color=this.value;render()"><input type="number" value="'+s.pos+'" min="0" max="100" style="width:70px" onchange="stops['+i+'].pos=parseInt(this.value);render()"><span style="flex:1;color:#64748b;font-size:.8rem">'+s.pos+'%</span>'+(stops.length>2?'<button class="del" onclick="stops.splice('+i+',1);renderStops();render()">✕</button>':'');
+    c.appendChild(row);
+  });
+}
+function addStop(){
+  const last=stops[stops.length-1];
+  stops.push({color:'#ffffff',pos:Math.min(100,last.pos+20)});
+  renderStops();render();
+}
+function render(){
+  const type=document.getElementById('type').value;
+  const angle=document.getElementById('angle').value;
+  const sortedStops=[...stops].sort((a,b)=>a.pos-b.pos);
+  const stopsStr=sortedStops.map(s=>s.color+' '+s.pos+'%').join(', ');
+  let css;
+  if(type==='linear'){css='linear-gradient('+angle+'deg, '+stopsStr+')'}
+  else{css='radial-gradient(circle, '+stopsStr+')'}
+  document.getElementById('preview').style.background=css;
+  document.getElementById('cssCode').textContent='background: '+css+';';
+}
+function copyCSS(){navigator.clipboard.writeText(document.getElementById('cssCode').textContent);const b=document.querySelector('.copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500)}
+initPresets();renderStops();render();
+</script>
+</body>
+</html>

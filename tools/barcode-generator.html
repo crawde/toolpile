@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barcode Generator — Free Online Code 128 Barcode Maker | ToolPile</title>
+<meta name="description" content="Generate Code 128 barcodes from text or numbers. Download as PNG. Self-contained barcode generator, no external libraries.">
+<meta name="keywords" content="barcode generator, code 128 barcode, barcode maker, barcode creator, generate barcode, barcode png">
+<meta property="og:title" content="Barcode Generator — Free Online Barcode Maker">
+<meta property="og:description" content="Generate Code 128 barcodes instantly. Download as PNG. Free, no signup required.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/barcode-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.preview{margin-top:1.5rem;text-align:center;background:#fff;border-radius:10px;padding:2rem;display:none}
+.preview canvas{max-width:100%}
+.download-row{margin-top:1rem;text-align:center}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Barcode Generator</h1>
+<p class="subtitle">Generate Code 128 barcodes from text — download as PNG</p>
+<div class="tool-area">
+  <div class="field"><label>Text / Data</label><input type="text" id="data" placeholder="Enter text or numbers" value="ToolPile2024"></div>
+  <div class="row">
+    <div><label>Bar Width (px)</label><input type="number" id="barW" value="2" min="1" max="5"></div>
+    <div><label>Height (px)</label><input type="number" id="barH" value="100" min="30" max="300"></div>
+  </div>
+  <div class="row">
+    <div><label>Show Text</label>
+      <select id="showText"><option value="1">Yes</option><option value="0">No</option></select>
+    </div>
+    <div><label>Background</label>
+      <select id="bgColor"><option value="#ffffff">White</option><option value="transparent">Transparent</option></select>
+    </div>
+  </div>
+  <button class="btn" onclick="generate()">Generate Barcode</button>
+  <div class="preview" id="preview"><canvas id="canvas"></canvas>
+    <div class="download-row"><button class="btn" style="width:auto;padding:.6rem 2rem" onclick="download()">Download PNG</button></div>
+  </div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+// Code 128 encoding table (Code B)
+const CODE128B_START=104,CODE128_STOP=106;
+const PATTERNS=[
+  '11011001100','11001101100','11001100110','10010011000','10010001100',
+  '10001001100','10011001000','10011000100','10001100100','11001001000',
+  '11001000100','11000100100','10110011100','10011011100','10011001110',
+  '10111001100','10011101100','10011100110','11001110010','11001011100',
+  '11001001110','11011100100','11001110100','11100101100','11100100110',
+  '11101100100','11100110100','11100110010','11011011000','11011000110',
+  '11000110110','10100011000','10001011000','10001000110','10110001000',
+  '10001101000','10001100010','11010001000','11000101000','11000100010',
+  '10110111000','10110001110','10001101110','10111011000','10111000110',
+  '10001110110','11101110110','11010001110','11000101110','11011101000',
+  '11011100010','11011101110','11101011000','11101000110','11100010110',
+  '11101101000','11101100010','11100011010','11101111010','11001000010',
+  '11110001010','10100110000','10100001100','10010110000','10010000110',
+  '10000101100','10000100110','10110010000','10110000100','10011010000',
+  '10011000010','10000110100','10000110010','11000010010','11001010000',
+  '11110111010','11000010100','10001111010','10100111100','10010111100',
+  '10010011110','10111100100','10011110100','10011110010','11110100100',
+  '11110010100','11110010010','11011011110','11011110110','11110110110',
+  '10101111000','10100011110','10001011110','10111101000','10111100010',
+  '11110101000','11110100010','10111011110','10111101110','11101011110',
+  '11110101110','11010000100','11010010000','11010011100','1100011101011'
+];
+
+function encode128B(text){
+  let codes=[CODE128B_START];
+  let checksum=CODE128B_START;
+  for(let i=0;i<text.length;i++){
+    const code=text.charCodeAt(i)-32;
+    if(code<0||code>94)continue;
+    codes.push(code);
+    checksum+=(i+1)*code;
+  }
+  codes.push(checksum%103);
+  codes.push(CODE128_STOP);
+  return codes.map(c=>PATTERNS[c]).join('');
+}
+
+function generate(){
+  const text=document.getElementById('data').value;
+  if(!text){alert('Please enter some text');return}
+  const barW=parseInt(document.getElementById('barW').value)||2;
+  const barH=parseInt(document.getElementById('barH').value)||100;
+  const showText=document.getElementById('showText').value==='1';
+  const bgColor=document.getElementById('bgColor').value;
+  const bits=encode128B(text);
+  const quietZone=10*barW;
+  const textHeight=showText?24:0;
+  const canvas=document.getElementById('canvas');
+  canvas.width=bits.length*barW+quietZone*2;
+  canvas.height=barH+textHeight+20;
+  const ctx=canvas.getContext('2d');
+  if(bgColor!=='transparent'){ctx.fillStyle=bgColor;ctx.fillRect(0,0,canvas.width,canvas.height)}else{ctx.clearRect(0,0,canvas.width,canvas.height)}
+  ctx.fillStyle='#000';
+  for(let i=0;i<bits.length;i++){
+    if(bits[i]==='1'){ctx.fillRect(quietZone+i*barW,10,barW,barH)}
+  }
+  if(showText){
+    ctx.fillStyle='#000';ctx.font='bold 14px monospace';ctx.textAlign='center';
+    ctx.fillText(text,canvas.width/2,barH+28);
+  }
+  document.getElementById('preview').style.display='block';
+}
+
+function download(){
+  const canvas=document.getElementById('canvas');
+  const a=document.createElement('a');a.download='barcode.png';a.href=canvas.toDataURL('image/png');a.click();
+}
+generate();
+</script>
+</body>
+</html>

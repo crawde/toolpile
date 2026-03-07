@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discount Calculator — Free Price Discount Calculator | ToolPile</title>
+<meta name="description" content="Free discount calculator. Calculate savings from a percentage discount or find the original price from a sale price. Instant results.">
+<meta name="keywords" content="discount calculator, percent off calculator, sale price calculator, savings calculator, original price calculator">
+<meta property="og:title" content="Discount Calculator — Free Price Discount Calculator">
+<meta property="og:description" content="Calculate discounts, savings, and original prices instantly. Free, no signup.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/discount-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.tabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.tab{flex:1;text-align:center;padding:.75rem;border-radius:8px;background:#334155;color:#94a3b8;cursor:pointer;font-weight:600;transition:all .15s}
+.tab.active{background:#6366f1;color:#fff}
+.mode{display:none}
+.mode.active{display:block}
+.results{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.result-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.result-card.full{grid-column:1/-1}
+.result-label{font-size:.8rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.result-value{font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.result-value.green{background:linear-gradient(135deg,#34d399,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Discount Calculator</h1>
+<p class="subtitle">Calculate savings from discounts or reverse-calculate original prices</p>
+<div class="tool-area">
+  <div class="tabs">
+    <div class="tab active" onclick="switchMode(0)">Discount → Final Price</div>
+    <div class="tab" onclick="switchMode(1)">Final Price → Original</div>
+  </div>
+  <div class="mode active" id="mode0">
+    <div class="field"><label>Original Price ($)</label><input type="number" id="origPrice" placeholder="e.g. 99.99" min="0" step="0.01" oninput="calcDiscount()"></div>
+    <div class="field"><label>Discount (%)</label><input type="number" id="discPct" placeholder="e.g. 25" min="0" max="100" step="0.5" oninput="calcDiscount()"></div>
+    <div class="results" id="res0" style="display:none">
+      <div class="result-card"><div class="result-label">You Save</div><div class="result-value green" id="savings">$0.00</div></div>
+      <div class="result-card"><div class="result-label">Final Price</div><div class="result-value" id="finalPrice">$0.00</div></div>
+    </div>
+  </div>
+  <div class="mode" id="mode1">
+    <div class="field"><label>Final (Sale) Price ($)</label><input type="number" id="salePrice" placeholder="e.g. 74.99" min="0" step="0.01" oninput="calcReverse()"></div>
+    <div class="field"><label>Discount That Was Applied (%)</label><input type="number" id="discPct2" placeholder="e.g. 25" min="0" max="99.99" step="0.5" oninput="calcReverse()"></div>
+    <div class="results" id="res1" style="display:none">
+      <div class="result-card"><div class="result-label">Original Price</div><div class="result-value" id="origResult">$0.00</div></div>
+      <div class="result-card"><div class="result-label">You Saved</div><div class="result-value green" id="savedResult">$0.00</div></div>
+    </div>
+  </div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+function switchMode(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));document.querySelectorAll('.mode').forEach((m,j)=>m.classList.toggle('active',j===i))}
+function calcDiscount(){const p=parseFloat(document.getElementById('origPrice').value)||0;const d=parseFloat(document.getElementById('discPct').value)||0;if(p<=0){document.getElementById('res0').style.display='none';return}const save=p*d/100;document.getElementById('savings').textContent='$'+save.toFixed(2);document.getElementById('finalPrice').textContent='$'+(p-save).toFixed(2);document.getElementById('res0').style.display='grid'}
+function calcReverse(){const s=parseFloat(document.getElementById('salePrice').value)||0;const d=parseFloat(document.getElementById('discPct2').value)||0;if(s<=0||d>=100){document.getElementById('res1').style.display='none';return}const orig=s/(1-d/100);const saved=orig-s;document.getElementById('origResult').textContent='$'+orig.toFixed(2);document.getElementById('savedResult').textContent='$'+saved.toFixed(2);document.getElementById('res1').style.display='grid'}
+</script>
+</body>
+</html>

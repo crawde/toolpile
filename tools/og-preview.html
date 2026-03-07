@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Graph Preview — Free OG Tag Preview Tool | ToolPile</title>
+<meta name="description" content="Preview how your Open Graph meta tags will appear on Facebook, Twitter, LinkedIn, and Slack. Paste your OG tags and see live previews.">
+<meta name="keywords" content="open graph preview, og tags preview, facebook share preview, twitter card preview, social media preview, link preview">
+<meta property="og:title" content="Open Graph Preview — Free OG Tag Preview Tool">
+<meta property="og:description" content="Preview how links will appear on social media. Paste OG tags and see Facebook, Twitter, LinkedIn previews.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/og-preview">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{resize:vertical;min-height:140px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.8rem}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.field{margin-bottom:1rem}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab{text-align:center;padding:.5rem 1rem;border-radius:8px;background:#334155;color:#94a3b8;cursor:pointer;font-weight:600;font-size:.85rem;transition:all .15s}
+.tab.active{background:#6366f1;color:#fff}
+.or-divider{text-align:center;color:#64748b;margin:1rem 0;font-size:.85rem}
+.preview-area{margin-top:1.5rem}
+.preview-card{display:none;margin-bottom:1rem}
+.preview-card.active{display:block}
+/* Facebook */
+.fb-preview{background:#fff;border-radius:8px;overflow:hidden;border:1px solid #dadde1;max-width:500px}
+.fb-preview img{width:100%;height:260px;object-fit:cover;background:#e4e6eb}
+.fb-preview .fb-info{padding:10px 12px}
+.fb-preview .fb-domain{font-size:12px;color:#606770;text-transform:uppercase}
+.fb-preview .fb-title{font-size:16px;font-weight:600;color:#1d2129;line-height:1.3;margin:3px 0}
+.fb-preview .fb-desc{font-size:14px;color:#606770;line-height:1.3}
+/* Twitter */
+.tw-preview{background:#15202b;border-radius:16px;overflow:hidden;border:1px solid #38444d;max-width:500px}
+.tw-preview img{width:100%;height:250px;object-fit:cover;background:#192734}
+.tw-preview .tw-info{padding:10px 12px}
+.tw-preview .tw-domain{font-size:13px;color:#8899a6}
+.tw-preview .tw-title{font-size:15px;font-weight:700;color:#fff;margin:2px 0}
+.tw-preview .tw-desc{font-size:14px;color:#8899a6;line-height:1.3}
+/* LinkedIn */
+.li-preview{background:#fff;border-radius:8px;overflow:hidden;border:1px solid #e0dfdc;max-width:500px}
+.li-preview img{width:100%;height:250px;object-fit:cover;background:#f3f2ef}
+.li-preview .li-info{padding:8px 12px}
+.li-preview .li-title{font-size:14px;font-weight:600;color:#000;line-height:1.3}
+.li-preview .li-domain{font-size:12px;color:#666;margin-top:2px}
+/* Slack */
+.sl-preview{background:#1a1d21;border-radius:8px;border-left:4px solid #818cf8;padding:8px 12px;max-width:500px;display:flex;gap:12px}
+.sl-preview img{width:80px;height:80px;border-radius:4px;object-fit:cover;background:#2c2d30;flex-shrink:0}
+.sl-preview .sl-text{flex:1}
+.sl-preview .sl-domain{font-size:13px;color:#e8912d;font-weight:700}
+.sl-preview .sl-title{font-size:15px;color:#1d9bd1;font-weight:700;margin:2px 0}
+.sl-preview .sl-desc{font-size:14px;color:#d1d2d3;line-height:1.3}
+.no-img{display:flex;align-items:center;justify-content:center;color:#999;font-size:.85rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Open Graph Preview</h1>
+<p class="subtitle">See how your link will appear on Facebook, Twitter, LinkedIn & Slack</p>
+<div class="tool-area">
+  <div class="field"><label>Paste OG Meta Tags HTML</label><textarea id="tags" placeholder='<meta property="og:title" content="My Page">
+<meta property="og:description" content="A great page">
+<meta property="og:image" content="https://example.com/image.jpg">
+<meta property="og:url" content="https://example.com">'></textarea></div>
+  <div class="or-divider">— or fill in manually —</div>
+  <div class="field"><label>Title</label><input id="m_title" placeholder="Page Title"></div>
+  <div class="field"><label>Description</label><input id="m_desc" placeholder="Page description"></div>
+  <div class="field"><label>Image URL</label><input id="m_image" placeholder="https://example.com/og-image.png"></div>
+  <div class="field"><label>URL</label><input id="m_url" placeholder="https://example.com"></div>
+  <button class="btn" onclick="preview()">Preview</button>
+  <div class="preview-area" id="previewArea" style="display:none">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab(0)">Facebook</div>
+      <div class="tab" onclick="showTab(1)">Twitter</div>
+      <div class="tab" onclick="showTab(2)">LinkedIn</div>
+      <div class="tab" onclick="showTab(3)">Slack</div>
+    </div>
+    <!-- Facebook -->
+    <div class="preview-card active" id="pv0">
+      <div class="fb-preview">
+        <img id="fb-img" src="" alt=""><div class="fb-info"><div class="fb-domain" id="fb-domain"></div><div class="fb-title" id="fb-title"></div><div class="fb-desc" id="fb-desc"></div></div>
+      </div>
+    </div>
+    <!-- Twitter -->
+    <div class="preview-card" id="pv1">
+      <div class="tw-preview">
+        <img id="tw-img" src="" alt=""><div class="tw-info"><div class="tw-title" id="tw-title"></div><div class="tw-desc" id="tw-desc"></div><div class="tw-domain" id="tw-domain"></div></div>
+      </div>
+    </div>
+    <!-- LinkedIn -->
+    <div class="preview-card" id="pv2">
+      <div class="li-preview">
+        <img id="li-img" src="" alt=""><div class="li-info"><div class="li-title" id="li-title"></div><div class="li-domain" id="li-domain"></div></div>
+      </div>
+    </div>
+    <!-- Slack -->
+    <div class="preview-card" id="pv3">
+      <div class="sl-preview">
+        <div class="sl-text"><div class="sl-domain" id="sl-domain"></div><div class="sl-title" id="sl-title"></div><div class="sl-desc" id="sl-desc"></div></div>
+        <img id="sl-img" src="" alt="">
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+function showTab(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));document.querySelectorAll('.preview-card').forEach((c,j)=>c.classList.toggle('active',j===i))}
+function extractMeta(html,prop){const re=new RegExp('<meta[^>]+(?:property|name)=["\']'+prop+'["\'][^>]+content=["\']([^"\']*)["\']','i');const m=html.match(re);if(m)return m[1];const re2=new RegExp('content=["\']([^"\']*)["\'][^>]+(?:property|name)=["\']'+prop+'["\']','i');const m2=html.match(re2);return m2?m2[1]:''}
+function getDomain(url){try{return new URL(url).hostname}catch(e){return url}}
+function preview(){
+  const tags=document.getElementById('tags').value.trim();
+  let title=document.getElementById('m_title').value.trim();
+  let desc=document.getElementById('m_desc').value.trim();
+  let image=document.getElementById('m_image').value.trim();
+  let url=document.getElementById('m_url').value.trim();
+  if(tags){
+    if(!title)title=extractMeta(tags,'og:title')||extractMeta(tags,'twitter:title');
+    if(!desc)desc=extractMeta(tags,'og:description')||extractMeta(tags,'twitter:description');
+    if(!image)image=extractMeta(tags,'og:image')||extractMeta(tags,'twitter:image');
+    if(!url)url=extractMeta(tags,'og:url')||extractMeta(tags,'twitter:url');
+  }
+  if(!title&&!desc){alert('Please provide at least a title or description');return}
+  const domain=getDomain(url)||'example.com';
+  // Facebook
+  document.getElementById('fb-title').textContent=title;document.getElementById('fb-desc').textContent=desc;document.getElementById('fb-domain').textContent=domain.toUpperCase();
+  const fbImg=document.getElementById('fb-img');if(image){fbImg.src=image;fbImg.style.display='block'}else{fbImg.style.display='none'}
+  // Twitter
+  document.getElementById('tw-title').textContent=title;document.getElementById('tw-desc').textContent=desc;document.getElementById('tw-domain').textContent=domain;
+  const twImg=document.getElementById('tw-img');if(image){twImg.src=image;twImg.style.display='block'}else{twImg.style.display='none'}
+  // LinkedIn
+  document.getElementById('li-title').textContent=title;document.getElementById('li-domain').textContent=domain;
+  const liImg=document.getElementById('li-img');if(image){liImg.src=image;liImg.style.display='block'}else{liImg.style.display='none'}
+  // Slack
+  document.getElementById('sl-title').textContent=title;document.getElementById('sl-desc').textContent=desc;document.getElementById('sl-domain').textContent=domain;
+  const slImg=document.getElementById('sl-img');if(image){slImg.src=image;slImg.style.display='block'}else{slImg.style.display='none'}
+  document.getElementById('previewArea').style.display='block';
+}
+</script>
+</body>
+</html>

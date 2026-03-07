@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG to PNG Converter — Free Online SVG Converter | ToolPile</title>
+<meta name="description" content="Convert SVG to PNG online for free. Paste SVG code or upload a file, set custom dimensions, and download high-quality PNG.">
+<meta name="keywords" content="svg to png, svg converter, convert svg, svg to image, svg to png online, vector to raster">
+<meta property="og:title" content="SVG to PNG Converter — Free Online SVG Converter">
+<meta property="og:description" content="Convert SVG files to PNG with custom dimensions. Paste code or upload. Free tool.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/svg-to-png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{resize:vertical;min-height:150px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.8rem}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.upload-zone{border:2px dashed #334155;border-radius:10px;padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:1rem}
+.upload-zone:hover,.upload-zone.drag{border-color:#818cf8}
+.upload-zone p{color:#94a3b8;font-size:.9rem}
+.upload-zone input{display:none}
+.preview-area{margin-top:1.5rem;text-align:center}
+.preview-area canvas{max-width:100%;background:repeating-conic-gradient(#334155 0% 25%,#1e293b 0% 50%) 50%/20px 20px;border-radius:8px;border:1px solid #334155}
+.or-divider{text-align:center;color:#64748b;margin:.75rem 0;font-size:.85rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>SVG to PNG Converter</h1>
+<p class="subtitle">Convert SVG code or files to PNG with custom dimensions</p>
+<div class="tool-area">
+  <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()">
+    <p>📁 Click to upload SVG or drag & drop</p>
+    <input type="file" id="fileIn" accept=".svg,image/svg+xml">
+  </div>
+  <div class="or-divider">— or paste SVG code —</div>
+  <div class="field"><label>SVG Code</label><textarea id="svgCode" placeholder='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">...</svg>'></textarea></div>
+  <div class="row">
+    <div><label>Width (px)</label><input type="number" id="width" value="512" min="1" max="8192"></div>
+    <div><label>Height (px)</label><input type="number" id="height" value="512" min="1" max="8192"></div>
+  </div>
+  <div class="row">
+    <div><label>Background</label>
+      <select id="bg"><option value="transparent">Transparent</option><option value="white">White</option><option value="black">Black</option></select>
+    </div>
+    <div><label>Scale</label>
+      <select id="scale"><option value="1">1x</option><option value="2">2x</option><option value="3">3x</option><option value="4">4x</option></select>
+    </div>
+  </div>
+  <button class="btn" onclick="convert()">Convert & Preview</button>
+  <div class="preview-area" id="preview" style="display:none">
+    <canvas id="canvas"></canvas>
+    <div style="margin-top:1rem"><button class="btn" onclick="download()">Download PNG</button></div>
+  </div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+const dropZone=document.getElementById('dropZone'),fileIn=document.getElementById('fileIn');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag');handleFile(e.dataTransfer.files[0])});
+fileIn.addEventListener('change',e=>handleFile(e.target.files[0]));
+function handleFile(f){if(!f)return;const reader=new FileReader();reader.onload=e=>{document.getElementById('svgCode').value=e.target.result};reader.readAsText(f)}
+function convert(){
+  let svg=document.getElementById('svgCode').value.trim();
+  if(!svg){alert('Please provide SVG code or upload a file');return}
+  const w=parseInt(document.getElementById('width').value)||512;
+  const h=parseInt(document.getElementById('height').value)||512;
+  const s=parseInt(document.getElementById('scale').value)||1;
+  const bg=document.getElementById('bg').value;
+  const canvas=document.getElementById('canvas');
+  canvas.width=w*s;canvas.height=h*s;
+  const ctx=canvas.getContext('2d');
+  if(bg!=='transparent'){ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height)}
+  const blob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const img=new Image();
+  img.onload=()=>{ctx.drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);document.getElementById('preview').style.display='block';canvas.style.maxHeight='400px'};
+  img.onerror=()=>{alert('Invalid SVG. Please check your code.');URL.revokeObjectURL(url)};
+  img.src=url;
+}
+function download(){
+  const canvas=document.getElementById('canvas');
+  const a=document.createElement('a');a.download='converted.png';a.href=canvas.toDataURL('image/png');a.click();
+}
+</script>
+</body>
+</html>

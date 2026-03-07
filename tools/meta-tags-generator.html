@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Tags Generator — Free HTML Meta Tag Generator | ToolPile</title>
+<meta name="description" content="Generate HTML meta tags, Open Graph tags, and Twitter Card tags for SEO. Copy-paste ready code for your website.">
+<meta name="keywords" content="meta tags generator, open graph generator, twitter card generator, SEO tags, HTML meta, og tags generator">
+<meta property="og:title" content="Meta Tags Generator — Free HTML Meta Tag Generator">
+<meta property="og:description" content="Generate SEO meta tags, Open Graph and Twitter Card tags instantly. Free tool.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/meta-tags-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{resize:vertical;min-height:120px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.85rem}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.result{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.8rem;white-space:pre-wrap;word-break:break-all;position:relative;min-height:60px;line-height:1.5}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:#334155;border:none;color:#94a3b8;padding:.3rem .6rem;border-radius:6px;cursor:pointer;font-size:.75rem}
+.copy-btn:hover{background:#475569;color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Meta Tags Generator</h1>
+<p class="subtitle">Generate HTML meta tags, Open Graph & Twitter Card tags for perfect SEO</p>
+<div class="tool-area">
+  <div class="field"><label>Page Title</label><input type="text" id="title" placeholder="My Awesome Page" oninput="gen()"></div>
+  <div class="field"><label>Description</label><textarea id="desc" rows="3" style="min-height:70px" placeholder="A brief description of your page (150-160 chars ideal)" oninput="gen()"></textarea></div>
+  <div class="row">
+    <div><label>Canonical URL</label><input type="url" id="url" placeholder="https://example.com/page" oninput="gen()"></div>
+    <div><label>Site Name</label><input type="text" id="site" placeholder="My Site" oninput="gen()"></div>
+  </div>
+  <div class="row">
+    <div><label>Image URL</label><input type="url" id="image" placeholder="https://example.com/og-image.png" oninput="gen()"></div>
+    <div><label>Type</label>
+      <select id="type" onchange="gen()"><option value="website">website</option><option value="article">article</option><option value="product">product</option><option value="profile">profile</option></select>
+    </div>
+  </div>
+  <div class="field"><label>Keywords (comma-separated)</label><input type="text" id="keywords" placeholder="keyword1, keyword2, keyword3" oninput="gen()"></div>
+  <div class="field"><label>Author</label><input type="text" id="author" placeholder="Author Name" oninput="gen()"></div>
+  <button class="btn" onclick="gen()">Generate Meta Tags</button>
+  <div class="result" id="output" style="display:none"><button class="copy-btn" onclick="copyCode()">Copy</button><code id="code"></code></div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function gen(){
+  const t=document.getElementById('title').value.trim();
+  const d=document.getElementById('desc').value.trim();
+  const u=document.getElementById('url').value.trim();
+  const s=document.getElementById('site').value.trim();
+  const img=document.getElementById('image').value.trim();
+  const tp=document.getElementById('type').value;
+  const kw=document.getElementById('keywords').value.trim();
+  const au=document.getElementById('author').value.trim();
+  if(!t&&!d){document.getElementById('output').style.display='none';return}
+  let lines=[];
+  lines.push('<!-- Primary Meta Tags -->');
+  if(t)lines.push('<title>'+esc(t)+'</title>');
+  if(t)lines.push('<meta name="title" content="'+esc(t)+'">');
+  if(d)lines.push('<meta name="description" content="'+esc(d)+'">');
+  if(kw)lines.push('<meta name="keywords" content="'+esc(kw)+'">');
+  if(au)lines.push('<meta name="author" content="'+esc(au)+'">');
+  if(u)lines.push('<link rel="canonical" href="'+esc(u)+'">');
+  lines.push('');
+  lines.push('<!-- Open Graph / Facebook -->');
+  lines.push('<meta property="og:type" content="'+tp+'">');
+  if(u)lines.push('<meta property="og:url" content="'+esc(u)+'">');
+  if(t)lines.push('<meta property="og:title" content="'+esc(t)+'">');
+  if(d)lines.push('<meta property="og:description" content="'+esc(d)+'">');
+  if(img)lines.push('<meta property="og:image" content="'+esc(img)+'">');
+  if(s)lines.push('<meta property="og:site_name" content="'+esc(s)+'">');
+  lines.push('');
+  lines.push('<!-- Twitter -->');
+  lines.push('<meta property="twitter:card" content="summary_large_image">');
+  if(u)lines.push('<meta property="twitter:url" content="'+esc(u)+'">');
+  if(t)lines.push('<meta property="twitter:title" content="'+esc(t)+'">');
+  if(d)lines.push('<meta property="twitter:description" content="'+esc(d)+'">');
+  if(img)lines.push('<meta property="twitter:image" content="'+esc(img)+'">');
+  document.getElementById('code').textContent=lines.join('\n');
+  document.getElementById('output').style.display='block';
+}
+function copyCode(){navigator.clipboard.writeText(document.getElementById('code').textContent);const b=document.querySelector('.copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500)}
+</script>
+</body>
+</html>

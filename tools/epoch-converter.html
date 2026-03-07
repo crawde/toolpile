@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epoch Converter — Unix Timestamp Converter | ToolPile</title>
+<meta name="description" content="Convert Unix epoch timestamps to human-readable dates and vice versa. Live ticking current epoch. Supports seconds and milliseconds.">
+<meta name="keywords" content="epoch converter, unix timestamp, timestamp converter, epoch time, unix time converter, date to epoch">
+<meta property="og:title" content="Epoch Converter — Unix Timestamp Converter">
+<meta property="og:description" content="Convert Unix timestamps to dates and dates to timestamps. Live current epoch display.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/epoch-converter">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.current-epoch{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center;margin-bottom:1.5rem}
+.epoch-label{font-size:.8rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.epoch-value{font-size:2rem;font-weight:800;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.epoch-human{font-size:.85rem;color:#94a3b8;margin-top:.25rem}
+.section-title{font-size:1rem;font-weight:700;color:#e2e8f0;margin:1.5rem 0 1rem;padding-top:1rem;border-top:1px solid #334155}
+.result{margin-top:1rem;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.9rem;position:relative}
+.result-row{display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #1e293b}
+.result-row:last-child{border-bottom:none}
+.result-key{color:#94a3b8}
+.result-val{color:#e2e8f0;font-weight:600}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:#334155;border:none;color:#94a3b8;padding:.3rem .6rem;border-radius:6px;cursor:pointer;font-size:.75rem}
+.copy-btn:hover{background:#475569;color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Epoch Converter</h1>
+<p class="subtitle">Convert Unix timestamps to human-readable dates and vice versa</p>
+<div class="tool-area">
+  <div class="current-epoch">
+    <div class="epoch-label">Current Unix Epoch</div>
+    <div class="epoch-value" id="liveEpoch"></div>
+    <div class="epoch-human" id="liveHuman"></div>
+  </div>
+  <div class="section-title">Epoch → Human Date</div>
+  <div class="row">
+    <div><label>Unix Timestamp</label><input type="text" id="epochIn" placeholder="e.g. 1709827200"></div>
+    <div><label>Unit</label>
+      <select id="epochUnit"><option value="s">Seconds</option><option value="ms">Milliseconds</option></select>
+    </div>
+  </div>
+  <button class="btn" onclick="epochToDate()">Convert to Date</button>
+  <div class="result" id="e2dResult" style="display:none"></div>
+
+  <div class="section-title">Human Date → Epoch</div>
+  <div class="row">
+    <div><label>Date</label><input type="date" id="dateIn"></div>
+    <div><label>Time</label><input type="time" id="timeIn" step="1" value="00:00:00"></div>
+  </div>
+  <button class="btn" onclick="dateToEpoch()">Convert to Epoch</button>
+  <div class="result" id="d2eResult" style="display:none"></div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+function tick(){const now=Math.floor(Date.now()/1000);document.getElementById('liveEpoch').textContent=now;document.getElementById('liveHuman').textContent=new Date().toISOString()}
+tick();setInterval(tick,1000);
+function epochToDate(){
+  let v=document.getElementById('epochIn').value.trim();if(!v)return;
+  let ts=parseInt(v);const unit=document.getElementById('epochUnit').value;
+  if(unit==='s')ts*=1000;
+  const d=new Date(ts);
+  if(isNaN(d.getTime())){document.getElementById('e2dResult').innerHTML='<span style="color:#f87171">Invalid timestamp</span>';document.getElementById('e2dResult').style.display='block';return}
+  const html='<div class="result-row"><span class="result-key">UTC</span><span class="result-val">'+d.toUTCString()+'</span></div>'
+    +'<div class="result-row"><span class="result-key">ISO 8601</span><span class="result-val">'+d.toISOString()+'</span></div>'
+    +'<div class="result-row"><span class="result-key">Local</span><span class="result-val">'+d.toLocaleString()+'</span></div>'
+    +'<div class="result-row"><span class="result-key">Relative</span><span class="result-val">'+relTime(ts)+'</span></div>';
+  document.getElementById('e2dResult').innerHTML=html;document.getElementById('e2dResult').style.display='block';
+}
+function dateToEpoch(){
+  const dateStr=document.getElementById('dateIn').value;const timeStr=document.getElementById('timeIn').value||'00:00:00';
+  if(!dateStr)return;
+  const d=new Date(dateStr+'T'+timeStr);
+  if(isNaN(d.getTime()))return;
+  const sec=Math.floor(d.getTime()/1000);const ms=d.getTime();
+  const html='<div class="result-row"><span class="result-key">Seconds</span><span class="result-val">'+sec+'</span></div>'
+    +'<div class="result-row"><span class="result-key">Milliseconds</span><span class="result-val">'+ms+'</span></div>'
+    +'<div class="result-row"><span class="result-key">ISO 8601</span><span class="result-val">'+d.toISOString()+'</span></div>';
+  document.getElementById('d2eResult').innerHTML=html;document.getElementById('d2eResult').style.display='block';
+}
+function relTime(ms){const diff=Date.now()-ms;const abs=Math.abs(diff);const suffix=diff>0?' ago':' from now';if(abs<60000)return Math.round(abs/1000)+' seconds'+suffix;if(abs<3600000)return Math.round(abs/60000)+' minutes'+suffix;if(abs<86400000)return Math.round(abs/3600000)+' hours'+suffix;if(abs<2592000000)return Math.round(abs/86400000)+' days'+suffix;return Math.round(abs/2592000000)+' months'+suffix}
+</script>
+</body>
+</html>

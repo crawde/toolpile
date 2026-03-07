@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tip Calculator — Free Online Tip & Split Calculator | ToolPile</title>
+<meta name="description" content="Free online tip calculator. Enter your bill amount, choose a tip percentage, split between people, and instantly see tip amount, total, and per-person cost.">
+<meta name="keywords" content="tip calculator, split bill calculator, gratuity calculator, restaurant tip, bill splitter, tip percentage">
+<meta property="og:title" content="Tip Calculator — Free Online Tip & Split Calculator">
+<meta property="og:description" content="Calculate tips instantly. Split bills between friends. Free, fast, no signup.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/tip-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.tip-presets{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.tip-preset{background:#334155;border:1px solid #475569;border-radius:8px;padding:.5rem 1rem;color:#e2e8f0;cursor:pointer;font-weight:600;transition:all .15s}
+.tip-preset:hover,.tip-preset.active{background:#6366f1;border-color:#818cf8;color:#fff}
+.results{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.result-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.result-card.full{grid-column:1/-1}
+.result-label{font-size:.8rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.result-value{font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Tip Calculator</h1>
+<p class="subtitle">Calculate tips instantly and split the bill between friends</p>
+<div class="tool-area">
+  <div class="field">
+    <label for="bill">Bill Amount ($)</label>
+    <input type="number" id="bill" placeholder="e.g. 85.50" min="0" step="0.01" value="">
+  </div>
+  <div class="field">
+    <label>Tip Percentage</label>
+    <div class="tip-presets">
+      <div class="tip-preset" data-tip="10">10%</div>
+      <div class="tip-preset" data-tip="15">15%</div>
+      <div class="tip-preset active" data-tip="18">18%</div>
+      <div class="tip-preset" data-tip="20">20%</div>
+      <div class="tip-preset" data-tip="25">25%</div>
+    </div>
+    <input type="number" id="tipPct" placeholder="Custom %" min="0" max="100" step="0.5" value="18">
+  </div>
+  <div class="field">
+    <label for="people">Split Between (people)</label>
+    <input type="number" id="people" placeholder="1" min="1" step="1" value="1">
+  </div>
+  <div class="results" id="results" style="display:none">
+    <div class="result-card">
+      <div class="result-label">Tip Amount</div>
+      <div class="result-value" id="tipAmt">$0.00</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">Total</div>
+      <div class="result-value" id="totalAmt">$0.00</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">Per Person (Tip)</div>
+      <div class="result-value" id="perTip">$0.00</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">Per Person (Total)</div>
+      <div class="result-value" id="perTotal">$0.00</div>
+    </div>
+  </div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+const billEl=document.getElementById('bill'),tipEl=document.getElementById('tipPct'),peopleEl=document.getElementById('people'),results=document.getElementById('results');
+document.querySelectorAll('.tip-preset').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.tip-preset').forEach(x=>x.classList.remove('active'));b.classList.add('active');tipEl.value=b.dataset.tip;calc()})});
+function calc(){const bill=parseFloat(billEl.value)||0;const tip=parseFloat(tipEl.value)||0;const people=parseInt(peopleEl.value)||1;if(bill<=0){results.style.display='none';return}results.style.display='grid';const tipAmt=bill*tip/100;const total=bill+tipAmt;document.getElementById('tipAmt').textContent='$'+tipAmt.toFixed(2);document.getElementById('totalAmt').textContent='$'+total.toFixed(2);document.getElementById('perTip').textContent='$'+(tipAmt/people).toFixed(2);document.getElementById('perTotal').textContent='$'+(total/people).toFixed(2)}
+[billEl,tipEl,peopleEl].forEach(el=>el.addEventListener('input',()=>{if(el===tipEl){document.querySelectorAll('.tip-preset').forEach(b=>{b.classList.toggle('active',b.dataset.tip===tipEl.value)})}calc()}));
+</script>
+</body>
+</html>

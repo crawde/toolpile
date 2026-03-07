@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>.htaccess Generator — Free Apache Config Generator | ToolPile</title>
+<meta name="description" content="Generate .htaccess rules for Apache — HTTPS redirect, GZIP compression, caching, custom error pages, IP blocking, and more. Checkbox-based UI.">
+<meta name="keywords" content="htaccess generator, apache config, htaccess redirect, gzip compression, browser caching, htaccess rules">
+<meta property="og:title" content=".htaccess Generator — Free Apache Config Generator">
+<meta property="og:description" content="Generate common .htaccess rules: redirects, GZIP, caching, error pages. Free, no signup.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/htaccess-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{resize:vertical;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.8rem}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.field{margin-bottom:1rem}
+.section{margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #334155}
+.section:last-of-type{border-bottom:none}
+.section h3{font-size:1rem;font-weight:700;margin-bottom:.75rem}
+.checkbox-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;cursor:pointer}
+.checkbox-row input[type="checkbox"]{width:auto;appearance:auto;cursor:pointer}
+.checkbox-row label{margin-bottom:0;cursor:pointer;color:#e2e8f0;font-size:.9rem}
+.sub-field{margin-left:1.5rem;margin-top:.5rem;margin-bottom:.5rem}
+.sub-field input,.sub-field textarea{font-size:.9rem}
+.result{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.8rem;white-space:pre-wrap;word-break:break-all;position:relative;min-height:60px;max-height:500px;overflow-y:auto}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:#334155;border:none;color:#94a3b8;padding:.3rem .6rem;border-radius:6px;cursor:pointer;font-size:.75rem}
+.copy-btn:hover{background:#475569;color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>.htaccess Generator</h1>
+<p class="subtitle">Generate common Apache .htaccess rules with a visual editor</p>
+<div class="tool-area">
+  <div class="section">
+    <h3>Security & Redirects</h3>
+    <div class="checkbox-row"><input type="checkbox" id="forceHttps" onchange="gen()"><label for="forceHttps">Force HTTPS</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="forceWww" onchange="gen()"><label for="forceWww">Force WWW</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="removeWww" onchange="gen()"><label for="removeWww">Remove WWW</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="removeTrailingSlash" onchange="gen()"><label for="removeTrailingSlash">Remove Trailing Slash</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="preventHotlinking" onchange="gen()"><label for="preventHotlinking">Prevent Image Hotlinking</label></div>
+    <div class="sub-field" id="hotlinkDomain" style="display:none"><label>Your Domain</label><input type="text" id="hotlinkDomainVal" placeholder="example.com" oninput="gen()"></div>
+    <div class="checkbox-row"><input type="checkbox" id="blockXmlrpc" onchange="gen()"><label for="blockXmlrpc">Block xmlrpc.php (WordPress)</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="disableDirectoryBrowsing" onchange="gen()"><label for="disableDirectoryBrowsing">Disable Directory Browsing</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="hideServerSignature" onchange="gen()"><label for="hideServerSignature">Hide Server Signature</label></div>
+  </div>
+  <div class="section">
+    <h3>Performance</h3>
+    <div class="checkbox-row"><input type="checkbox" id="gzip" onchange="gen()"><label for="gzip">Enable GZIP Compression</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="caching" onchange="gen()"><label for="caching">Browser Caching</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="keepAlive" onchange="gen()"><label for="keepAlive">Keep-Alive</label></div>
+  </div>
+  <div class="section">
+    <h3>Custom Error Pages</h3>
+    <div class="checkbox-row"><input type="checkbox" id="err404" onchange="gen()"><label for="err404">Custom 404 Page</label></div>
+    <div class="sub-field" id="err404Path" style="display:none"><input type="text" id="err404Val" value="/404.html" oninput="gen()"></div>
+    <div class="checkbox-row"><input type="checkbox" id="err403" onchange="gen()"><label for="err403">Custom 403 Page</label></div>
+    <div class="sub-field" id="err403Path" style="display:none"><input type="text" id="err403Val" value="/403.html" oninput="gen()"></div>
+    <div class="checkbox-row"><input type="checkbox" id="err500" onchange="gen()"><label for="err500">Custom 500 Page</label></div>
+    <div class="sub-field" id="err500Path" style="display:none"><input type="text" id="err500Val" value="/500.html" oninput="gen()"></div>
+  </div>
+  <div class="section">
+    <h3>IP Blocking</h3>
+    <div class="checkbox-row"><input type="checkbox" id="blockIps" onchange="gen()"><label for="blockIps">Block Specific IPs</label></div>
+    <div class="sub-field" id="ipList" style="display:none"><label>IPs (one per line)</label><textarea id="ipListVal" rows="3" style="min-height:60px" placeholder="192.168.1.1&#10;10.0.0.0/8" oninput="gen()"></textarea></div>
+  </div>
+  <div class="section">
+    <h3>Custom Redirects</h3>
+    <div class="checkbox-row"><input type="checkbox" id="customRedirects" onchange="gen()"><label for="customRedirects">Add Custom Redirects</label></div>
+    <div class="sub-field" id="redirectList" style="display:none"><label>One per line: /old-path /new-path</label><textarea id="redirectListVal" rows="3" style="min-height:60px" placeholder="/old-page /new-page&#10;/blog/old /blog/new" oninput="gen()"></textarea></div>
+  </div>
+  <button class="btn" onclick="gen()">Generate .htaccess</button>
+  <div class="result" id="output" style="display:none"><button class="copy-btn" onclick="copyCode()">Copy</button><code id="code"></code></div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+document.getElementById('preventHotlinking').addEventListener('change',function(){document.getElementById('hotlinkDomain').style.display=this.checked?'block':'none'});
+document.getElementById('err404').addEventListener('change',function(){document.getElementById('err404Path').style.display=this.checked?'block':'none'});
+document.getElementById('err403').addEventListener('change',function(){document.getElementById('err403Path').style.display=this.checked?'block':'none'});
+document.getElementById('err500').addEventListener('change',function(){document.getElementById('err500Path').style.display=this.checked?'block':'none'});
+document.getElementById('blockIps').addEventListener('change',function(){document.getElementById('ipList').style.display=this.checked?'block':'none'});
+document.getElementById('customRedirects').addEventListener('change',function(){document.getElementById('redirectList').style.display=this.checked?'block':'none'});
+
+function c(id){return document.getElementById(id).checked}
+function v(id){return document.getElementById(id).value.trim()}
+
+function gen(){
+  let parts=[];
+  parts.push('# Generated by ToolPile - https://toolpile.tools');
+  if(c('forceHttps')){parts.push('\n# Force HTTPS\nRewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]')}
+  if(c('forceWww')){parts.push('\n# Force WWW\nRewriteEngine On\nRewriteCond %{HTTP_HOST} !^www\\. [NC]\nRewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]')}
+  if(c('removeWww')){parts.push('\n# Remove WWW\nRewriteEngine On\nRewriteCond %{HTTP_HOST} ^www\\.(.+)$ [NC]\nRewriteRule ^(.*)$ https://%1%{REQUEST_URI} [L,R=301]')}
+  if(c('removeTrailingSlash')){parts.push('\n# Remove Trailing Slash\nRewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^(.*)/$ /$1 [L,R=301]')}
+  if(c('disableDirectoryBrowsing')){parts.push('\n# Disable Directory Browsing\nOptions -Indexes')}
+  if(c('hideServerSignature')){parts.push('\n# Hide Server Signature\nServerSignature Off')}
+  if(c('preventHotlinking')){const d=v('hotlinkDomainVal')||'example.com';parts.push('\n# Prevent Image Hotlinking\nRewriteEngine On\nRewriteCond %{HTTP_REFERER} !^$\nRewriteCond %{HTTP_REFERER} !^https?://'+d.replace(/\./g,'\\.')+'/ [NC]\nRewriteRule \\.(jpg|jpeg|png|gif|svg|webp)$ - [F,NC,L]')}
+  if(c('blockXmlrpc')){parts.push('\n# Block xmlrpc.php\n<Files xmlrpc.php>\n  Order Deny,Allow\n  Deny from all\n</Files>')}
+  if(c('gzip')){parts.push('\n# GZIP Compression\n<IfModule mod_deflate.c>\n  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css\n  AddOutputFilterByType DEFLATE text/javascript application/javascript application/json\n  AddOutputFilterByType DEFLATE application/xml application/xhtml+xml\n  AddOutputFilterByType DEFLATE image/svg+xml\n</IfModule>')}
+  if(c('caching')){parts.push('\n# Browser Caching\n<IfModule mod_expires.c>\n  ExpiresActive On\n  ExpiresByType image/jpeg "access plus 1 year"\n  ExpiresByType image/png "access plus 1 year"\n  ExpiresByType image/gif "access plus 1 year"\n  ExpiresByType image/svg+xml "access plus 1 year"\n  ExpiresByType image/webp "access plus 1 year"\n  ExpiresByType text/css "access plus 1 month"\n  ExpiresByType text/javascript "access plus 1 month"\n  ExpiresByType application/javascript "access plus 1 month"\n  ExpiresByType application/font-woff2 "access plus 1 year"\n  ExpiresDefault "access plus 2 days"\n</IfModule>')}
+  if(c('keepAlive')){parts.push('\n# Keep-Alive\n<IfModule mod_headers.c>\n  Header set Connection keep-alive\n</IfModule>')}
+  if(c('err404'))parts.push('\n# Custom 404\nErrorDocument 404 '+(v('err404Val')||'/404.html'));
+  if(c('err403'))parts.push('\n# Custom 403\nErrorDocument 403 '+(v('err403Val')||'/403.html'));
+  if(c('err500'))parts.push('\n# Custom 500\nErrorDocument 500 '+(v('err500Val')||'/500.html'));
+  if(c('blockIps')){const ips=v('ipListVal').split('\n').filter(Boolean);if(ips.length){parts.push('\n# Block IPs\n<RequireAll>\n  Require all granted\n'+ips.map(ip=>'  Require not ip '+ip.trim()).join('\n')+'\n</RequireAll>')}}
+  if(c('customRedirects')){const lines=v('redirectListVal').split('\n').filter(Boolean);if(lines.length){parts.push('\n# Custom Redirects');lines.forEach(l=>{const p=l.trim().split(/\s+/);if(p.length>=2)parts.push('Redirect 301 '+p[0]+' '+p[1])})}}
+  const txt=parts.join('\n');
+  document.getElementById('code').textContent=txt;
+  document.getElementById('output').style.display='block';
+}
+function copyCode(){navigator.clipboard.writeText(document.getElementById('code').textContent);const b=document.querySelector('.copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500)}
+gen();
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robots.txt Generator — Free Robots.txt File Generator | ToolPile</title>
+<meta name="description" content="Generate a valid robots.txt file with a visual editor. Add user-agent rules, allow/disallow paths, and sitemap URLs.">
+<meta name="keywords" content="robots.txt generator, robots txt creator, SEO robots file, search engine crawl, web crawler rules">
+<meta property="og:title" content="Robots.txt Generator — Free Robots.txt File Generator">
+<meta property="og:description" content="Build a valid robots.txt file with a visual editor. Free, no signup required.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/robots-txt-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.btn-sm{padding:.5rem 1rem;font-size:.85rem;width:auto;border-radius:8px}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#f87171)}
+.btn-danger:hover{box-shadow:0 8px 25px rgba(239,68,68,.3)}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.rule-block{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;margin-bottom:1rem;position:relative}
+.rule-block .remove{position:absolute;top:.5rem;right:.5rem;background:#334155;border:none;color:#f87171;padding:.25rem .5rem;border-radius:6px;cursor:pointer;font-size:.75rem}
+.rule-block .remove:hover{background:#ef4444;color:#fff}
+.directive-row{display:flex;gap:.5rem;margin-bottom:.5rem;align-items:center}
+.directive-row select{width:120px;flex-shrink:0}
+.directive-row input{flex:1}
+.directive-row .del-dir{background:#334155;border:none;color:#f87171;padding:.35rem .5rem;border-radius:6px;cursor:pointer;font-size:.7rem;flex-shrink:0}
+.add-dir{background:#334155;border:none;color:#94a3b8;padding:.35rem .75rem;border-radius:6px;cursor:pointer;font-size:.8rem;margin-top:.25rem}
+.add-dir:hover{background:#475569;color:#e2e8f0}
+.result{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.85rem;white-space:pre-wrap;word-break:break-all;position:relative;min-height:60px}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:#334155;border:none;color:#94a3b8;padding:.3rem .6rem;border-radius:6px;cursor:pointer;font-size:.75rem}
+.copy-btn:hover{background:#475569;color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Robots.txt Generator</h1>
+<p class="subtitle">Build a valid robots.txt file with a visual rule editor</p>
+<div class="tool-area">
+  <div id="rules"></div>
+  <div style="display:flex;gap:.75rem;margin-bottom:1rem">
+    <button class="btn btn-sm" onclick="addRule()">+ Add User-Agent Rule</button>
+  </div>
+  <div class="field"><label>Sitemap URL(s) — one per line</label><textarea id="sitemaps" rows="2" style="min-height:60px" placeholder="https://example.com/sitemap.xml" oninput="gen()"></textarea></div>
+  <button class="btn" onclick="gen()">Generate robots.txt</button>
+  <div class="result" id="output" style="display:none"><button class="copy-btn" onclick="copyCode()">Copy</button><span id="code"></span></div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+let ruleId=0;
+function addRule(){
+  const id=ruleId++;
+  const div=document.createElement('div');div.className='rule-block';div.id='rule-'+id;
+  div.innerHTML='<button class="remove" onclick="this.parentElement.remove();gen()">✕</button><div class="field"><label>User-Agent</label><input type="text" value="*" oninput="gen()" placeholder="e.g. * or Googlebot"></div><div class="directives" id="dirs-'+id+'"></div><button class="add-dir" onclick="addDir('+id+')">+ Add Directive</button>';
+  document.getElementById('rules').appendChild(div);
+  addDir(id);gen();
+}
+function addDir(ruleId){
+  const row=document.createElement('div');row.className='directive-row';
+  row.innerHTML='<select onchange="gen()"><option value="Disallow">Disallow</option><option value="Allow">Allow</option><option value="Crawl-delay">Crawl-delay</option></select><input type="text" placeholder="/path" oninput="gen()"><button class="del-dir" onclick="this.parentElement.remove();gen()">✕</button>';
+  document.getElementById('dirs-'+ruleId).appendChild(row);gen();
+}
+function gen(){
+  const blocks=document.querySelectorAll('.rule-block');let out=[];
+  blocks.forEach(b=>{
+    const ua=b.querySelector('input').value.trim()||'*';
+    let lines=['User-agent: '+ua];
+    b.querySelectorAll('.directive-row').forEach(r=>{
+      const type=r.querySelector('select').value;
+      const val=r.querySelector('input').value.trim();
+      lines.push(type+': '+val);
+    });
+    out.push(lines.join('\n'));
+  });
+  const sitemaps=document.getElementById('sitemaps').value.trim().split('\n').filter(Boolean).map(s=>'Sitemap: '+s.trim());
+  if(sitemaps.length)out.push(sitemaps.join('\n'));
+  const txt=out.join('\n\n');
+  document.getElementById('code').textContent=txt;
+  document.getElementById('output').style.display=txt?'block':'none';
+}
+function copyCode(){navigator.clipboard.writeText(document.getElementById('code').textContent);const b=document.querySelector('.copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500)}
+addRule();
+</script>
+</body>
+</html>

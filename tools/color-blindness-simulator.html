@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Blindness Simulator — See Colors Through Different Eyes | ToolPile</title>
+<meta name="description" content="Simulate how colors appear to people with color blindness. Test protanopia, deuteranopia, tritanopia, and achromatopsia. Free accessibility tool.">
+<meta name="keywords" content="color blindness simulator, color vision deficiency, protanopia, deuteranopia, tritanopia, achromatopsia, accessibility tool, color blind test">
+<meta property="og:title" content="Color Blindness Simulator — See Colors Through Different Eyes">
+<meta property="og:description" content="Simulate color blindness types: protanopia, deuteranopia, tritanopia. Free accessibility tool.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/color-blindness-simulator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+input[type="color"]{height:50px;padding:4px;cursor:pointer}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.swatches{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem}
+.swatch{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1rem;text-align:center;overflow:hidden}
+.swatch-color{height:80px;border-radius:8px;margin-bottom:.75rem;position:relative}
+.swatch-label{font-weight:700;font-size:.9rem;margin-bottom:.25rem}
+.swatch-hex{font-size:.8rem;color:#94a3b8;font-family:'SF Mono',monospace}
+.swatch-info{font-size:.7rem;color:#64748b;margin-top:.25rem}
+.original-row{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1rem;display:flex;align-items:center;gap:1rem}
+.original-swatch{width:60px;height:60px;border-radius:8px;flex-shrink:0}
+.original-info h3{font-size:1rem;font-weight:700}
+.original-info p{font-size:.85rem;color:#94a3b8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Color Blindness Simulator</h1>
+<p class="subtitle">See how colors appear under different types of color vision deficiency</p>
+<div class="tool-area">
+  <div class="row">
+    <div><label>Pick a Color</label><input type="color" id="colorPicker" value="#6366f1" oninput="simulate()"></div>
+    <div><label>Hex Code</label><input type="text" id="hexInput" value="#6366f1" oninput="syncHex()" placeholder="#6366f1"></div>
+  </div>
+  <div class="original-row" id="original">
+    <div class="original-swatch" id="origSwatch"></div>
+    <div class="original-info"><h3>Original Color</h3><p id="origInfo"></p></div>
+  </div>
+  <div class="swatches" id="swatches"></div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+function hexToRgb(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];return[parseInt(hex.substring(0,2),16),parseInt(hex.substring(2,4),16),parseInt(hex.substring(4,6),16)]}
+function rgbToHex(r,g,b){return'#'+[r,g,b].map(x=>Math.round(Math.min(255,Math.max(0,x))).toString(16).padStart(2,'0')).join('')}
+function linearize(c){c/=255;return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4)}
+function delinearize(c){return c<=0.0031308?Math.round(c*12.92*255):Math.round((1.055*Math.pow(c,1/2.4)-0.055)*255)}
+
+// Color blindness simulation using Brettel/Vienot matrices
+const matrices={
+  protanopia:[[0.152286,1.052583,-0.204868],[-0.114503,0.786281,0.328223],[0.004733,-0.048116,1.043382]],
+  deuteranopia:[[0.367322,0.860646,-0.227968],[-0.073040,0.930960,0.142080],[0.003544,-0.027190,1.023646]],
+  tritanopia:[[ 1.255528,-0.076749,-0.178779],[-0.078411,0.930809,0.147602],[0.004733,0.691367,0.303900]],
+  achromatopsia:[[0.2126,0.7152,0.0722],[0.2126,0.7152,0.0722],[0.2126,0.7152,0.0722]]
+};
+const descriptions={protanopia:'No red cones (~1% of males)',deuteranopia:'No green cones (~1% of males)',tritanopia:'No blue cones (very rare)',achromatopsia:'Complete color blindness (rare)'};
+const labels={protanopia:'Protanopia',deuteranopia:'Deuteranopia',tritanopia:'Tritanopia',achromatopsia:'Achromatopsia'};
+
+function simulateType(rgb,type){
+  const m=matrices[type];
+  const lin=[linearize(rgb[0]),linearize(rgb[1]),linearize(rgb[2])];
+  const r=m[0][0]*lin[0]+m[0][1]*lin[1]+m[0][2]*lin[2];
+  const g=m[1][0]*lin[0]+m[1][1]*lin[1]+m[1][2]*lin[2];
+  const b=m[2][0]*lin[0]+m[2][1]*lin[1]+m[2][2]*lin[2];
+  return[delinearize(r),delinearize(g),delinearize(b)];
+}
+
+function syncHex(){
+  let hex=document.getElementById('hexInput').value.trim();
+  if(/^#?[0-9a-fA-F]{3,6}$/.test(hex)){
+    if(!hex.startsWith('#'))hex='#'+hex;
+    document.getElementById('colorPicker').value=hex.length===4?'#'+hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3]:hex;
+    simulate();
+  }
+}
+
+function simulate(){
+  const hex=document.getElementById('colorPicker').value;
+  document.getElementById('hexInput').value=hex;
+  const rgb=hexToRgb(hex);
+  document.getElementById('origSwatch').style.background=hex;
+  document.getElementById('origInfo').textContent=hex.toUpperCase()+' — RGB('+rgb.join(', ')+')';
+  const container=document.getElementById('swatches');container.innerHTML='';
+  Object.keys(matrices).forEach(type=>{
+    const simRgb=simulateType(rgb,type);
+    const simHex=rgbToHex(simRgb[0],simRgb[1],simRgb[2]);
+    const div=document.createElement('div');div.className='swatch';
+    div.innerHTML='<div class="swatch-color" style="background:'+simHex+'"></div><div class="swatch-label">'+labels[type]+'</div><div class="swatch-hex">'+simHex.toUpperCase()+'</div><div class="swatch-info">'+descriptions[type]+'</div>';
+    container.appendChild(div);
+  });
+}
+simulate();
+</script>
+</body>
+</html>

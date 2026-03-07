@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>.gitignore Generator — Free Gitignore File Builder | ToolPile</title>
+<meta name="description" content="Generate .gitignore files for any project type — Node.js, Python, Java, Go, Rust, and more. Multi-select checkboxes, copy with one click.">
+<meta name="keywords" content="gitignore generator, gitignore builder, git ignore file, gitignore template, gitignore node, gitignore python">
+<meta property="og:title" content=".gitignore Generator — Free Gitignore File Builder">
+<meta property="og:description" content="Generate .gitignore for any project: Node.js, Python, Java, Go, Rust, and more. Free tool.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/gitignore-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:1.5rem}
+.check-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:.5rem}
+.check-card:hover{border-color:#818cf8}
+.check-card.active{border-color:#6366f1;background:#1a1f3e}
+.check-card input{display:none}
+.check-icon{width:20px;height:20px;border-radius:4px;border:2px solid #475569;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;transition:all .15s}
+.check-card.active .check-icon{background:#6366f1;border-color:#6366f1;color:#fff}
+.check-label{font-size:.85rem;font-weight:600;color:#e2e8f0}
+.result{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.8rem;white-space:pre-wrap;word-break:break-all;position:relative;min-height:60px;max-height:500px;overflow-y:auto}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:#334155;border:none;color:#94a3b8;padding:.3rem .6rem;border-radius:6px;cursor:pointer;font-size:.75rem}
+.copy-btn:hover{background:#475569;color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:500px){.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>.gitignore Generator</h1>
+<p class="subtitle">Select your project types and generate a comprehensive .gitignore file</p>
+<div class="tool-area">
+  <label>Select Project Types</label>
+  <div class="grid" id="grid"></div>
+  <button class="btn" onclick="gen()">Generate .gitignore</button>
+  <div class="result" id="output" style="display:none"><button class="copy-btn" onclick="copyCode()">Copy</button><code id="code"></code></div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+const templates={
+'Node.js':`node_modules/
+dist/
+build/
+.env
+.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+.cache`,
+'Python':`__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.mypy_cache/
+.pytest_cache/`,
+'Java':`*.class
+*.jar
+*.war
+*.ear
+target/
+.gradle/
+build/
+.settings/
+.project
+.classpath
+bin/`,
+'Go':`bin/
+vendor/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work`,
+'Rust':`/target
+Cargo.lock
+**/*.rs.bk`,
+'Ruby':`*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+.bundle/
+vendor/bundle`,
+'C/C++':`*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+*.exe
+*.out
+build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile`,
+'.NET':`bin/
+obj/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+[Dd]ebug/
+[Rr]elease/
+packages/
+*.nupkg`,
+'PHP':`/vendor/
+composer.phar
+composer.lock
+*.cache
+.env`,
+'Swift':`.build/
+Packages/
+*.xcodeproj
+xcuserdata/
+DerivedData/
+.swiftpm/`,
+'macOS':`.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes`,
+'Windows':`Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix`,
+'Linux':`*~
+.fuse_hidden*
+.Trash-*
+.nfs*`,
+'JetBrains':`.idea/
+*.iml
+*.iws
+*.ipr
+out/`,
+'VS Code':`.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace`,
+'Docker':`docker-compose.override.yml
+.dockerignore`,
+'Terraform':`.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+override.tf
+override.tf.json`,
+'Next.js':`.next/
+out/
+.env*.local
+next-env.d.ts`
+};
+
+const grid=document.getElementById('grid');
+Object.keys(templates).forEach(name=>{
+  const card=document.createElement('div');card.className='check-card';
+  card.innerHTML='<div class="check-icon">✓</div><span class="check-label">'+name+'</span>';
+  card.onclick=()=>{card.classList.toggle('active')};
+  grid.appendChild(card);
+});
+
+function gen(){
+  const selected=[];
+  document.querySelectorAll('.check-card.active .check-label').forEach(el=>selected.push(el.textContent));
+  if(!selected.length){alert('Please select at least one project type');return}
+  let lines=['# Generated by ToolPile - https://toolpile.tools',''];
+  selected.forEach(name=>{
+    lines.push('# === '+name+' ===');
+    lines.push(templates[name]);
+    lines.push('');
+  });
+  document.getElementById('code').textContent=lines.join('\n');
+  document.getElementById('output').style.display='block';
+}
+function copyCode(){navigator.clipboard.writeText(document.getElementById('code').textContent);const b=document.querySelector('.copy-btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500)}
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DPI/PPI Calculator — Free Print Resolution Calculator | ToolPile</title>
+<meta name="description" content="Calculate DPI/PPI from pixel dimensions and physical size. Or calculate pixel dimensions from DPI and physical size. Essential for print design.">
+<meta name="keywords" content="dpi calculator, ppi calculator, dots per inch, pixels per inch, print resolution, image resolution calculator">
+<meta property="og:title" content="DPI/PPI Calculator — Free Print Resolution Calculator">
+<meta property="og:description" content="Calculate DPI/PPI for print design. Input pixels and physical size or DPI to get dimensions.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/dpi-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.tabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.tab{flex:1;text-align:center;padding:.75rem;border-radius:8px;background:#334155;color:#94a3b8;cursor:pointer;font-weight:600;transition:all .15s}
+.tab.active{background:#6366f1;color:#fff}
+.mode{display:none}
+.mode.active{display:block}
+.results{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.result-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.result-card.full{grid-column:1/-1}
+.result-label{font-size:.8rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.result-value{font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.quality-badge{display:inline-block;padding:.25rem .75rem;border-radius:20px;font-size:.8rem;font-weight:700;margin-top:.5rem}
+.quality-high{background:rgba(52,211,153,.15);color:#34d399}
+.quality-medium{background:rgba(251,191,36,.15);color:#fbbf24}
+.quality-low{background:rgba(248,113,113,.15);color:#f87171}
+.info-table{margin-top:1.5rem;width:100%;font-size:.85rem}
+.info-table th{text-align:left;color:#94a3b8;padding:.5rem;border-bottom:1px solid #334155;font-weight:600}
+.info-table td{padding:.5rem;border-bottom:1px solid #1e293b}
+.info-table td:last-child{text-align:right;font-family:'SF Mono',monospace}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>DPI/PPI Calculator</h1>
+<p class="subtitle">Calculate resolution for print design — DPI from pixels or pixels from DPI</p>
+<div class="tool-area">
+  <div class="tabs">
+    <div class="tab active" onclick="switchMode(0)">Pixels → DPI</div>
+    <div class="tab" onclick="switchMode(1)">DPI → Pixels</div>
+  </div>
+
+  <!-- Mode 0: Pixels to DPI -->
+  <div class="mode active" id="mode0">
+    <div class="row">
+      <div><label>Width (px)</label><input type="number" id="pxW" placeholder="3000" min="1" oninput="calcDPI()"></div>
+      <div><label>Height (px)</label><input type="number" id="pxH" placeholder="2000" min="1" oninput="calcDPI()"></div>
+    </div>
+    <div class="row">
+      <div><label>Physical Width</label><input type="number" id="physW" placeholder="10" min="0.01" step="0.01" oninput="calcDPI()"></div>
+      <div><label>Physical Height</label><input type="number" id="physH" placeholder="8" min="0.01" step="0.01" oninput="calcDPI()"></div>
+      <div><label>Unit</label>
+        <select id="unit0" onchange="calcDPI()"><option value="in">Inches</option><option value="cm">Centimeters</option><option value="mm">Millimeters</option></select>
+      </div>
+    </div>
+    <div class="results" id="res0" style="display:none">
+      <div class="result-card"><div class="result-label">Horizontal DPI</div><div class="result-value" id="hDPI">0</div></div>
+      <div class="result-card"><div class="result-label">Vertical DPI</div><div class="result-value" id="vDPI">0</div></div>
+      <div class="result-card full"><div class="result-label">Print Quality</div><div id="quality"></div></div>
+    </div>
+  </div>
+
+  <!-- Mode 1: DPI to Pixels -->
+  <div class="mode" id="mode1">
+    <div class="field"><label>Target DPI/PPI</label><input type="number" id="targetDPI" placeholder="300" min="1" oninput="calcPX()"></div>
+    <div class="row">
+      <div><label>Physical Width</label><input type="number" id="physW2" placeholder="10" min="0.01" step="0.01" oninput="calcPX()"></div>
+      <div><label>Physical Height</label><input type="number" id="physH2" placeholder="8" min="0.01" step="0.01" oninput="calcPX()"></div>
+      <div><label>Unit</label>
+        <select id="unit1" onchange="calcPX()"><option value="in">Inches</option><option value="cm">Centimeters</option><option value="mm">Millimeters</option></select>
+      </div>
+    </div>
+    <div class="results" id="res1" style="display:none">
+      <div class="result-card"><div class="result-label">Width (px)</div><div class="result-value" id="needW">0</div></div>
+      <div class="result-card"><div class="result-label">Height (px)</div><div class="result-value" id="needH">0</div></div>
+      <div class="result-card"><div class="result-label">Total Pixels</div><div class="result-value" id="totalPx">0</div></div>
+      <div class="result-card"><div class="result-label">Megapixels</div><div class="result-value" id="megaPx">0</div></div>
+    </div>
+  </div>
+
+  <table class="info-table">
+    <thead><tr><th>Common DPI Standards</th><th>Use Case</th></tr></thead>
+    <tbody>
+      <tr><td>72 DPI</td><td>Screen / Web</td></tr>
+      <tr><td>150 DPI</td><td>Low-quality print</td></tr>
+      <tr><td>300 DPI</td><td>High-quality print</td></tr>
+      <tr><td>600 DPI</td><td>Professional print</td></tr>
+      <tr><td>1200 DPI</td><td>Art reproduction</td></tr>
+    </tbody>
+  </table>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 75+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+<script>
+function switchMode(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));document.querySelectorAll('.mode').forEach((m,j)=>m.classList.toggle('active',j===i))}
+function toInches(val,unit){if(unit==='cm')return val/2.54;if(unit==='mm')return val/25.4;return val}
+function calcDPI(){
+  const pxW=parseFloat(document.getElementById('pxW').value)||0;
+  const pxH=parseFloat(document.getElementById('pxH').value)||0;
+  const physW=parseFloat(document.getElementById('physW').value)||0;
+  const physH=parseFloat(document.getElementById('physH').value)||0;
+  const unit=document.getElementById('unit0').value;
+  if(pxW<=0||physW<=0){document.getElementById('res0').style.display='none';return}
+  const wIn=toInches(physW,unit);const hIn=toInches(physH,unit);
+  const hDPI=Math.round(pxW/wIn);
+  const vDPI=hIn>0&&pxH>0?Math.round(pxH/hIn):hDPI;
+  document.getElementById('hDPI').textContent=hDPI;
+  document.getElementById('vDPI').textContent=vDPI;
+  const avg=(hDPI+vDPI)/2;
+  let qClass,qText;
+  if(avg>=300){qClass='quality-high';qText='Excellent for print (300+ DPI)'}
+  else if(avg>=150){qClass='quality-medium';qText='OK for print, great for screen (150-299 DPI)'}
+  else{qClass='quality-low';qText='Best for screen only (<150 DPI)'}
+  document.getElementById('quality').innerHTML='<span class="quality-badge '+qClass+'">'+qText+'</span>';
+  document.getElementById('res0').style.display='grid';
+}
+function calcPX(){
+  const dpi=parseFloat(document.getElementById('targetDPI').value)||0;
+  const physW=parseFloat(document.getElementById('physW2').value)||0;
+  const physH=parseFloat(document.getElementById('physH2').value)||0;
+  const unit=document.getElementById('unit1').value;
+  if(dpi<=0||physW<=0){document.getElementById('res1').style.display='none';return}
+  const wIn=toInches(physW,unit);const hIn=toInches(physH,unit);
+  const needW=Math.round(wIn*dpi);const needH=hIn>0?Math.round(hIn*dpi):0;
+  const total=needW*(needH||1);
+  document.getElementById('needW').textContent=needW.toLocaleString();
+  document.getElementById('needH').textContent=needH.toLocaleString();
+  document.getElementById('totalPx').textContent=total.toLocaleString();
+  document.getElementById('megaPx').textContent=(total/1e6).toFixed(2)+' MP';
+  document.getElementById('res1').style.display='grid';
+}
+</script>
+</body>
+</html>
