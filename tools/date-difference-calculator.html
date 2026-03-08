@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Date Difference Calculator — Days Between Dates | ToolPile</title>
+<meta name="description" content="Free date difference calculator. Find the exact number of days, weeks, months, and years between any two dates. Includes business days count.">
+<meta name="keywords" content="date difference calculator, days between dates, date calculator, business days calculator, how many days between">
+<meta property="og:title" content="Date Difference Calculator — Days Between Dates">
+<meta property="og:description" content="Calculate the exact time between any two dates in days, weeks, months, and years. Free and instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/date-difference-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.swap-btn{background:none;border:1px solid #334155;border-radius:50%;width:36px;height:36px;color:#818cf8;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;margin:0 auto;transition:all .2s}
+.swap-btn:hover{background:#334155}
+.row{display:flex;gap:1rem;margin-bottom:1rem;align-items:flex-end}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.card-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.card-value{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card-sub{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.detail-list{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem}
+.detail-list h3{font-size:.875rem;color:#94a3b8;margin-bottom:.75rem}
+.detail-item{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid #1e293b}
+.detail-item:last-child{border:none}
+.detail-item span:first-child{color:#94a3b8}
+.detail-item span:last-child{font-weight:600}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:500px){.row{flex-direction:column}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Date Difference Calculator</h1>
+<p class="subtitle">Find the exact time between any two dates</p>
+<div class="tool-area">
+<div class="row">
+<div class="field"><label>Start Date</label><input type="date" id="startDate"></div>
+<div style="flex:0;display:flex;align-items:center;padding-bottom:1rem"><button class="swap-btn" onclick="swap()" title="Swap dates">⇅</button></div>
+<div class="field"><label>End Date</label><input type="date" id="endDate"></div>
+</div>
+<button class="btn" onclick="calc()">Calculate Difference</button>
+<div id="results" style="display:none">
+<div class="grid">
+<div class="card"><div class="card-label">Total Days</div><div class="card-value" id="totalDays"></div><div class="card-sub" id="daysNote"></div></div>
+<div class="card"><div class="card-label">Business Days</div><div class="card-value" id="bizDays"></div><div class="card-sub" id="bizNote"></div></div>
+<div class="card"><div class="card-label">Weeks</div><div class="card-value" id="weeks"></div><div class="card-sub" id="weeksNote"></div></div>
+<div class="card"><div class="card-label">Months</div><div class="card-value" id="months"></div><div class="card-sub" id="monthsNote"></div></div>
+</div>
+<div class="detail-list">
+<h3>Detailed Breakdown</h3>
+<div id="details"></div>
+</div>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+// Set defaults
+const today=new Date();
+const past=new Date(today);past.setFullYear(past.getFullYear()-1);
+document.getElementById('startDate').value=past.toISOString().split('T')[0];
+document.getElementById('endDate').value=today.toISOString().split('T')[0];
+function swap(){const s=document.getElementById('startDate'),e=document.getElementById('endDate');const t=s.value;s.value=e.value;e.value=t;calc();}
+function getBusinessDays(s,e){let count=0;const cur=new Date(s);while(cur<=e){const day=cur.getDay();if(day!==0&&day!==6)count++;cur.setDate(cur.getDate()+1);}return count;}
+function getWeekendDays(s,e){let count=0;const cur=new Date(s);while(cur<=e){const day=cur.getDay();if(day===0||day===6)count++;cur.setDate(cur.getDate()+1);}return count;}
+function getMonthDiff(s,e){let months=(e.getFullYear()-s.getFullYear())*12+(e.getMonth()-s.getMonth());if(e.getDate()<s.getDate())months--;return months;}
+function calc(){
+const s=new Date(document.getElementById('startDate').value+'T00:00:00');
+const e=new Date(document.getElementById('endDate').value+'T00:00:00');
+if(isNaN(s)||isNaN(e))return;
+const start=s<e?s:e,end=s<e?e:s;
+const diffMs=end-start;
+const totalDays=Math.round(diffMs/86400000);
+const bizDays=getBusinessDays(start,end)-1;
+const weekendDays=getWeekendDays(start,end);
+const weeks=Math.floor(totalDays/7);
+const remDays=totalDays%7;
+const totalMonths=getMonthDiff(start,end);
+const years=Math.floor(totalMonths/12);
+const remMonths=totalMonths%12;
+const hours=totalDays*24;
+const minutes=hours*60;
+document.getElementById('totalDays').textContent=totalDays.toLocaleString();
+document.getElementById('daysNote').textContent=totalDays===1?'1 day':'calendar days';
+document.getElementById('bizDays').textContent=Math.max(0,bizDays).toLocaleString();
+document.getElementById('bizNote').textContent=`${weekendDays} weekend days`;
+document.getElementById('weeks').textContent=weeks.toLocaleString();
+document.getElementById('weeksNote').textContent=remDays>0?`and ${remDays} day${remDays>1?'s':''}`:'exactly';
+document.getElementById('months').textContent=totalMonths;
+document.getElementById('monthsNote').textContent=years>0?`${years} yr${years>1?'s':''}, ${remMonths} mo`:`${totalMonths} month${totalMonths!==1?'s':''}`;
+const details=[
+['Years, Months, Days',`${years} year${years!==1?'s':''}, ${remMonths} month${remMonths!==1?'s':''}, ${end.getDate()-start.getDate()} day${Math.abs(end.getDate()-start.getDate())!==1?'s':''}`],
+['Total Hours',hours.toLocaleString()],
+['Total Minutes',minutes.toLocaleString()],
+['Total Seconds',(minutes*60).toLocaleString()],
+['Weekend Days',weekendDays.toLocaleString()],
+['Start Day',start.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})],
+['End Day',end.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})]
+];
+document.getElementById('details').innerHTML=details.map(([k,v])=>`<div class="detail-item"><span>${k}</span><span>${v}</span></div>`).join('');
+document.getElementById('results').style.display='block';
+}
+calc();
+</script>
+</body>
+</html>

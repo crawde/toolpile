@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electricity Cost Calculator — Power Bill Estimator | ToolPile</title>
+<meta name="description" content="Free electricity cost calculator. Estimate your power bill by entering appliance wattage, usage hours, and electricity rate. Calculate monthly and annual costs.">
+<meta name="keywords" content="electricity cost calculator, power bill calculator, energy cost calculator, wattage calculator, electric bill estimator">
+<meta property="og:title" content="Electricity Cost Calculator — Free Power Bill Estimator">
+<meta property="og:description" content="Calculate how much your appliances cost to run. Enter watts, hours, and rate. Free and instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/electricity-cost-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.btn-sm{padding:.5rem 1rem;font-size:.875rem;width:auto;border-radius:8px}
+.btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8;font-weight:600}
+.btn-outline:hover{border-color:#818cf8;color:#818cf8;transform:none;box-shadow:none}
+.btn-danger{background:#ef4444;font-size:.75rem;padding:.3rem .6rem;border-radius:6px;border:none;color:#fff;cursor:pointer}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.card-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.card-value{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card-sub{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.appliance-row{display:flex;gap:.5rem;align-items:center;padding:.75rem;background:#0f172a;border-radius:8px;margin-bottom:.5rem;border:1px solid #1e293b}
+.appliance-row input,.appliance-row select{padding:.5rem .75rem;font-size:.875rem}
+.appliance-row .name{flex:2}
+.appliance-row .watts,.appliance-row .hours{flex:1}
+.presets{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.preset-btn{background:#0f172a;border:1px solid #334155;border-radius:6px;padding:.4rem .75rem;color:#94a3b8;cursor:pointer;font-size:.75rem;transition:all .2s}
+.preset-btn:hover{border-color:#818cf8;color:#818cf8}
+.cost-bar{display:flex;align-items:center;gap:.75rem;padding:.5rem 0;border-bottom:1px solid #1e293b}
+.cost-bar .bar{flex:1;height:20px;background:#1e293b;border-radius:4px;overflow:hidden}
+.cost-bar .fill{height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:4px;transition:width .5s}
+.cost-bar .label{width:120px;font-size:.8rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cost-bar .amount{width:70px;text-align:right;font-size:.8rem;font-weight:700}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:500px){.row{flex-direction:column}.grid{grid-template-columns:1fr}.appliance-row{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Electricity Cost Calculator</h1>
+<p class="subtitle">Estimate how much your appliances cost to run</p>
+<div class="tool-area">
+<div class="field"><label>Electricity Rate ($/kWh)</label><input type="number" id="rate" value="0.16" min="0" max="1" step="0.01"></div>
+<label>Quick Add Appliance</label>
+<div class="presets">
+<button class="preset-btn" onclick="addPreset('LED Light',10,8)">💡 LED Light</button>
+<button class="preset-btn" onclick="addPreset('Laptop',65,8)">💻 Laptop</button>
+<button class="preset-btn" onclick="addPreset('Desktop PC',300,8)">🖥️ Desktop</button>
+<button class="preset-btn" onclick="addPreset('TV',120,5)">📺 TV</button>
+<button class="preset-btn" onclick="addPreset('Refrigerator',150,24)">🧊 Fridge</button>
+<button class="preset-btn" onclick="addPreset('AC Unit',1500,8)">❄️ AC</button>
+<button class="preset-btn" onclick="addPreset('Space Heater',1500,6)">🔥 Heater</button>
+<button class="preset-btn" onclick="addPreset('Washing Machine',500,1)">🫧 Washer</button>
+<button class="preset-btn" onclick="addPreset('Dryer',3000,1)">👕 Dryer</button>
+<button class="preset-btn" onclick="addPreset('Dishwasher',1800,1)">🍽️ Dishwasher</button>
+<button class="preset-btn" onclick="addPreset('EV Charger',7200,3)">🔌 EV Charger</button>
+<button class="preset-btn" onclick="addPreset('Gaming Console',200,4)">🎮 Console</button>
+</div>
+<div id="appliances"></div>
+<div style="display:flex;gap:.75rem;margin:1rem 0">
+<button class="btn btn-sm btn-outline" onclick="addRow()">+ Custom Appliance</button>
+</div>
+<button class="btn" onclick="calc()">Calculate Costs</button>
+<div id="results" style="display:none">
+<div class="grid">
+<div class="card"><div class="card-label">Monthly Cost</div><div class="card-value" id="monthly"></div><div class="card-sub" id="monthNote"></div></div>
+<div class="card"><div class="card-label">Annual Cost</div><div class="card-value" id="annual"></div><div class="card-sub" id="annNote"></div></div>
+<div class="card"><div class="card-label">Daily kWh</div><div class="card-value" id="dailyKwh"></div><div class="card-sub" id="kwhNote"></div></div>
+<div class="card"><div class="card-label">Daily Cost</div><div class="card-value" id="dailyCost"></div><div class="card-sub" id="dayNote"></div></div>
+</div>
+<div style="margin-top:1.5rem" id="breakdown"></div>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+function addRow(name='',watts='',hours=''){
+const div=document.createElement('div');div.className='appliance-row';
+div.innerHTML=`<input class="name" placeholder="Appliance name" value="${name}"><input class="watts" type="number" placeholder="Watts" value="${watts}" min="0"><input class="hours" type="number" placeholder="Hrs/day" value="${hours}" min="0" max="24" step="0.5"><button class="btn-danger" onclick="this.parentElement.remove()">✕</button>`;
+document.getElementById('appliances').appendChild(div);
+}
+function addPreset(name,watts,hours){addRow(name,watts,hours);}
+function calc(){
+const rate=+document.getElementById('rate').value;
+const rows=document.querySelectorAll('.appliance-row');
+let totalDailyKwh=0;const items=[];
+rows.forEach(r=>{
+const name=r.querySelector('.name').value||'Unnamed';
+const watts=+r.querySelector('.watts').value;
+const hours=+r.querySelector('.hours').value;
+if(watts>0&&hours>0){
+const dailyKwh=(watts*hours)/1000;
+totalDailyKwh+=dailyKwh;
+items.push({name,dailyKwh,dailyCost:dailyKwh*rate});
+}
+});
+if(items.length===0)return;
+const dailyCost=totalDailyKwh*rate;
+const monthlyCost=dailyCost*30;
+const annualCost=dailyCost*365;
+const fmt=n=>'$'+n.toFixed(2);
+document.getElementById('monthly').textContent=fmt(monthlyCost);
+document.getElementById('monthNote').textContent=`${(totalDailyKwh*30).toFixed(1)} kWh/month`;
+document.getElementById('annual').textContent=fmt(annualCost);
+document.getElementById('annNote').textContent=`${(totalDailyKwh*365).toFixed(0)} kWh/year`;
+document.getElementById('dailyKwh').textContent=totalDailyKwh.toFixed(2);
+document.getElementById('kwhNote').textContent=`${items.length} appliance${items.length>1?'s':''}`;
+document.getElementById('dailyCost').textContent=fmt(dailyCost);
+document.getElementById('dayNote').textContent=`At $${rate}/kWh`;
+// Breakdown
+items.sort((a,b)=>b.dailyCost-a.dailyCost);
+const maxCost=items[0].dailyCost;
+document.getElementById('breakdown').innerHTML=items.map(i=>`<div class="cost-bar"><span class="label">${i.name}</span><div class="bar"><div class="fill" style="width:${(i.dailyCost/maxCost*100).toFixed(0)}%"></div></div><span class="amount">${fmt(i.dailyCost*30)}/mo</span></div>`).join('');
+document.getElementById('results').style.display='block';
+}
+// Default
+addPreset('Refrigerator',150,24);addPreset('Laptop',65,8);addPreset('LED Light',10,8);
+</script>
+</body>
+</html>

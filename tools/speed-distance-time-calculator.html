@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed Distance Time Calculator — Physics Tool | ToolPile</title>
+<meta name="description" content="Free speed distance time calculator. Enter any two values to calculate the third. Supports multiple units: mph, km/h, m/s, knots. Shows formula used.">
+<meta name="keywords" content="speed distance time calculator, velocity calculator, physics calculator, mph calculator, distance calculator">
+<meta property="og:title" content="Speed Distance Time Calculator — Physics Tool">
+<meta property="og:description" content="Calculate speed, distance, or time from any two values. Multiple units. Free and instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/speed-distance-time-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.card.highlight{border-color:#818cf8;background:rgba(129,140,248,.05)}
+.card-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.card-value{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card-sub{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.formula-box{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.formula-box h3{font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+.formula{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:monospace}
+.formula-desc{font-size:.75rem;color:#64748b;margin-top:.5rem}
+.conversions{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem}
+.conversions h3{font-size:.875rem;color:#94a3b8;margin-bottom:.75rem}
+.conv-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #1e293b;font-size:.85rem}
+.conv-row:last-child{border:none}
+.conv-row span:first-child{color:#94a3b8}
+.conv-row span:last-child{font-weight:600}
+.note{margin-top:1rem;padding:.75rem;background:rgba(129,140,248,.05);border:1px solid #818cf833;border-radius:8px;font-size:.8rem;color:#94a3b8;text-align:center}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:500px){.row{flex-direction:column}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Speed Distance Time Calculator</h1>
+<p class="subtitle">Enter any two values to calculate the third</p>
+<div class="tool-area">
+<div class="note">Leave one field empty — that's the value we'll calculate for you.</div>
+<div class="row" style="margin-top:1rem">
+<div class="field"><label>Speed</label>
+<div style="display:flex;gap:.5rem"><input type="number" id="speed" placeholder="?" min="0" step="any" style="flex:1"><select id="speedUnit" style="width:auto;flex:0 0 90px"><option value="mph">mph</option><option value="kmh">km/h</option><option value="ms">m/s</option><option value="knots">knots</option></select></div>
+</div>
+</div>
+<div class="row">
+<div class="field"><label>Distance</label>
+<div style="display:flex;gap:.5rem"><input type="number" id="distance" placeholder="?" min="0" step="any" style="flex:1"><select id="distUnit" style="width:auto;flex:0 0 90px"><option value="miles">miles</option><option value="km">km</option><option value="m">meters</option><option value="ft">feet</option></select></div>
+</div>
+</div>
+<div class="row">
+<div class="field"><label>Time</label>
+<div style="display:flex;gap:.5rem">
+<input type="number" id="hours" placeholder="hrs" min="0" step="any" style="flex:1">
+<input type="number" id="minutes" placeholder="min" min="0" max="59" step="any" style="flex:1">
+<input type="number" id="seconds" placeholder="sec" min="0" max="59" step="any" style="flex:1">
+</div>
+</div>
+</div>
+<button class="btn" onclick="calc()">Calculate</button>
+<div id="results" style="display:none">
+<div class="grid" id="resultCards"></div>
+<div class="formula-box"><h3>Formula Used</h3><div class="formula" id="formula"></div><div class="formula-desc" id="formulaDesc"></div></div>
+<div class="conversions" id="conversions"></div>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+const speedConv={mph:1,kmh:1.60934,ms:0.44704,knots:0.868976};
+const distConv={miles:1,km:1.60934,m:1609.34,ft:5280};
+function toBase(val,unit,map){return val/map[unit];}// to miles or mph
+function fromBase(val,unit,map){return val*map[unit];}
+function formatTime(hrs){
+const h=Math.floor(hrs);const m=Math.floor((hrs-h)*60);const s=Math.round(((hrs-h)*60-m)*60);
+let parts=[];if(h>0)parts.push(h+'h');if(m>0)parts.push(m+'m');if(s>0||parts.length===0)parts.push(s+'s');
+return parts.join(' ');
+}
+function calc(){
+const sVal=document.getElementById('speed').value;
+const dVal=document.getElementById('distance').value;
+const hVal=document.getElementById('hours').value;
+const mVal=document.getElementById('minutes').value;
+const secVal=document.getElementById('seconds').value;
+const sUnit=document.getElementById('speedUnit').value;
+const dUnit=document.getElementById('distUnit').value;
+const hasSpeed=sVal!=='';
+const hasDist=dVal!=='';
+const hasTime=hVal!==''||mVal!==''||secVal!=='';
+let speed_mph,dist_miles,time_hrs;
+let solving='';
+if(hasSpeed)speed_mph=toBase(+sVal,sUnit,speedConv);
+if(hasDist)dist_miles=toBase(+dVal,dUnit,distConv);
+if(hasTime)time_hrs=(+(hVal||0))+(+(mVal||0))/60+(+(secVal||0))/3600;
+if(!hasSpeed&&hasDist&&hasTime){solving='speed';speed_mph=dist_miles/time_hrs;}
+else if(hasSpeed&&!hasDist&&hasTime){solving='distance';dist_miles=speed_mph*time_hrs;}
+else if(hasSpeed&&hasDist&&!hasTime){solving='time';time_hrs=dist_miles/speed_mph;}
+else return;
+if(!isFinite(speed_mph)||!isFinite(dist_miles)||!isFinite(time_hrs))return;
+const cards=[
+{label:'Speed',value:fromBase(speed_mph,sUnit,speedConv).toFixed(2)+' '+sUnit,highlight:solving==='speed'},
+{label:'Distance',value:fromBase(dist_miles,dUnit,distConv).toFixed(2)+' '+dUnit,highlight:solving==='distance'},
+{label:'Time',value:formatTime(time_hrs),highlight:solving==='time'}
+];
+document.getElementById('resultCards').innerHTML=cards.map(c=>`<div class="card${c.highlight?' highlight':''}"><div class="card-label">${c.label}${c.highlight?' ✨':''}</div><div class="card-value">${c.value}</div></div>`).join('');
+const formulas={speed:'Speed = Distance ÷ Time',distance:'Distance = Speed × Time',time:'Time = Distance ÷ Speed'};
+const descs={speed:`${fromBase(dist_miles,dUnit,distConv).toFixed(2)} ${dUnit} ÷ ${formatTime(time_hrs)} = ${fromBase(speed_mph,sUnit,speedConv).toFixed(2)} ${sUnit}`,
+distance:`${fromBase(speed_mph,sUnit,speedConv).toFixed(2)} ${sUnit} × ${formatTime(time_hrs)} = ${fromBase(dist_miles,dUnit,distConv).toFixed(2)} ${dUnit}`,
+time:`${fromBase(dist_miles,dUnit,distConv).toFixed(2)} ${dUnit} ÷ ${fromBase(speed_mph,sUnit,speedConv).toFixed(2)} ${sUnit} = ${formatTime(time_hrs)}`};
+document.getElementById('formula').textContent=formulas[solving];
+document.getElementById('formulaDesc').textContent=descs[solving];
+// Speed conversions
+const convHtml=['<h3>Speed in All Units</h3>',
+...Object.entries(speedConv).map(([u])=>`<div class="conv-row"><span>${u}</span><span>${fromBase(speed_mph,u,speedConv).toFixed(2)}</span></div>`),
+'<h3 style="margin-top:1rem">Distance in All Units</h3>',
+...Object.entries(distConv).map(([u])=>`<div class="conv-row"><span>${u}</span><span>${fromBase(dist_miles,u,distConv).toFixed(2)}</span></div>`)
+].join('');
+document.getElementById('conversions').innerHTML=convHtml;
+document.getElementById('results').style.display='block';
+}
+</script>
+</body>
+</html>

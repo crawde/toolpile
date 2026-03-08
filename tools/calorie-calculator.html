@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calorie Calculator — Daily Calorie & Macro Needs | ToolPile</title>
+<meta name="description" content="Free calorie calculator. Find your daily calorie needs based on age, gender, weight, height, and activity level. Get macronutrient breakdown.">
+<meta name="keywords" content="calorie calculator, TDEE calculator, daily calorie needs, macro calculator, BMR calculator, weight loss calculator">
+<meta property="og:title" content="Calorie Calculator — Free Daily Calorie Needs Tool">
+<meta property="og:description" content="Calculate your daily calorie needs and macro split based on your goals. Free, instant, no signup.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/calorie-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.card-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.card-value{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card-sub{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.toggle-row{display:flex;gap:.5rem;margin-bottom:1rem}
+.toggle-btn{flex:1;padding:.6rem;border:1px solid #334155;background:#0f172a;color:#94a3b8;border-radius:8px;cursor:pointer;font-size:.875rem;text-align:center;transition:all .2s}
+.toggle-btn.active{border-color:#818cf8;background:rgba(129,140,248,.1);color:#818cf8;font-weight:600}
+.macro-bar{display:flex;height:24px;border-radius:12px;overflow:hidden;margin-top:1rem}
+.macro-bar div{display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff}
+.macro-table{margin-top:1rem;width:100%}
+.macro-table td{padding:.5rem .75rem;border-bottom:1px solid #1e293b}
+.macro-table td:first-child{color:#94a3b8}
+.macro-table td:last-child{text-align:right;font-weight:700}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:500px){.row{flex-direction:column}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Calorie Calculator</h1>
+<p class="subtitle">Estimate your daily calorie needs and macronutrient breakdown</p>
+<div class="tool-area">
+<div class="field"><label>Gender</label>
+<div class="toggle-row"><div class="toggle-btn active" onclick="setGender('male',this)">Male</div><div class="toggle-btn" onclick="setGender('female',this)">Female</div></div>
+</div>
+<div class="row">
+<div class="field"><label>Age</label><input type="number" id="age" value="30" min="15" max="100"></div>
+<div class="field"><label>Weight</label>
+<div style="display:flex;gap:.5rem"><input type="number" id="weight" value="170" min="50" max="500" style="flex:1"><select id="wUnit" style="width:auto;flex:0 0 70px"><option value="lbs">lbs</option><option value="kg">kg</option></select></div>
+</div>
+</div>
+<div class="row">
+<div class="field"><label>Height</label>
+<div style="display:flex;gap:.5rem"><input type="number" id="feet" value="5" min="3" max="8" placeholder="ft" style="flex:1"><input type="number" id="inches" value="10" min="0" max="11" placeholder="in" style="flex:1"><select id="hUnit" style="width:auto;flex:0 0 70px" onchange="toggleH()"><option value="imp">ft/in</option><option value="cm">cm</option></select></div>
+<input type="number" id="cm" value="178" min="100" max="250" placeholder="cm" style="display:none;margin-top:.5rem">
+</div>
+</div>
+<div class="field"><label>Activity Level</label>
+<select id="activity">
+<option value="1.2">Sedentary (office job, little exercise)</option>
+<option value="1.375">Light (1-3 days/week)</option>
+<option value="1.55" selected>Moderate (3-5 days/week)</option>
+<option value="1.725">Active (6-7 days/week)</option>
+<option value="1.9">Very Active (athlete, physical job)</option>
+</select>
+</div>
+<div class="field"><label>Goal</label>
+<select id="goal">
+<option value="-500">Lose Weight (-500 cal/day)</option>
+<option value="-250">Mild Loss (-250 cal/day)</option>
+<option value="0" selected>Maintain Weight</option>
+<option value="250">Mild Gain (+250 cal/day)</option>
+<option value="500">Gain Weight (+500 cal/day)</option>
+</select>
+</div>
+<button class="btn" onclick="calc()">Calculate</button>
+<div id="results" style="display:none">
+<div class="grid">
+<div class="card"><div class="card-label">Daily Calories</div><div class="card-value" id="dailyCal"></div><div class="card-sub" id="goalNote"></div></div>
+<div class="card"><div class="card-label">BMR</div><div class="card-value" id="bmr"></div><div class="card-sub">Basal Metabolic Rate</div></div>
+<div class="card"><div class="card-label">TDEE</div><div class="card-value" id="tdee"></div><div class="card-sub">Total Daily Energy Expenditure</div></div>
+<div class="card"><div class="card-label">Weekly Change</div><div class="card-value" id="weekChg"></div><div class="card-sub" id="weekNote"></div></div>
+</div>
+<div class="macro-bar" id="macroBar"></div>
+<table class="macro-table" id="macroTable"></table>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+let gender='male';
+function setGender(g,el){gender=g;document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function toggleH(){const imp=document.getElementById('hUnit').value==='imp';document.getElementById('feet').parentElement.querySelector('#feet').style.display=imp?'':'none';document.getElementById('inches').style.display=imp?'':'none';document.getElementById('cm').style.display=imp?'none':'';}
+function calc(){
+const age=+document.getElementById('age').value;
+let wKg=+document.getElementById('weight').value;
+if(document.getElementById('wUnit').value==='lbs')wKg*=0.453592;
+let hCm;
+if(document.getElementById('hUnit').value==='imp'){
+hCm=(+document.getElementById('feet').value*12+ +document.getElementById('inches').value)*2.54;
+}else{hCm=+document.getElementById('cm').value;}
+const act=+document.getElementById('activity').value;
+const goalAdj=+document.getElementById('goal').value;
+// Mifflin-St Jeor
+let bmr;
+if(gender==='male')bmr=10*wKg+6.25*hCm-5*age+5;
+else bmr=10*wKg+6.25*hCm-5*age-161;
+const tdee=Math.round(bmr*act);
+const daily=Math.round(tdee+goalAdj);
+document.getElementById('bmr').textContent=Math.round(bmr)+' cal';
+document.getElementById('tdee').textContent=tdee+' cal';
+document.getElementById('dailyCal').textContent=daily+' cal';
+const goalText=goalAdj<0?'deficit':'surplus';
+document.getElementById('goalNote').textContent=goalAdj===0?'Maintenance calories':`${Math.abs(goalAdj)} cal ${goalText}/day`;
+const weeklyLbs=Math.abs(goalAdj)*7/3500;
+document.getElementById('weekChg').textContent=goalAdj===0?'0 lbs':(goalAdj<0?'-':'+')+weeklyLbs.toFixed(1)+' lbs';
+document.getElementById('weekNote').textContent=goalAdj===0?'No change':weeklyLbs.toFixed(1)+' lbs/week';
+// Macros (40/30/30 split)
+const protein=Math.round((daily*0.3)/4);
+const carbs=Math.round((daily*0.4)/4);
+const fat=Math.round((daily*0.3)/9);
+document.getElementById('macroBar').innerHTML=`<div style="width:40%;background:#6366f1">Carbs 40%</div><div style="width:30%;background:#38bdf8">Protein 30%</div><div style="width:30%;background:#f59e0b">Fat 30%</div>`;
+document.getElementById('macroTable').innerHTML=`<tr><td>Protein</td><td>${protein}g (${protein*4} cal)</td></tr><tr><td>Carbs</td><td>${carbs}g (${carbs*4} cal)</td></tr><tr><td>Fat</td><td>${fat}g (${fat*9} cal)</td></tr><tr><td>Fiber</td><td>${Math.round(daily/1000*14)}g recommended</td></tr>`;
+document.getElementById('results').style.display='block';
+}
+calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text to Speech — Free Browser TTS Tool | ToolPile</title>
+<meta name="description" content="Free text to speech tool. Convert any text to natural-sounding speech using your browser. Choose voice, speed, and pitch. No signup required.">
+<meta name="keywords" content="text to speech, TTS, speech synthesis, read text aloud, voice generator, browser TTS">
+<meta property="og:title" content="Text to Speech — Free Browser TTS Tool">
+<meta property="og:description" content="Convert text to speech in your browser. Choose voices, adjust speed and pitch. Free, instant, no signup.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/text-to-speech">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit;resize:vertical;min-height:180px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+select:focus{outline:none;border-color:#818cf8}
+input[type=range]{width:100%;accent-color:#818cf8}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px)}
+.btn-play{background:linear-gradient(135deg,#22c55e,#10b981);box-shadow:0 4px 15px rgba(34,197,94,.3)}
+.btn-play:hover{box-shadow:0 8px 25px rgba(34,197,94,.4)}
+.btn-stop{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 15px rgba(239,68,68,.3)}
+.btn-pause{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 15px rgba(245,158,11,.3)}
+.btn-row{display:flex;gap:.75rem;margin-top:1rem}
+.btn-row .btn{flex:1}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.slider-label{display:flex;justify-content:space-between;align-items:center}
+.slider-val{color:#818cf8;font-weight:600;font-size:.875rem}
+.status{text-align:center;margin-top:1rem;padding:.75rem;border-radius:8px;font-size:.875rem;display:none}
+.status.speaking{display:block;background:rgba(34,197,94,.1);border:1px solid #22c55e33;color:#22c55e}
+.status.paused{display:block;background:rgba(245,158,11,.1);border:1px solid #f59e0b33;color:#f59e0b}
+.char-count{text-align:right;font-size:.75rem;color:#64748b;margin-top:.25rem}
+.progress{height:4px;background:#0f172a;border-radius:2px;margin-top:1rem;overflow:hidden;display:none}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:2px;transition:width .5s}
+.presets{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.preset{background:#0f172a;border:1px solid #334155;border-radius:6px;padding:.35rem .7rem;color:#94a3b8;cursor:pointer;font-size:.75rem;transition:all .2s}
+.preset:hover{border-color:#818cf8;color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:500px){.row{flex-direction:column}.btn-row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Text to Speech</h1>
+<p class="subtitle">Convert text to natural-sounding speech in your browser</p>
+<div class="tool-area">
+<div class="field"><label>Enter Text</label>
+<textarea id="text" placeholder="Type or paste your text here...">Welcome to ToolPile! This is a free text-to-speech tool that runs entirely in your browser. Try changing the voice, speed, and pitch below.</textarea>
+<div class="char-count"><span id="charCount">0</span> characters</div>
+</div>
+<div class="presets">
+<button class="preset" onclick="setText('The quick brown fox jumps over the lazy dog.')">Pangram</button>
+<button class="preset" onclick="setText('Hello! How are you doing today? I hope you are having a wonderful time.')">Greeting</button>
+<button class="preset" onclick="setText('In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell.')">Story</button>
+</div>
+<div class="row">
+<div class="field"><label>Voice</label><select id="voice"></select></div>
+<div class="field"><label>Language Filter</label><select id="langFilter" onchange="filterVoices()"><option value="">All languages</option></select></div>
+</div>
+<div class="row">
+<div class="field"><div class="slider-label"><label>Speed</label><span class="slider-val" id="rateVal">1.0×</span></div><input type="range" id="rate" min="0.25" max="3" step="0.25" value="1" oninput="document.getElementById('rateVal').textContent=this.value+'×'"></div>
+<div class="field"><div class="slider-label"><label>Pitch</label><span class="slider-val" id="pitchVal">1.0</span></div><input type="range" id="pitch" min="0" max="2" step="0.1" value="1" oninput="document.getElementById('pitchVal').textContent=this.value"></div>
+</div>
+<div class="field"><div class="slider-label"><label>Volume</label><span class="slider-val" id="volVal">100%</span></div><input type="range" id="volume" min="0" max="1" step="0.1" value="1" oninput="document.getElementById('volVal').textContent=Math.round(this.value*100)+'%'"></div>
+<div class="btn-row">
+<button class="btn btn-play" id="playBtn" onclick="speak()">▶ Speak</button>
+<button class="btn btn-pause" id="pauseBtn" onclick="togglePause()" style="display:none">⏸ Pause</button>
+<button class="btn btn-stop" id="stopBtn" onclick="stop()" style="display:none">⏹ Stop</button>
+</div>
+<div class="status" id="status"></div>
+<div class="progress" id="progress"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+const synth=window.speechSynthesis;
+let voices=[],utterance=null,isPaused=false;
+function loadVoices(){
+voices=synth.getVoices();
+const voiceSelect=document.getElementById('voice');
+const langFilter=document.getElementById('langFilter');
+const langs=new Set();
+voices.forEach(v=>langs.add(v.lang.split('-')[0]));
+langFilter.innerHTML='<option value="">All languages</option>';
+[...langs].sort().forEach(l=>langFilter.innerHTML+=`<option value="${l}">${l}</option>`);
+filterVoices();
+}
+function filterVoices(){
+const filter=document.getElementById('langFilter').value;
+const voiceSelect=document.getElementById('voice');
+const filtered=filter?voices.filter(v=>v.lang.startsWith(filter)):voices;
+voiceSelect.innerHTML='';
+filtered.forEach((v,i)=>{
+const opt=document.createElement('option');
+opt.value=voices.indexOf(v);
+opt.textContent=`${v.name} (${v.lang})${v.default?' ★':''}`;
+voiceSelect.appendChild(opt);
+});
+}
+function setText(t){document.getElementById('text').value=t;updateCount();}
+function updateCount(){document.getElementById('charCount').textContent=document.getElementById('text').value.length;}
+document.getElementById('text').addEventListener('input',updateCount);
+updateCount();
+function speak(){
+synth.cancel();
+const text=document.getElementById('text').value;
+if(!text)return;
+utterance=new SpeechSynthesisUtterance(text);
+const voiceIdx=+document.getElementById('voice').value;
+if(voices[voiceIdx])utterance.voice=voices[voiceIdx];
+utterance.rate=+document.getElementById('rate').value;
+utterance.pitch=+document.getElementById('pitch').value;
+utterance.volume=+document.getElementById('volume').value;
+utterance.onstart=()=>{
+document.getElementById('playBtn').style.display='none';
+document.getElementById('pauseBtn').style.display='';
+document.getElementById('stopBtn').style.display='';
+document.getElementById('status').className='status speaking';
+document.getElementById('status').textContent='🔊 Speaking...';
+document.getElementById('progress').style.display='block';
+isPaused=false;
+};
+utterance.onend=()=>resetUI();
+utterance.onerror=()=>resetUI();
+// Progress tracking
+const words=text.split(/\s+/).length;
+utterance.onboundary=e=>{
+if(e.name==='word'){
+const pct=Math.min((e.charIndex/text.length)*100,100);
+document.getElementById('progressFill').style.width=pct+'%';
+}
+};
+synth.speak(utterance);
+}
+function togglePause(){
+if(isPaused){synth.resume();isPaused=false;document.getElementById('pauseBtn').textContent='⏸ Pause';document.getElementById('status').className='status speaking';document.getElementById('status').textContent='🔊 Speaking...';}
+else{synth.pause();isPaused=true;document.getElementById('pauseBtn').textContent='▶ Resume';document.getElementById('status').className='status paused';document.getElementById('status').textContent='⏸ Paused';}
+}
+function stop(){synth.cancel();resetUI();}
+function resetUI(){
+document.getElementById('playBtn').style.display='';
+document.getElementById('pauseBtn').style.display='none';
+document.getElementById('stopBtn').style.display='none';
+document.getElementById('status').className='status';
+document.getElementById('progress').style.display='none';
+document.getElementById('progressFill').style.width='0%';
+document.getElementById('pauseBtn').textContent='⏸ Pause';
+isPaused=false;
+}
+synth.onvoiceschanged=loadVoices;
+loadVoices();
+</script>
+</body>
+</html>

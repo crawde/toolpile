@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuel Cost Calculator — Trip Gas Cost Estimator | ToolPile</title>
+<meta name="description" content="Free fuel cost calculator. Estimate gas costs for any road trip. Enter distance, fuel efficiency, and gas price to get total cost and fuel needed.">
+<meta name="keywords" content="fuel cost calculator, gas cost calculator, trip cost calculator, gas mileage calculator, road trip fuel cost">
+<meta property="og:title" content="Fuel Cost Calculator — Free Trip Gas Cost Estimator">
+<meta property="og:description" content="Calculate fuel costs for any trip. Enter distance, MPG, and gas price. Free and instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/fuel-cost-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.card-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.card-value{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card-sub{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.toggle-row{display:flex;gap:.5rem;margin-bottom:1rem}
+.toggle-btn{flex:1;padding:.6rem;border:1px solid #334155;background:#0f172a;color:#94a3b8;border-radius:8px;cursor:pointer;font-size:.875rem;text-align:center;transition:all .2s}
+.toggle-btn.active{border-color:#818cf8;background:rgba(129,140,248,.1);color:#818cf8;font-weight:600}
+.split-section{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem}
+.split-section h3{font-size:.875rem;color:#94a3b8;margin-bottom:.75rem}
+.split-row{display:flex;justify-content:space-between;padding:.4rem 0;font-size:.9rem}
+.split-row span:last-child{font-weight:700}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:500px){.row{flex-direction:column}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Fuel Cost Calculator</h1>
+<p class="subtitle">Estimate gas costs for your road trip or daily commute</p>
+<div class="tool-area">
+<div class="field"><label>Units</label>
+<div class="toggle-row"><div class="toggle-btn active" onclick="setUnit('us',this)">US (miles, gallons)</div><div class="toggle-btn" onclick="setUnit('metric',this)">Metric (km, liters)</div></div>
+</div>
+<div class="row">
+<div class="field"><label id="distLabel">Distance (miles)</label><input type="number" id="distance" value="300" min="0"></div>
+<div class="field"><label id="effLabel">Fuel Efficiency (MPG)</label><input type="number" id="efficiency" value="28" min="1" step="0.1"></div>
+</div>
+<div class="row">
+<div class="field"><label id="priceLabel">Gas Price ($/gallon)</label><input type="number" id="price" value="3.50" min="0" step="0.01"></div>
+<div class="field"><label>Passengers (split cost)</label><input type="number" id="passengers" value="1" min="1" max="20"></div>
+</div>
+<div class="field"><label>Round Trip?</label>
+<div class="toggle-row"><div class="toggle-btn" onclick="setRT(false,this)">One Way</div><div class="toggle-btn active" onclick="setRT(true,this)">Round Trip</div></div>
+</div>
+<button class="btn" onclick="calc()">Calculate Cost</button>
+<div id="results" style="display:none">
+<div class="grid">
+<div class="card"><div class="card-label">Total Fuel Cost</div><div class="card-value" id="totalCost"></div><div class="card-sub" id="costNote"></div></div>
+<div class="card"><div class="card-label">Fuel Needed</div><div class="card-value" id="fuelNeeded"></div><div class="card-sub" id="fuelNote"></div></div>
+<div class="card"><div class="card-label">Cost Per Person</div><div class="card-value" id="perPerson"></div><div class="card-sub" id="personNote"></div></div>
+<div class="card"><div class="card-label">Cost Per Mile</div><div class="card-value" id="perMile"></div><div class="card-sub" id="mileNote"></div></div>
+</div>
+<div class="split-section" id="splitSection" style="display:none">
+<h3>Cost Split</h3>
+<div id="splitDetails"></div>
+</div>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+let unit='us',roundTrip=true;
+function setUnit(u,el){unit=u;document.querySelectorAll('.toggle-row')[0].querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');
+if(u==='us'){document.getElementById('distLabel').textContent='Distance (miles)';document.getElementById('effLabel').textContent='Fuel Efficiency (MPG)';document.getElementById('priceLabel').textContent='Gas Price ($/gallon)';}
+else{document.getElementById('distLabel').textContent='Distance (km)';document.getElementById('effLabel').textContent='Fuel Efficiency (km/L)';document.getElementById('priceLabel').textContent='Gas Price ($/liter)';}
+}
+function setRT(rt,el){roundTrip=rt;el.parentElement.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function calc(){
+let dist=+document.getElementById('distance').value;
+const eff=+document.getElementById('efficiency').value;
+const price=+document.getElementById('price').value;
+const passengers=+document.getElementById('passengers').value;
+if(dist<=0||eff<=0||price<=0)return;
+if(roundTrip)dist*=2;
+const fuelNeeded=dist/eff;
+const totalCost=fuelNeeded*price;
+const perPerson=totalCost/passengers;
+const perUnit=totalCost/dist;
+const fmt=n=>'$'+n.toFixed(2);
+const distUnit=unit==='us'?'mi':'km';
+const fuelUnit=unit==='us'?'gal':'L';
+document.getElementById('totalCost').textContent=fmt(totalCost);
+document.getElementById('costNote').textContent=roundTrip?'Round trip':'One way';
+document.getElementById('fuelNeeded').textContent=fuelNeeded.toFixed(1)+' '+fuelUnit;
+document.getElementById('fuelNote').textContent=`${dist} ${distUnit} at ${eff} ${unit==='us'?'MPG':'km/L'}`;
+document.getElementById('perPerson').textContent=fmt(perPerson);
+document.getElementById('personNote').textContent=passengers>1?`Split ${passengers} ways`:'Solo driver';
+document.getElementById('perMile').textContent=fmt(perUnit);
+document.getElementById('mileNote').textContent=`Per ${distUnit}`;
+if(passengers>1){
+document.getElementById('splitSection').style.display='block';
+let html='';
+for(let i=1;i<=passengers;i++){html+=`<div class="split-row"><span>Person ${i}</span><span>${fmt(perPerson)}</span></div>`;}
+document.getElementById('splitDetails').innerHTML=html;
+}else{document.getElementById('splitSection').style.display='none';}
+document.getElementById('results').style.display='block';
+}
+calc();
+</script>
+</body>
+</html>

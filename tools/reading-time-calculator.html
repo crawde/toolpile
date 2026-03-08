@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading Time Calculator — Estimate Read Time | ToolPile</title>
+<meta name="description" content="Free reading time calculator. Paste your text to estimate reading time for average, fast, and slow readers. Great for bloggers and content creators.">
+<meta name="keywords" content="reading time calculator, read time estimator, article reading time, blog post reading time, word count reading time">
+<meta property="og:title" content="Reading Time Calculator — Estimate Read Time">
+<meta property="og:description" content="Estimate how long it takes to read your content. Adjust reading speed. Free and instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/reading-time-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit;resize:vertical;min-height:200px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+input[type=range]{width:100%;accent-color:#818cf8}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.card-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.card-value{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card-sub{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.speed-section{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem}
+.speed-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid #1e293b}
+.speed-row:last-child{border:none}
+.speed-row span:first-child{color:#94a3b8;font-size:.875rem}
+.speed-row span:last-child{font-weight:600;font-size:.875rem}
+.speed-bar{display:flex;align-items:center;gap:.75rem;margin:.75rem 0}
+.speed-label{font-size:.875rem;color:#94a3b8;width:80px}
+.speed-val{font-size:.875rem;font-weight:600;width:80px;text-align:right}
+.meta-tag{display:inline-block;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:.4rem .75rem;font-family:monospace;font-size:.75rem;color:#818cf8;margin-top:1rem;cursor:pointer}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:500px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Reading Time Calculator</h1>
+<p class="subtitle">Estimate how long it takes to read your content</p>
+<div class="tool-area">
+<div style="margin-bottom:1rem"><label>Paste your text</label>
+<textarea id="text" placeholder="Paste your article, blog post, or any text here..." oninput="calc()"></textarea>
+</div>
+<div style="margin-bottom:1rem">
+<div style="display:flex;justify-content:space-between"><label>Reading Speed</label><span style="color:#818cf8;font-weight:600;font-size:.875rem" id="speedVal">238 WPM</span></div>
+<input type="range" id="speed" min="100" max="500" value="238" oninput="document.getElementById('speedVal').textContent=this.value+' WPM';calc()">
+<div style="display:flex;justify-content:space-between;font-size:.7rem;color:#64748b"><span>Slow (100)</span><span>Average (238)</span><span>Fast (500)</span></div>
+</div>
+<div id="results">
+<div class="grid">
+<div class="card"><div class="card-label">Reading Time</div><div class="card-value" id="readTime">0 min</div><div class="card-sub" id="readNote">at 238 WPM</div></div>
+<div class="card"><div class="card-label">Speaking Time</div><div class="card-value" id="speakTime">0 min</div><div class="card-sub">at ~150 WPM</div></div>
+<div class="card"><div class="card-label">Word Count</div><div class="card-value" id="wordCount">0</div><div class="card-sub" id="charCount">0 characters</div></div>
+<div class="card"><div class="card-label">Sentences</div><div class="card-value" id="sentCount">0</div><div class="card-sub" id="paraCount">0 paragraphs</div></div>
+</div>
+<div class="speed-section">
+<div class="speed-row"><span>Slow reader (150 WPM)</span><span id="slow">—</span></div>
+<div class="speed-row"><span>Average reader (238 WPM)</span><span id="avg">—</span></div>
+<div class="speed-row"><span>Fast reader (350 WPM)</span><span id="fast">—</span></div>
+<div class="speed-row"><span>Speed reader (500 WPM)</span><span id="speed500">—</span></div>
+</div>
+<div style="margin-top:1rem"><label>Blog Meta Tag (click to copy)</label>
+<div class="meta-tag" id="metaTag" onclick="navigator.clipboard.writeText(this.textContent)">—</div>
+</div>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+function formatTime(mins){
+if(mins<1)return'< 1 min';
+if(mins<60)return Math.ceil(mins)+' min';
+const h=Math.floor(mins/60);
+const m=Math.round(mins%60);
+return m>0?`${h} hr ${m} min`:`${h} hr`;
+}
+function calc(){
+const text=document.getElementById('text').value.trim();
+const speed=+document.getElementById('speed').value;
+if(!text){
+document.getElementById('readTime').textContent='0 min';
+document.getElementById('speakTime').textContent='0 min';
+document.getElementById('wordCount').textContent='0';
+document.getElementById('charCount').textContent='0 characters';
+document.getElementById('sentCount').textContent='0';
+document.getElementById('paraCount').textContent='0 paragraphs';
+['slow','avg','fast','speed500'].forEach(id=>document.getElementById(id).textContent='—');
+document.getElementById('metaTag').textContent='—';
+return;
+}
+const words=text.split(/\s+/).filter(w=>w.length>0);
+const wordCount=words.length;
+const chars=text.length;
+const charsNoSpace=text.replace(/\s/g,'').length;
+const sentences=text.split(/[.!?]+/).filter(s=>s.trim().length>0).length;
+const paragraphs=text.split(/\n\s*\n/).filter(p=>p.trim().length>0).length;
+const readMins=wordCount/speed;
+const speakMins=wordCount/150;
+document.getElementById('readTime').textContent=formatTime(readMins);
+document.getElementById('readNote').textContent=`at ${speed} WPM`;
+document.getElementById('speakTime').textContent=formatTime(speakMins);
+document.getElementById('wordCount').textContent=wordCount.toLocaleString();
+document.getElementById('charCount').textContent=`${chars.toLocaleString()} chars (${charsNoSpace.toLocaleString()} no spaces)`;
+document.getElementById('sentCount').textContent=sentences;
+document.getElementById('paraCount').textContent=paragraphs+' paragraph'+(paragraphs!==1?'s':'');
+document.getElementById('slow').textContent=formatTime(wordCount/150);
+document.getElementById('avg').textContent=formatTime(wordCount/238);
+document.getElementById('fast').textContent=formatTime(wordCount/350);
+document.getElementById('speed500').textContent=formatTime(wordCount/500);
+document.getElementById('metaTag').textContent=`${Math.ceil(wordCount/238)} min read`;
+}
+</script>
+</body>
+</html>
