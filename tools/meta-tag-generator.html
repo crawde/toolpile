@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Tag Generator — Free SEO Meta Tags Generator | ToolPile</title>
+<meta name="description" content="Free meta tag generator. Create perfect HTML meta tags for SEO, Open Graph, and Twitter Cards. Preview how your page will look in Google and social media.">
+<meta name="keywords" content="meta tag generator, SEO meta tags, open graph generator, twitter card generator, HTML meta tags, SEO tools">
+<meta property="og:title" content="Meta Tag Generator — Free SEO Tool">
+<meta property="og:description" content="Generate perfect HTML meta tags for SEO and social media. Preview Google and social cards. Free.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/meta-tag-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,textarea,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.btn-sm{padding:.6rem 1rem;font-size:.85rem;width:auto;margin-top:.75rem}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.counter{text-align:right;font-size:.75rem;color:#64748b;margin-top:.25rem}
+.counter.warn{color:#f59e0b}
+.counter.over{color:#f87171}
+.preview-section{margin-top:1.5rem}
+.preview-label{font-size:.8rem;color:#94a3b8;text-transform:uppercase;margin-bottom:.75rem;letter-spacing:.05em}
+.google-preview{background:#fff;border-radius:8px;padding:1.25rem;margin-bottom:1rem}
+.gp-url{font-size:.8rem;color:#202124;margin-bottom:.25rem}
+.gp-title{font-size:1.1rem;color:#1a0dab;font-weight:400;margin-bottom:.25rem;cursor:pointer}
+.gp-title:hover{text-decoration:underline}
+.gp-desc{font-size:.85rem;color:#4d5156;line-height:1.4}
+.code-output{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;font-family:'SF Mono',Monaco,monospace;font-size:.8rem;line-height:1.6;color:#38bdf8;overflow-x:auto;white-space:pre;margin-top:1rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Meta Tag Generator</h1>
+<p class="subtitle">Create perfect HTML meta tags for SEO and social media</p>
+<div class="tool-area">
+  <div class="field">
+    <label for="title">Page Title</label>
+    <input type="text" id="title" placeholder="e.g. Best Online Tools — ToolPile" oninput="updatePreview()" maxlength="70">
+    <div class="counter" id="titleCount">0 / 60 characters</div>
+  </div>
+  <div class="field">
+    <label for="desc">Meta Description</label>
+    <textarea id="desc" rows="3" placeholder="Describe your page in 150-160 characters..." oninput="updatePreview()" maxlength="200"></textarea>
+    <div class="counter" id="descCount">0 / 160 characters</div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="url">Page URL</label>
+      <input type="text" id="url" placeholder="https://example.com/page" oninput="updatePreview()">
+    </div>
+    <div>
+      <label for="type">OG Type</label>
+      <select id="type">
+        <option value="website">Website</option>
+        <option value="article">Article</option>
+        <option value="product">Product</option>
+        <option value="blog">Blog</option>
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label for="keywords">Keywords (comma-separated)</label>
+    <input type="text" id="keywords" placeholder="e.g. tools, free, online, calculator">
+  </div>
+  <div class="row">
+    <div>
+      <label for="image">OG Image URL</label>
+      <input type="text" id="image" placeholder="https://example.com/og-image.jpg">
+    </div>
+    <div>
+      <label for="siteName">Site Name</label>
+      <input type="text" id="siteName" placeholder="e.g. ToolPile">
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="robots">Robots</label>
+      <select id="robots">
+        <option value="index, follow">Index, Follow</option>
+        <option value="noindex, follow">No Index, Follow</option>
+        <option value="index, nofollow">Index, No Follow</option>
+        <option value="noindex, nofollow">No Index, No Follow</option>
+      </select>
+    </div>
+    <div>
+      <label for="canonical">Canonical URL</label>
+      <input type="text" id="canonical" placeholder="Same as URL if unique">
+    </div>
+  </div>
+  <button class="btn" onclick="generateCode()">Generate Meta Tags</button>
+  <div class="preview-section">
+    <div class="preview-label">Google Search Preview</div>
+    <div class="google-preview">
+      <div class="gp-url" id="previewUrl">example.com</div>
+      <div class="gp-title" id="previewTitle">Your Page Title</div>
+      <div class="gp-desc" id="previewDesc">Your meta description will appear here...</div>
+    </div>
+    <div id="codeWrap" style="display:none">
+      <div class="preview-label">Generated HTML</div>
+      <div class="code-output" id="codeOutput"></div>
+      <button class="btn btn-sm" onclick="copyCode()" style="background:#334155">Copy HTML</button>
+    </div>
+  </div>
+</div>
+<footer>
+  <p>Free tool by <a href="https://toolpile.tools">ToolPile</a></p>
+</footer>
+</div>
+<script>
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function updatePreview(){
+  const t=document.getElementById('title').value;
+  const d=document.getElementById('desc').value;
+  const u=document.getElementById('url').value;
+  document.getElementById('previewTitle').textContent=t||'Your Page Title';
+  document.getElementById('previewDesc').textContent=d||'Your meta description will appear here...';
+  document.getElementById('previewUrl').textContent=u?u.replace(/^https?:\/\//,''):'example.com';
+  const tc=document.getElementById('titleCount');
+  tc.textContent=t.length+' / 60 characters';
+  tc.className='counter'+(t.length>60?' over':t.length>50?' warn':'');
+  const dc=document.getElementById('descCount');
+  dc.textContent=d.length+' / 160 characters';
+  dc.className='counter'+(d.length>160?' over':d.length>140?' warn':'');
+}
+function generateCode(){
+  const t=document.getElementById('title').value;
+  const d=document.getElementById('desc').value;
+  const u=document.getElementById('url').value;
+  const kw=document.getElementById('keywords').value;
+  const img=document.getElementById('image').value;
+  const sn=document.getElementById('siteName').value;
+  const tp=document.getElementById('type').value;
+  const rb=document.getElementById('robots').value;
+  const cn=document.getElementById('canonical').value||u;
+  let html='';
+  html+=`<meta charset="UTF-8">\n`;
+  html+=`<meta name="viewport" content="width=device-width, initial-scale=1.0">\n`;
+  if(t)html+=`<title>${esc(t)}</title>\n`;
+  if(d)html+=`<meta name="description" content="${esc(d)}">\n`;
+  if(kw)html+=`<meta name="keywords" content="${esc(kw)}">\n`;
+  html+=`<meta name="robots" content="${rb}">\n`;
+  if(cn)html+=`<link rel="canonical" href="${esc(cn)}">\n`;
+  html+=`\n<!-- Open Graph -->\n`;
+  if(t)html+=`<meta property="og:title" content="${esc(t)}">\n`;
+  if(d)html+=`<meta property="og:description" content="${esc(d)}">\n`;
+  html+=`<meta property="og:type" content="${tp}">\n`;
+  if(u)html+=`<meta property="og:url" content="${esc(u)}">\n`;
+  if(img)html+=`<meta property="og:image" content="${esc(img)}">\n`;
+  if(sn)html+=`<meta property="og:site_name" content="${esc(sn)}">\n`;
+  html+=`\n<!-- Twitter Card -->\n`;
+  html+=`<meta name="twitter:card" content="${img?'summary_large_image':'summary'}">\n`;
+  if(t)html+=`<meta name="twitter:title" content="${esc(t)}">\n`;
+  if(d)html+=`<meta name="twitter:description" content="${esc(d)}">\n`;
+  if(img)html+=`<meta name="twitter:image" content="${esc(img)}">\n`;
+  document.getElementById('codeOutput').textContent=html;
+  document.getElementById('codeWrap').style.display='block';
+}
+function copyCode(){
+  const code=document.getElementById('codeOutput').textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn=document.querySelector('.btn-sm');
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy HTML',2000);
+  });
+}
+</script>
+</body>
+</html>

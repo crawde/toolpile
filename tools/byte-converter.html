@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Byte Converter — Free Data Size Calculator | ToolPile</title>
+<meta name="description" content="Free byte converter. Convert between bytes, KB, MB, GB, TB, PB and more. Supports both binary (1024) and decimal (1000) units.">
+<meta name="keywords" content="byte converter, data size converter, KB to MB, GB to TB, file size calculator, storage converter, megabytes to gigabytes">
+<meta property="og:title" content="Byte Converter — Free Data Size Calculator">
+<meta property="og:description" content="Convert between bytes, KB, MB, GB, TB instantly. Binary and decimal units. Free.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/byte-converter">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1rem;display:flex;justify-content:space-between;align-items:center}
+.card-unit{font-size:.8rem;color:#94a3b8;min-width:80px}
+.card-value{font-size:1rem;font-weight:700;color:#38bdf8;text-align:right;font-family:'SF Mono',Monaco,monospace;word-break:break-all}
+.toggle{display:flex;gap:.5rem;margin-bottom:1rem}
+.toggle-btn{flex:1;padding:.6rem;text-align:center;background:#0f172a;border:1px solid #334155;border-radius:8px;cursor:pointer;font-size:.85rem;color:#94a3b8;transition:all .15s}
+.toggle-btn.active{background:#334155;color:#e2e8f0;border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Byte Converter</h1>
+<p class="subtitle">Convert between data storage units — bytes, KB, MB, GB, TB</p>
+<div class="tool-area">
+  <div class="toggle">
+    <div class="toggle-btn active" id="binToggle" onclick="setBase(1024)">Binary (1024)</div>
+    <div class="toggle-btn" id="decToggle" onclick="setBase(1000)">Decimal (1000)</div>
+  </div>
+  <div class="row">
+    <div style="flex:2">
+      <label for="value">Value</label>
+      <input type="number" id="value" value="1" min="0" step="any" oninput="convert()">
+    </div>
+    <div style="flex:1">
+      <label for="unit">Unit</label>
+      <select id="unit" onchange="convert()">
+        <option value="0">Bytes</option>
+        <option value="1">KB</option>
+        <option value="2" selected>MB</option>
+        <option value="3">GB</option>
+        <option value="4">TB</option>
+        <option value="5">PB</option>
+        <option value="6">EB</option>
+      </select>
+    </div>
+  </div>
+  <div class="grid" id="results"></div>
+</div>
+<div style="margin-top:2rem;background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155">
+  <h2 style="font-size:1.25rem;margin-bottom:1rem;color:#e2e8f0">Binary vs Decimal Units</h2>
+  <p style="color:#94a3b8;line-height:1.7;font-size:.95rem">In binary (used by computers), 1 KB = 1,024 bytes (2^10). In decimal (used by storage manufacturers), 1 KB = 1,000 bytes. This is why a "500 GB" hard drive shows ~465 GB in your OS. IEC standards use KiB/MiB/GiB for binary and KB/MB/GB for decimal, but most people use KB/MB/GB for both. This tool lets you toggle between both conventions.</p>
+</div>
+<footer>
+  <p>Free tool by <a href="https://toolpile.tools">ToolPile</a></p>
+</footer>
+</div>
+<script>
+let base=1024;
+const units=['Bytes','KB','MB','GB','TB','PB','EB'];
+const binaryUnits=['Bytes','KiB','MiB','GiB','TiB','PiB','EiB'];
+function setBase(b){
+  base=b;
+  document.getElementById('binToggle').className='toggle-btn'+(b===1024?' active':'');
+  document.getElementById('decToggle').className='toggle-btn'+(b===1000?' active':'');
+  convert();
+}
+function formatNum(n){
+  if(n===0)return'0';
+  if(n>=1e15)return n.toExponential(4);
+  if(n<0.001)return n.toExponential(4);
+  if(Number.isInteger(n)&&n<1e12)return n.toLocaleString();
+  return parseFloat(n.toPrecision(10)).toLocaleString('en-US',{maximumFractionDigits:6});
+}
+function convert(){
+  const v=parseFloat(document.getElementById('value').value)||0;
+  const fromExp=parseInt(document.getElementById('unit').value);
+  const bytes=v*Math.pow(base,fromExp);
+  const labels=base===1024?binaryUnits:units;
+  let html='';
+  for(let i=0;i<units.length;i++){
+    const val=bytes/Math.pow(base,i);
+    html+=`<div class="card"><div class="card-unit">${labels[i]}</div><div class="card-value">${formatNum(val)}</div></div>`;
+  }
+  document.getElementById('results').innerHTML=html;
+}
+convert();
+</script>
+</body>
+</html>

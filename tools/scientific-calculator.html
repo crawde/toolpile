@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scientific Calculator — Free Online Calculator | ToolPile</title>
+<meta name="description" content="Free scientific calculator. Perform advanced calculations with trigonometry, logarithms, exponents, and more. Works on any device.">
+<meta name="keywords" content="scientific calculator, online calculator, math calculator, trigonometry calculator, log calculator, free calculator">
+<meta property="og:title" content="Scientific Calculator — Free Online Tool">
+<meta property="og:description" content="Advanced scientific calculator with trig, log, exponents. Free, works on any device.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/scientific-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:420px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem;text-align:center}
+.subtitle{color:#94a3b8;font-size:.9rem;margin-bottom:1.5rem;text-align:center}
+.calc{background:#1e293b;border-radius:16px;padding:1.5rem;border:1px solid #334155}
+.display{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;text-align:right;min-height:80px;display:flex;flex-direction:column;justify-content:flex-end}
+.expr{font-size:.85rem;color:#64748b;min-height:1.2rem;word-break:break-all}
+.result{font-size:2rem;font-weight:800;color:#e2e8f0;word-break:break-all}
+.btn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.btn{border:none;border-radius:10px;padding:.85rem .5rem;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .1s;font-family:inherit;color:#e2e8f0;background:#334155}
+.btn:hover{background:#475569}
+.btn:active{transform:scale(.95)}
+.btn.num{background:#475569;font-size:1.1rem}
+.btn.num:hover{background:#64748b}
+.btn.op{background:#4f46e5;color:#fff}
+.btn.op:hover{background:#6366f1}
+.btn.fn{background:#1e293b;color:#94a3b8;font-size:.8rem}
+.btn.fn:hover{background:#334155;color:#e2e8f0}
+.btn.eq{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;font-size:1.2rem}
+.btn.eq:hover{box-shadow:0 4px 15px rgba(99,102,241,.4)}
+.btn.clear{background:#dc2626;color:#fff}
+.btn.clear:hover{background:#ef4444}
+.mode{display:flex;gap:.5rem;margin-bottom:.75rem}
+.mode-btn{flex:1;padding:.4rem;text-align:center;background:#0f172a;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:.75rem;color:#94a3b8}
+.mode-btn.active{background:#334155;color:#e2e8f0;border-color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Scientific Calculator</h1>
+<p class="subtitle">Advanced math at your fingertips</p>
+<div class="calc">
+  <div class="mode">
+    <div class="mode-btn active" id="degBtn" onclick="setMode('deg')">DEG</div>
+    <div class="mode-btn" id="radBtn" onclick="setMode('rad')">RAD</div>
+  </div>
+  <div class="display">
+    <div class="expr" id="expr"></div>
+    <div class="result" id="result">0</div>
+  </div>
+  <div class="btn-grid">
+    <button class="btn fn" onclick="fn('sin')">sin</button>
+    <button class="btn fn" onclick="fn('cos')">cos</button>
+    <button class="btn fn" onclick="fn('tan')">tan</button>
+    <button class="btn fn" onclick="fn('log')">log</button>
+    <button class="btn fn" onclick="fn('ln')">ln</button>
+    <button class="btn fn" onclick="fn('sqrt')">√</button>
+    <button class="btn fn" onclick="fn('pow2')">x²</button>
+    <button class="btn fn" onclick="fn('pow')">xʸ</button>
+    <button class="btn fn" onclick="append('Math.PI')">π</button>
+    <button class="btn fn" onclick="append('Math.E')">e</button>
+    <button class="btn fn" onclick="append('(')">(</button>
+    <button class="btn fn" onclick="append(')')">)</button>
+    <button class="btn fn" onclick="fn('fact')">n!</button>
+    <button class="btn fn" onclick="fn('inv')">1/x</button>
+    <button class="btn clear" onclick="clearAll()">C</button>
+    <button class="btn num" onclick="append('7')">7</button>
+    <button class="btn num" onclick="append('8')">8</button>
+    <button class="btn num" onclick="append('9')">9</button>
+    <button class="btn op" onclick="append('/')">÷</button>
+    <button class="btn fn" onclick="backspace()">⌫</button>
+    <button class="btn num" onclick="append('4')">4</button>
+    <button class="btn num" onclick="append('5')">5</button>
+    <button class="btn num" onclick="append('6')">6</button>
+    <button class="btn op" onclick="append('*')">×</button>
+    <button class="btn fn" onclick="fn('pct')">%</button>
+    <button class="btn num" onclick="append('1')">1</button>
+    <button class="btn num" onclick="append('2')">2</button>
+    <button class="btn num" onclick="append('3')">3</button>
+    <button class="btn op" onclick="append('-')">−</button>
+    <button class="btn fn" onclick="toggleSign()">±</button>
+    <button class="btn num" onclick="append('0')">0</button>
+    <button class="btn num" onclick="append('.')">.</button>
+    <button class="btn eq" onclick="calculate()">=</button>
+    <button class="btn op" onclick="append('+')">+</button>
+    <button class="btn fn" onclick="fn('abs')">|x|</button>
+  </div>
+</div>
+<footer>
+  <p>Free tool by <a href="https://toolpile.tools">ToolPile</a></p>
+</footer>
+</div>
+<script>
+let expr='';
+let mode='deg';
+function setMode(m){
+  mode=m;
+  document.getElementById('degBtn').className='mode-btn'+(m==='deg'?' active':'');
+  document.getElementById('radBtn').className='mode-btn'+(m==='rad'?' active':'');
+}
+function toRad(x){return mode==='deg'?x*Math.PI/180:x;}
+function fromRad(x){return mode==='deg'?x*180/Math.PI:x;}
+function display(){
+  document.getElementById('expr').textContent=expr.replace(/\*/g,'×').replace(/\//g,'÷');
+}
+function append(v){expr+=v;display();}
+function clearAll(){expr='';document.getElementById('result').textContent='0';document.getElementById('expr').textContent='';}
+function backspace(){expr=expr.slice(0,-1);display();}
+function toggleSign(){
+  try{
+    const val=safeEval(expr);
+    if(!isNaN(val)){expr=String(-val);display();}
+  }catch(e){}
+}
+function factorial(n){
+  n=Math.round(n);
+  if(n<0||n>170)return NaN;
+  if(n<=1)return 1;
+  let r=1;for(let i=2;i<=n;i++)r*=i;
+  return r;
+}
+function safeEval(expression){
+  const sanitized=expression.replace(/[^0-9+\-*/().eE,Math.PIsincoqrtlogabpwMthEPI ]/g,'');
+  return Function('"use strict";return ('+expression+')')();
+}
+function fn(name){
+  try{
+    let val;
+    if(expr){val=safeEval(expr);}
+    switch(name){
+      case'sin':expr=`Math.sin(${toRad(val)})`;break;
+      case'cos':expr=`Math.cos(${toRad(val)})`;break;
+      case'tan':expr=`Math.tan(${toRad(val)})`;break;
+      case'log':expr=`Math.log10(${val})`;break;
+      case'ln':expr=`Math.log(${val})`;break;
+      case'sqrt':expr=`Math.sqrt(${val})`;break;
+      case'pow2':expr=`(${val})**2`;break;
+      case'pow':expr+=`**`;display();return;
+      case'fact':expr=String(factorial(val));break;
+      case'inv':expr=`1/(${val})`;break;
+      case'pct':expr=`(${val})/100`;break;
+      case'abs':expr=`Math.abs(${val})`;break;
+    }
+    calculate();
+  }catch(e){}
+}
+function calculate(){
+  try{
+    const val=safeEval(expr);
+    if(isNaN(val)||!isFinite(val)){
+      document.getElementById('result').textContent='Error';
+      return;
+    }
+    document.getElementById('result').textContent=parseFloat(val.toPrecision(12)).toString();
+    display();
+  }catch(e){
+    document.getElementById('result').textContent='Error';
+  }
+}
+document.addEventListener('keydown',e=>{
+  if(e.key>='0'&&e.key<='9'||e.key==='.'){append(e.key);}
+  else if('+-*/'.includes(e.key)){append(e.key);}
+  else if(e.key==='Enter'){e.preventDefault();calculate();}
+  else if(e.key==='Backspace'){backspace();}
+  else if(e.key==='Escape'){clearAll();}
+  else if(e.key==='('||e.key===')'){append(e.key);}
+});
+</script>
+</body>
+</html>

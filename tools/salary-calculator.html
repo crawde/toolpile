@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salary Calculator — Hourly to Annual Pay Converter | ToolPile</title>
+<meta name="description" content="Free salary calculator. Convert between hourly, daily, weekly, biweekly, monthly, and annual pay. Account for taxes, benefits, and work hours.">
+<meta name="keywords" content="salary calculator, hourly to annual, pay converter, wage calculator, income calculator, hourly rate calculator">
+<meta property="og:title" content="Salary Calculator — Free Online Pay Converter">
+<meta property="og:description" content="Convert hourly to salary and back. See your pay across all time periods. Free, instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/salary-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.card-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.card-value{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card-sub{font-size:.75rem;color:#64748b;margin-top:.25rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Salary Calculator</h1>
+<p class="subtitle">Convert between hourly, weekly, monthly, and annual pay</p>
+<div class="tool-area">
+  <div class="row">
+    <div>
+      <label for="amount">Pay Amount ($)</label>
+      <input type="number" id="amount" value="50" min="0" step="0.01">
+    </div>
+    <div>
+      <label for="period">Per</label>
+      <select id="period">
+        <option value="hour">Hour</option>
+        <option value="day">Day</option>
+        <option value="week">Week</option>
+        <option value="biweek">Biweekly</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="hours">Hours per Week</label>
+      <input type="number" id="hours" value="40" min="1" max="168" step="1">
+    </div>
+    <div>
+      <label for="weeks">Weeks per Year</label>
+      <input type="number" id="weeks" value="52" min="1" max="52" step="1">
+    </div>
+  </div>
+  <button class="btn" onclick="calc()">Calculate</button>
+  <div class="grid" id="results" style="display:none">
+    <div class="card"><div class="card-label">Hourly</div><div class="card-value" id="hourly"></div></div>
+    <div class="card"><div class="card-label">Daily</div><div class="card-value" id="daily"></div><div class="card-sub">8-hour day</div></div>
+    <div class="card"><div class="card-label">Weekly</div><div class="card-value" id="weekly"></div></div>
+    <div class="card"><div class="card-label">Biweekly</div><div class="card-value" id="biweekly"></div></div>
+    <div class="card"><div class="card-label">Monthly</div><div class="card-value" id="monthly"></div></div>
+    <div class="card"><div class="card-label">Annual</div><div class="card-value" id="annual"></div></div>
+  </div>
+</div>
+<div style="margin-top:2rem;background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155">
+  <h2 style="font-size:1.25rem;margin-bottom:1rem;color:#e2e8f0">How Salary Conversion Works</h2>
+  <p style="color:#94a3b8;line-height:1.7;font-size:.95rem">Salary conversions use your work schedule as the basis. Hourly rate × hours per week = weekly pay. Weekly × 52 = annual. Monthly is annual ÷ 12. Biweekly is weekly × 2 (26 pay periods/year). Adjust hours/week for part-time work or overtime, and weeks/year to subtract vacation time.</p>
+</div>
+<footer>
+  <p>Free tool by <a href="https://toolpile.tools">ToolPile</a></p>
+</footer>
+</div>
+<script>
+function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function calc(){
+  const amt=parseFloat(document.getElementById('amount').value)||0;
+  const period=document.getElementById('period').value;
+  const hpw=parseFloat(document.getElementById('hours').value)||40;
+  const wpy=parseFloat(document.getElementById('weeks').value)||52;
+  let hourly;
+  switch(period){
+    case'hour':hourly=amt;break;
+    case'day':hourly=amt/(hpw/5);break;
+    case'week':hourly=amt/hpw;break;
+    case'biweek':hourly=amt/(hpw*2);break;
+    case'month':hourly=amt*12/(hpw*wpy);break;
+    case'year':hourly=amt/(hpw*wpy);break;
+  }
+  const daily=hourly*(hpw/5);
+  const weekly=hourly*hpw;
+  const biweekly=weekly*2;
+  const annual=weekly*wpy;
+  const monthly=annual/12;
+  document.getElementById('hourly').textContent=fmt(hourly);
+  document.getElementById('daily').textContent=fmt(daily);
+  document.getElementById('weekly').textContent=fmt(weekly);
+  document.getElementById('biweekly').textContent=fmt(biweekly);
+  document.getElementById('monthly').textContent=fmt(monthly);
+  document.getElementById('annual').textContent=fmt(annual);
+  document.getElementById('results').style.display='grid';
+}
+calc();
+</script>
+</body>
+</html>

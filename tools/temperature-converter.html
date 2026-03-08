@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temperature Converter — Celsius Fahrenheit Kelvin Converter | ToolPile</title>
+<meta name="description" content="Free temperature converter. Convert between Celsius, Fahrenheit, Kelvin, and Rankine instantly. Includes common temperature reference chart.">
+<meta name="keywords" content="temperature converter, celsius to fahrenheit, fahrenheit to celsius, kelvin converter, temperature conversion, C to F">
+<meta property="og:title" content="Temperature Converter — Free Online Tool">
+<meta property="og:description" content="Convert temperatures between Celsius, Fahrenheit, Kelvin instantly. Free, no signup.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/temperature-converter">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.card-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.card-value{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ref-table{width:100%;margin-top:1.5rem;border-collapse:collapse;font-size:.85rem}
+.ref-table th{background:#334155;color:#94a3b8;padding:.6rem;text-align:center}
+.ref-table td{padding:.5rem;text-align:center;border-bottom:1px solid #1e293b}
+.ref-table tr:hover td{background:#334155}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Temperature Converter</h1>
+<p class="subtitle">Convert between Celsius, Fahrenheit, Kelvin, and Rankine</p>
+<div class="tool-area">
+  <div class="row">
+    <div style="flex:2">
+      <label for="temp">Temperature</label>
+      <input type="number" id="temp" value="100" step="any" oninput="convert()">
+    </div>
+    <div style="flex:1">
+      <label for="unit">Unit</label>
+      <select id="unit" onchange="convert()">
+        <option value="C">°C Celsius</option>
+        <option value="F">°F Fahrenheit</option>
+        <option value="K">K Kelvin</option>
+        <option value="R">°R Rankine</option>
+      </select>
+    </div>
+  </div>
+  <div class="grid" id="results">
+    <div class="card"><div class="card-label">Celsius</div><div class="card-value" id="celsius"></div></div>
+    <div class="card"><div class="card-label">Fahrenheit</div><div class="card-value" id="fahrenheit"></div></div>
+    <div class="card"><div class="card-label">Kelvin</div><div class="card-value" id="kelvin"></div></div>
+  </div>
+  <table class="ref-table">
+    <thead><tr><th>Reference</th><th>°C</th><th>°F</th><th>K</th></tr></thead>
+    <tbody>
+      <tr><td>Absolute Zero</td><td>−273.15</td><td>−459.67</td><td>0</td></tr>
+      <tr><td>Water Freezes</td><td>0</td><td>32</td><td>273.15</td></tr>
+      <tr><td>Body Temp</td><td>37</td><td>98.6</td><td>310.15</td></tr>
+      <tr><td>Water Boils</td><td>100</td><td>212</td><td>373.15</td></tr>
+    </tbody>
+  </table>
+</div>
+<div style="margin-top:2rem;background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155">
+  <h2 style="font-size:1.25rem;margin-bottom:1rem;color:#e2e8f0">Temperature Conversion Formulas</h2>
+  <p style="color:#94a3b8;line-height:1.7;font-size:.95rem">°F = °C × 9/5 + 32. °C = (°F − 32) × 5/9. K = °C + 273.15. Celsius and Fahrenheit scales intersect at −40° (−40°C = −40°F). Kelvin is the SI unit — 0 K is absolute zero, the lowest possible temperature where all molecular motion ceases.</p>
+</div>
+<footer>
+  <p>Free tool by <a href="https://toolpile.tools">ToolPile</a></p>
+</footer>
+</div>
+<script>
+function round(n){return Math.round(n*100)/100}
+function convert(){
+  const v=parseFloat(document.getElementById('temp').value);
+  const u=document.getElementById('unit').value;
+  if(isNaN(v))return;
+  let c,f,k;
+  switch(u){
+    case'C':c=v;f=v*9/5+32;k=v+273.15;break;
+    case'F':c=(v-32)*5/9;f=v;k=(v-32)*5/9+273.15;break;
+    case'K':c=v-273.15;f=(v-273.15)*9/5+32;k=v;break;
+    case'R':c=(v-491.67)*5/9;f=v-459.67;k=v*5/9;break;
+  }
+  document.getElementById('celsius').textContent=round(c)+'°C';
+  document.getElementById('fahrenheit').textContent=round(f)+'°F';
+  document.getElementById('kelvin').textContent=round(k)+' K';
+}
+convert();
+</script>
+</body>
+</html>

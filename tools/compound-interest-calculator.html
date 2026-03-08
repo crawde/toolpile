@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compound Interest Calculator — Free Investment Growth Calculator | ToolPile</title>
+<meta name="description" content="Free compound interest calculator. See how your money grows over time with monthly contributions and compound interest. Includes growth chart.">
+<meta name="keywords" content="compound interest calculator, investment calculator, savings calculator, interest rate calculator, money growth, compound growth">
+<meta property="og:title" content="Compound Interest Calculator — Free Online Tool">
+<meta property="og:description" content="Calculate compound interest with monthly contributions. Visualize your investment growth. Free, instant, no signup.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/compound-interest-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.results{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.result-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem;text-align:center}
+.result-label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.result-value{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.chart-area{margin-top:1.5rem;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem}
+.chart-area h3{font-size:.875rem;color:#94a3b8;margin-bottom:1rem}
+canvas{width:100%;height:250px}
+.breakdown{margin-top:1rem;display:flex;gap:1.5rem;justify-content:center;font-size:.8rem}
+.breakdown span{display:flex;align-items:center;gap:.4rem}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Compound Interest Calculator</h1>
+<p class="subtitle">See how your money grows with compound interest over time</p>
+<div class="tool-area">
+  <div class="field">
+    <label for="principal">Initial Investment ($)</label>
+    <input type="number" id="principal" value="10000" min="0" step="100">
+  </div>
+  <div class="row">
+    <div>
+      <label for="monthly">Monthly Contribution ($)</label>
+      <input type="number" id="monthly" value="500" min="0" step="50">
+    </div>
+    <div>
+      <label for="rate">Annual Interest Rate (%)</label>
+      <input type="number" id="rate" value="7" min="0" max="50" step="0.1">
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="years">Time Period (years)</label>
+      <input type="number" id="years" value="20" min="1" max="50" step="1">
+    </div>
+    <div>
+      <label for="compound">Compound Frequency</label>
+      <select id="compound">
+        <option value="12">Monthly</option>
+        <option value="4">Quarterly</option>
+        <option value="2">Semi-Annually</option>
+        <option value="1">Annually</option>
+      </select>
+    </div>
+  </div>
+  <button class="btn" onclick="calc()">Calculate</button>
+  <div class="results" id="results" style="display:none">
+    <div class="result-card"><div class="result-label">Future Value</div><div class="result-value" id="future"></div></div>
+    <div class="result-card"><div class="result-label">Total Contributions</div><div class="result-value" id="contributions"></div></div>
+    <div class="result-card"><div class="result-label">Total Interest Earned</div><div class="result-value" id="interest"></div></div>
+  </div>
+  <div class="chart-area" id="chartArea" style="display:none">
+    <h3>Growth Over Time</h3>
+    <canvas id="chart"></canvas>
+    <div class="breakdown">
+      <span><span class="dot" style="background:#818cf8"></span> Interest</span>
+      <span><span class="dot" style="background:#38bdf8"></span> Contributions</span>
+    </div>
+  </div>
+</div>
+<div style="margin-top:2rem;background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155">
+  <h2 style="font-size:1.25rem;margin-bottom:1rem;color:#e2e8f0">How Compound Interest Works</h2>
+  <p style="color:#94a3b8;line-height:1.7;font-size:.95rem">Compound interest is interest calculated on the initial principal and also on the accumulated interest from previous periods. The formula is A = P(1 + r/n)^(nt) where P is principal, r is annual rate, n is compounding frequency, and t is time in years. Regular contributions amplify the effect dramatically over time — this is why starting early matters so much for long-term wealth building.</p>
+</div>
+<footer>
+  <p>Free tool by <a href="https://toolpile.tools">ToolPile</a></p>
+</footer>
+</div>
+<script>
+function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})}
+function calc(){
+  const P=parseFloat(document.getElementById('principal').value)||0;
+  const mc=parseFloat(document.getElementById('monthly').value)||0;
+  const r=(parseFloat(document.getElementById('rate').value)||0)/100;
+  const t=parseInt(document.getElementById('years').value)||1;
+  const n=parseInt(document.getElementById('compound').value)||12;
+  const rn=r/n;
+  const periods=n*t;
+  let balance=P;
+  const yearlyData=[];
+  const monthsPerPeriod=12/n;
+  let totalContrib=P;
+  for(let i=1;i<=periods;i++){
+    balance=balance*(1+rn)+mc*monthsPerPeriod;
+    totalContrib+=mc*monthsPerPeriod;
+    if(i%n===0||i===periods){
+      yearlyData.push({year:Math.ceil(i/n),balance,contrib:totalContrib,interest:balance-totalContrib});
+    }
+  }
+  const future=balance;
+  const interestEarned=future-totalContrib;
+  document.getElementById('future').textContent=fmt(future);
+  document.getElementById('contributions').textContent=fmt(totalContrib);
+  document.getElementById('interest').textContent=fmt(interestEarned);
+  document.getElementById('results').style.display='grid';
+  document.getElementById('chartArea').style.display='block';
+  drawChart(yearlyData);
+}
+function drawChart(data){
+  const canvas=document.getElementById('chart');
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth*2;
+  canvas.height=500;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const pad={top:20,right:20,bottom:40,left:70};
+  const w=canvas.width-pad.left-pad.right;
+  const h=canvas.height-pad.top-pad.bottom;
+  const maxVal=Math.max(...data.map(d=>d.balance));
+  const barW=w/data.length*.7;
+  const gap=w/data.length*.3;
+  ctx.font='20px -apple-system,system-ui,sans-serif';
+  ctx.fillStyle='#64748b';
+  for(let i=0;i<=4;i++){
+    const y=pad.top+h-h*(i/4);
+    const val=maxVal*(i/4);
+    ctx.fillText(fmt(val),5,y+6);
+    ctx.strokeStyle='#1e293b';
+    ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+w,y);ctx.stroke();
+  }
+  data.forEach((d,i)=>{
+    const x=pad.left+i*(barW+gap)+gap/2;
+    const bh=h*(d.balance/maxVal);
+    const ch=h*(d.contrib/maxVal);
+    ctx.fillStyle='#818cf8';
+    ctx.fillRect(x,pad.top+h-bh,barW,bh);
+    ctx.fillStyle='#38bdf8';
+    ctx.fillRect(x,pad.top+h-ch,barW,ch);
+    if(data.length<=30||(d.year%5===0||d.year===1)){
+      ctx.fillStyle='#64748b';
+      ctx.fillText('Y'+d.year,x+barW/2-12,pad.top+h+25);
+    }
+  });
+}
+calc();
+</script>
+</body>
+</html>

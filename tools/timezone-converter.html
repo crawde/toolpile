@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Zone Converter — Free World Clock & Time Converter | ToolPile</title>
+<meta name="description" content="Free time zone converter. Convert time between any time zones worldwide. See current time in multiple cities simultaneously.">
+<meta name="keywords" content="time zone converter, world clock, time conversion, timezone calculator, time difference, UTC converter">
+<meta property="og:title" content="Time Zone Converter — Free Online Tool">
+<meta property="og:description" content="Convert time between any time zones. Compare multiple cities at once. Free, instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/timezone-converter">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+input,select{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn{border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;width:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.row{display:flex;gap:1rem;margin-bottom:1rem}
+.row > *{flex:1}
+.field{margin-bottom:1rem}
+.tz-grid{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.tz-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1.25rem}
+.tz-city{font-size:.8rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem}
+.tz-time{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tz-date{font-size:.75rem;color:#64748b;margin-top:.25rem}
+.tz-offset{font-size:.7rem;color:#64748b}
+.swap-btn{background:#334155;border:1px solid #475569;border-radius:8px;padding:.5rem 1rem;color:#94a3b8;cursor:pointer;font-size:.875rem;margin-bottom:1rem;display:inline-flex;align-items:center;gap:.5rem}
+.swap-btn:hover{background:#475569}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Time Zone Converter</h1>
+<p class="subtitle">Convert time between any time zones worldwide</p>
+<div class="tool-area">
+  <div class="row">
+    <div>
+      <label for="fromTz">From Time Zone</label>
+      <select id="fromTz"></select>
+    </div>
+    <div>
+      <label for="toTz">To Time Zone</label>
+      <select id="toTz"></select>
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="date">Date</label>
+      <input type="date" id="date">
+    </div>
+    <div>
+      <label for="time">Time</label>
+      <input type="time" id="time" step="60">
+    </div>
+  </div>
+  <button class="swap-btn" onclick="swap()">⇄ Swap</button>
+  <button class="btn" onclick="convert()">Convert</button>
+  <div class="tz-grid" id="results" style="display:none">
+    <div class="tz-card">
+      <div class="tz-city" id="fromCity"></div>
+      <div class="tz-time" id="fromTime"></div>
+      <div class="tz-date" id="fromDate"></div>
+      <div class="tz-offset" id="fromOffset"></div>
+    </div>
+    <div class="tz-card">
+      <div class="tz-city" id="toCity"></div>
+      <div class="tz-time" id="toTime"></div>
+      <div class="tz-date" id="toDate"></div>
+      <div class="tz-offset" id="toOffset"></div>
+    </div>
+  </div>
+</div>
+<div style="margin-top:2rem;background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155">
+  <h2 style="font-size:1.25rem;margin-bottom:1rem;color:#e2e8f0">About Time Zones</h2>
+  <p style="color:#94a3b8;line-height:1.7;font-size:.95rem">The world is divided into 24 primary time zones, each roughly 15° of longitude. UTC (Coordinated Universal Time) is the reference point. Many regions observe daylight saving time, shifting clocks forward in spring and back in fall. This converter handles DST automatically using your browser's Intl API.</p>
+</div>
+<footer>
+  <p>Free tool by <a href="https://toolpile.tools">ToolPile</a></p>
+</footer>
+</div>
+<script>
+const zones=[
+  'UTC','America/New_York','America/Chicago','America/Denver','America/Los_Angeles',
+  'America/Anchorage','Pacific/Honolulu','America/Toronto','America/Vancouver',
+  'America/Mexico_City','America/Sao_Paulo','America/Argentina/Buenos_Aires',
+  'Europe/London','Europe/Paris','Europe/Berlin','Europe/Madrid','Europe/Rome',
+  'Europe/Amsterdam','Europe/Moscow','Europe/Istanbul','Europe/Athens',
+  'Asia/Dubai','Asia/Kolkata','Asia/Bangkok','Asia/Singapore','Asia/Shanghai',
+  'Asia/Tokyo','Asia/Seoul','Asia/Hong_Kong','Australia/Sydney','Australia/Melbourne',
+  'Pacific/Auckland','Africa/Cairo','Africa/Lagos','Africa/Johannesburg',
+  'America/Phoenix','America/Bogota','America/Lima','Asia/Jakarta','Asia/Karachi'
+];
+function populateSelects(){
+  const fromSel=document.getElementById('fromTz');
+  const toSel=document.getElementById('toTz');
+  zones.forEach(z=>{
+    const label=z.replace(/_/g,' ').replace(/\//g,' / ');
+    fromSel.add(new Option(label,z));
+    toSel.add(new Option(label,z));
+  });
+  const local=Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if(zones.includes(local))fromSel.value=local;
+  toSel.value='UTC';
+  const now=new Date();
+  document.getElementById('date').value=now.toISOString().split('T')[0];
+  document.getElementById('time').value=now.toTimeString().slice(0,5);
+}
+function swap(){
+  const f=document.getElementById('fromTz');
+  const t=document.getElementById('toTz');
+  const tmp=f.value;f.value=t.value;t.value=tmp;
+  convert();
+}
+function convert(){
+  const fromTz=document.getElementById('fromTz').value;
+  const toTz=document.getElementById('toTz').value;
+  const dateStr=document.getElementById('date').value;
+  const timeStr=document.getElementById('time').value;
+  if(!dateStr||!timeStr)return;
+  const fromDt=new Date(dateStr+'T'+timeStr+':00');
+  const fromStr=fromDt.toLocaleString('en-US',{timeZone:fromTz});
+  const fromUtc=new Date(fromStr+' UTC');
+  const actualUtc=new Date(fromDt.getTime()-(fromUtc.getTime()-fromDt.getTime()));
+  const fmtTime=(d,tz)=>d.toLocaleString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:true});
+  const fmtDate=(d,tz)=>d.toLocaleString('en-US',{timeZone:tz,weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const fmtOff=(d,tz)=>{
+    const s=d.toLocaleString('en-US',{timeZone:tz,timeZoneName:'longOffset'});
+    const m=s.match(/GMT[+-]\d{1,2}(:\d{2})?/);
+    return m?m[0]:'';
+  };
+  document.getElementById('fromCity').textContent=fromTz.replace(/_/g,' ');
+  document.getElementById('fromTime').textContent=fmtTime(actualUtc,fromTz);
+  document.getElementById('fromDate').textContent=fmtDate(actualUtc,fromTz);
+  document.getElementById('fromOffset').textContent=fmtOff(actualUtc,fromTz);
+  document.getElementById('toCity').textContent=toTz.replace(/_/g,' ');
+  document.getElementById('toTime').textContent=fmtTime(actualUtc,toTz);
+  document.getElementById('toDate').textContent=fmtDate(actualUtc,toTz);
+  document.getElementById('toOffset').textContent=fmtOff(actualUtc,toTz);
+  document.getElementById('results').style.display='grid';
+}
+populateSelects();
+convert();
+</script>
+</body>
+</html>

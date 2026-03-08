@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary to Text Converter — Free Binary Translator | ToolPile</title>
+<meta name="description" content="Free binary to text converter. Translate binary code to readable text and text to binary instantly. Supports ASCII and UTF-8 encoding.">
+<meta name="keywords" content="binary to text, binary translator, binary converter, text to binary, binary code, binary decoder">
+<meta property="og:title" content="Binary to Text Converter — Free Online Tool">
+<meta property="og:description" content="Convert binary to text and text to binary instantly. Free, no signup.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/binary-to-text">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155}
+label{display:block;font-size:.875rem;color:#94a3b8;margin-bottom:.5rem}
+textarea{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;color:#e2e8f0;font-size:1rem;font-family:'SF Mono',Monaco,monospace;resize:vertical;min-height:120px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.btn-row{display:flex;gap:.75rem;margin:1rem 0}
+.btn{border:none;border-radius:10px;padding:.75rem 1.5rem;font-size:.9rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;flex:1}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+.btn-secondary{background:#334155}
+.btn-secondary:hover{background:#475569;box-shadow:none;transform:none}
+.swap{text-align:center;margin:.75rem 0;color:#64748b;font-size:1.5rem;cursor:pointer}
+.swap:hover{color:#818cf8}
+.stats{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.stat{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem 1rem;font-size:.8rem;color:#94a3b8}
+.stat strong{color:#e2e8f0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Binary to Text Converter</h1>
+<p class="subtitle">Convert between binary code and readable text</p>
+<div class="tool-area">
+  <label for="textInput">Text</label>
+  <textarea id="textInput" placeholder="Type text here..." oninput="textToBin()">Hello World</textarea>
+  <div class="swap" onclick="swapFocus()">⇅</div>
+  <label for="binInput">Binary</label>
+  <textarea id="binInput" placeholder="Enter binary (e.g. 01001000 01101001)..." oninput="binToText()"></textarea>
+  <div class="btn-row">
+    <button class="btn" onclick="textToBin()">Text → Binary</button>
+    <button class="btn" onclick="binToText()">Binary → Text</button>
+    <button class="btn btn-secondary" onclick="copyResult()">Copy</button>
+  </div>
+  <div class="stats" id="stats"></div>
+</div>
+<div style="margin-top:2rem;background:#1e293b;border-radius:12px;padding:2rem 1.5rem;border:1px solid #334155">
+  <h2 style="font-size:1.25rem;margin-bottom:1rem;color:#e2e8f0">How Binary Encoding Works</h2>
+  <p style="color:#94a3b8;line-height:1.7;font-size:.95rem">Computers store everything as binary — sequences of 0s and 1s. Each character in text is represented by a number (ASCII/UTF-8), which is stored in binary. For example, 'A' = 65 = 01000001. A byte (8 bits) can represent values 0–255, covering all standard ASCII characters. This tool converts each character to its 8-bit binary representation and back.</p>
+</div>
+<footer>
+  <p>Free tool by <a href="https://toolpile.tools">ToolPile</a></p>
+</footer>
+</div>
+<script>
+function textToBin(){
+  const text=document.getElementById('textInput').value;
+  const bin=Array.from(text).map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
+  document.getElementById('binInput').value=bin;
+  updateStats(text,bin);
+}
+function binToText(){
+  const bin=document.getElementById('binInput').value.trim();
+  const bytes=bin.replace(/[^01]/g,' ').split(/\s+/).filter(b=>b.length>0);
+  let text='';
+  for(const b of bytes){
+    const n=parseInt(b,2);
+    if(!isNaN(n)&&n>=0&&n<=1114111)text+=String.fromCharCode(n);
+  }
+  document.getElementById('textInput').value=text;
+  updateStats(text,bin);
+}
+function updateStats(text,bin){
+  const chars=text.length;
+  const bits=bin.replace(/\s/g,'').length;
+  const bytes=Math.ceil(bits/8);
+  document.getElementById('stats').innerHTML=
+    `<div class="stat"><strong>${chars}</strong> characters</div>`+
+    `<div class="stat"><strong>${bits}</strong> bits</div>`+
+    `<div class="stat"><strong>${bytes}</strong> bytes</div>`;
+}
+function swapFocus(){
+  document.getElementById('binInput').focus();
+}
+function copyResult(){
+  const bin=document.getElementById('binInput').value;
+  navigator.clipboard.writeText(bin);
+}
+textToBin();
+</script>
+</body>
+</html>
