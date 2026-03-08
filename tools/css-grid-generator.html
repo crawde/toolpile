@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Grid Generator — Free Visual Grid Builder | ToolPile</title>
+<meta name="description" content="Build CSS Grid layouts visually. Set columns, rows, gap, and see instant live preview with copyable code.">
+<meta name="keywords" content="css grid generator, css grid builder, css grid layout tool, grid template columns, free online tool, toolpile">
+<meta property="og:title" content="CSS Grid Generator — Free Visual Grid Builder">
+<meta property="og:description" content="Build CSS Grid layouts visually with live preview and copyable CSS code.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/css-grid-generator.html">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="number"],input[type="text"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+select{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;width:100%}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;color:#38bdf8;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;font-size:.875rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:600px){.controls{grid-template-columns:1fr 1fr}}
+.grid-preview{margin-top:1.5rem;border:2px dashed #475569;border-radius:8px;padding:8px;min-height:200px}
+.grid-cell{background:linear-gradient(135deg,#6366f1,#818cf8);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;min-height:60px;transition:all .2s}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CSS Grid Generator</h1>
+<p class="subtitle">Build CSS Grid layouts visually — adjust columns, rows, and gap, then copy the code.</p>
+<div class="tool-area">
+<div class="controls">
+<div>
+<label>Columns</label>
+<input type="number" id="cols" value="3" min="1" max="12" oninput="update()">
+</div>
+<div>
+<label>Rows</label>
+<input type="number" id="rows" value="3" min="1" max="12" oninput="update()">
+</div>
+<div>
+<label>Gap (px)</label>
+<input type="number" id="gap" value="12" min="0" max="100" oninput="update()">
+</div>
+<div>
+<label>Column Sizing</label>
+<select id="colSize" onchange="update()">
+<option value="1fr" selected>Equal (1fr)</option>
+<option value="auto">Auto</option>
+<option value="minmax(100px,1fr)">Minmax(100px,1fr)</option>
+<option value="200px">Fixed (200px)</option>
+</select>
+</div>
+<div>
+<label>Row Sizing</label>
+<select id="rowSize" onchange="update()">
+<option value="1fr" selected>Equal (1fr)</option>
+<option value="auto">Auto</option>
+<option value="minmax(80px,auto)">Minmax(80px,auto)</option>
+<option value="100px">Fixed (100px)</option>
+</select>
+</div>
+<div>
+<label>Alignment</label>
+<select id="align" onchange="update()">
+<option value="stretch" selected>Stretch</option>
+<option value="start">Start</option>
+<option value="center">Center</option>
+<option value="end">End</option>
+</select>
+</div>
+</div>
+<div class="grid-preview" id="preview"></div>
+<div class="output" id="css-output"></div>
+<button onclick="copyCSS()">Copy CSS</button>
+<button class="btn-secondary" onclick="copyHTML()">Copy HTML</button>
+</div>
+<script>
+function update(){
+const cols=Math.max(1,Math.min(12,+document.getElementById('cols').value||3));
+const rows=Math.max(1,Math.min(12,+document.getElementById('rows').value||3));
+const gap=Math.max(0,+document.getElementById('gap').value||0);
+const colSize=document.getElementById('colSize').value;
+const rowSize=document.getElementById('rowSize').value;
+const align=document.getElementById('align').value;
+const p=document.getElementById('preview');
+p.style.display='grid';
+p.style.gridTemplateColumns=`repeat(${cols}, ${colSize})`;
+p.style.gridTemplateRows=`repeat(${rows}, ${rowSize})`;
+p.style.gap=gap+'px';
+p.style.alignItems=align;
+const total=cols*rows;
+let html='';
+for(let i=1;i<=total;i++) html+=`<div class="grid-cell">${i}</div>`;
+p.innerHTML=html;
+const css=`.grid-container {
+  display: grid;
+  grid-template-columns: repeat(${cols}, ${colSize});
+  grid-template-rows: repeat(${rows}, ${rowSize});
+  gap: ${gap}px;${align!=='stretch'?'\n  align-items: '+align+';':''}
+}`;
+document.getElementById('css-output').textContent=css;
+}
+function copyCSS(){navigator.clipboard.writeText(document.getElementById('css-output').textContent)}
+function copyHTML(){
+const cols=+document.getElementById('cols').value||3;
+const rows=+document.getElementById('rows').value||3;
+let h='<div class="grid-container">\n';
+for(let i=1;i<=cols*rows;i++) h+=`  <div class="item">${i}</div>\n`;
+h+='</div>';
+navigator.clipboard.writeText(h);
+}
+update();
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>

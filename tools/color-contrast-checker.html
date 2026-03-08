@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Contrast Checker — WCAG Accessibility Tool | ToolPile</title>
+<meta name="description" content="Check color contrast ratios for WCAG 2.1 AA and AAA compliance. Test foreground and background colors instantly.">
+<meta name="keywords" content="color contrast checker, wcag contrast, accessibility checker, contrast ratio, aa aaa compliance, free online tool, toolpile">
+<meta property="og:title" content="Color Contrast Checker — WCAG Accessibility Tool">
+<meta property="og:description" content="Check color contrast ratios for WCAG 2.1 AA and AAA compliance instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/color-contrast-checker.html">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="text"],input[type="color"]{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit}
+input[type="text"]{width:100%}
+input[type="color"]{width:60px;height:44px;cursor:pointer;padding:4px}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.color-row{display:flex;gap:.75rem;align-items:center}
+.color-row input[type="text"]{flex:1}
+.preview-box{margin-top:1.5rem;border-radius:12px;padding:2rem;text-align:center;border:2px solid #475569}
+.preview-box h2{font-size:1.5rem;margin-bottom:.5rem}
+.preview-box p{font-size:1rem}
+.ratio-display{text-align:center;margin-top:1.5rem}
+.ratio-value{font-size:3rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ratio-label{color:#94a3b8;font-size:.875rem}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1.5rem}
+.result-card{background:#0f172a;border-radius:8px;padding:1rem;border:1px solid #334155;text-align:center}
+.result-card .level{font-weight:700;font-size:1.1rem;margin-bottom:.25rem}
+.result-card .status{font-size:1.5rem}
+.pass{color:#22c55e}.fail{color:#ef4444}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.swap-btn{background:#334155;border:none;color:#e2e8f0;border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-size:1.2rem;margin-top:1rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Color Contrast Checker</h1>
+<p class="subtitle">Check WCAG 2.1 AA and AAA compliance for text and background color combinations.</p>
+<div class="tool-area">
+<label>Foreground (Text) Color</label>
+<div class="color-row">
+<input type="color" id="fg-picker" value="#ffffff" oninput="document.getElementById('fg').value=this.value;check()">
+<input type="text" id="fg" value="#ffffff" oninput="syncPicker('fg');check()">
+</div>
+<label>Background Color</label>
+<div class="color-row">
+<input type="color" id="bg-picker" value="#1e293b" oninput="document.getElementById('bg').value=this.value;check()">
+<input type="text" id="bg" value="#1e293b" oninput="syncPicker('bg');check()">
+</div>
+<div style="text-align:center"><button class="swap-btn" onclick="swap()">⇅ Swap Colors</button></div>
+<div class="preview-box" id="preview">
+<h2>Preview Text</h2>
+<p>The quick brown fox jumps over the lazy dog.</p>
+<p style="font-size:.75rem;margin-top:.5rem">Small text sample (14px)</p>
+</div>
+<div class="ratio-display">
+<div class="ratio-value" id="ratio">—</div>
+<div class="ratio-label">Contrast Ratio</div>
+</div>
+<div class="results">
+<div class="result-card"><div class="level">AA Normal</div><div class="status" id="aa-normal">—</div><div style="color:#94a3b8;font-size:.75rem">≥ 4.5:1</div></div>
+<div class="result-card"><div class="level">AA Large</div><div class="status" id="aa-large">—</div><div style="color:#94a3b8;font-size:.75rem">≥ 3:1</div></div>
+<div class="result-card"><div class="level">AAA Normal</div><div class="status" id="aaa-normal">—</div><div style="color:#94a3b8;font-size:.75rem">≥ 7:1</div></div>
+<div class="result-card"><div class="level">AAA Large</div><div class="status" id="aaa-large">—</div><div style="color:#94a3b8;font-size:.75rem">≥ 4.5:1</div></div>
+</div>
+</div>
+<script>
+function hexToRgb(h){h=h.replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];return[parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
+function luminance(r,g,b){const a=[r,g,b].map(v=>{v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});return a[0]*0.2126+a[1]*0.7152+a[2]*0.0722;}
+function contrastRatio(l1,l2){const lighter=Math.max(l1,l2),darker=Math.min(l1,l2);return(lighter+0.05)/(darker+0.05);}
+function syncPicker(id){const v=document.getElementById(id).value;if(/^#[0-9a-fA-F]{6}$/.test(v)||/^#[0-9a-fA-F]{3}$/.test(v))document.getElementById(id+'-picker').value=v.length===4?'#'+v[1]+v[1]+v[2]+v[2]+v[3]+v[3]:v;}
+function swap(){const fg=document.getElementById('fg').value,bg=document.getElementById('bg').value;document.getElementById('fg').value=bg;document.getElementById('bg').value=fg;syncPicker('fg');syncPicker('bg');check();}
+function badge(ratio,min){return ratio>=min?'<span class="pass">✅ Pass</span>':'<span class="fail">❌ Fail</span>';}
+function check(){
+const fg=document.getElementById('fg').value,bg=document.getElementById('bg').value;
+if(!/^#[0-9a-fA-F]{3,6}$/.test(fg)||!/^#[0-9a-fA-F]{3,6}$/.test(bg))return;
+const[fr,fg2,fb]=hexToRgb(fg),[br,bg2,bb]=hexToRgb(bg);
+const l1=luminance(fr,fg2,fb),l2=luminance(br,bg2,bb);
+const ratio=contrastRatio(l1,l2);
+document.getElementById('ratio').textContent=ratio.toFixed(2)+':1';
+document.getElementById('preview').style.color=fg;
+document.getElementById('preview').style.backgroundColor=bg;
+document.getElementById('aa-normal').innerHTML=badge(ratio,4.5);
+document.getElementById('aa-large').innerHTML=badge(ratio,3);
+document.getElementById('aaa-normal').innerHTML=badge(ratio,7);
+document.getElementById('aaa-large').innerHTML=badge(ratio,4.5);
+}
+check();
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Crop Tool — Free Online Image Cropper | ToolPile</title>
+<meta name="description" content="Crop images online for free. Upload any image, select the area to crop, and download the result. No upload to server.">
+<meta name="keywords" content="image crop tool, online image cropper, crop image free, crop photo online, free online tool, toolpile">
+<meta property="og:title" content="Image Crop Tool — Free Online Image Cropper">
+<meta property="og:description" content="Crop images in your browser. No uploads, no signups — 100% private.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/image-crop-tool.html">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+.drop-zone{border:2px dashed #475569;border-radius:12px;padding:3rem;text-align:center;cursor:pointer;transition:border-color .2s;color:#94a3b8}
+.drop-zone:hover,.drop-zone.dragover{border-color:#818cf8;color:#e2e8f0}
+.drop-zone input{display:none}
+.canvas-wrap{position:relative;margin-top:1rem;display:none;overflow:hidden;border-radius:8px;border:1px solid #475569;cursor:crosshair;user-select:none}
+.canvas-wrap canvas{display:block;max-width:100%;height:auto}
+.crop-box{position:absolute;border:2px solid #38bdf8;box-shadow:0 0 0 9999px rgba(0,0,0,.5);pointer-events:none}
+.controls{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap;align-items:center}
+label{font-size:.875rem;color:#94a3b8;margin-right:.25rem}
+.dim{background:#0f172a;border:1px solid #475569;border-radius:6px;padding:.4rem .6rem;color:#38bdf8;font-family:monospace;font-size:.875rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155}
+select{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.5rem;color:#e2e8f0;font-size:.875rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Image Crop Tool</h1>
+<p class="subtitle">Upload an image, drag to select crop area, then download. 100% client-side — nothing uploaded.</p>
+<div class="tool-area">
+<div class="drop-zone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+<p style="font-size:2rem;margin-bottom:.5rem">📷</p>
+<p>Drop an image here or click to upload</p>
+<input type="file" id="fileInput" accept="image/*">
+</div>
+<div class="canvas-wrap" id="canvasWrap">
+<canvas id="canvas"></canvas>
+<div class="crop-box" id="cropBox"></div>
+</div>
+<div class="controls" id="controlsArea" style="display:none">
+<label>Aspect:</label>
+<select id="aspect" onchange="resetCrop()">
+<option value="free">Free</option>
+<option value="1:1">1:1</option>
+<option value="4:3">4:3</option>
+<option value="16:9">16:9</option>
+<option value="3:2">3:2</option>
+<option value="9:16">9:16</option>
+</select>
+<span class="dim" id="dims">—</span>
+<button onclick="doCrop()">Crop & Download</button>
+<button class="btn-secondary" onclick="resetCrop()">Reset</button>
+</div>
+</div>
+<script>
+let img=null,sx=0,sy=0,sw=0,sh=0,dragging=false,startX=0,startY=0,scaleX=1,scaleY=1;
+const dz=document.getElementById('dropzone'),fi=document.getElementById('fileInput'),cw=document.getElementById('canvasWrap'),cv=document.getElementById('canvas'),cb=document.getElementById('cropBox'),ctx=cv.getContext('2d');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);});
+fi.addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);});
+function loadFile(f){
+if(!f.type.startsWith('image/'))return;
+const r=new FileReader();
+r.onload=e=>{img=new Image();img.onload=()=>{const maxW=cw.parentElement.clientWidth-34;const scale=img.width>maxW?maxW/img.width:1;cv.width=img.width*scale;cv.height=img.height*scale;scaleX=img.width/cv.width;scaleY=img.height/cv.height;ctx.drawImage(img,0,0,cv.width,cv.height);dz.style.display='none';cw.style.display='block';document.getElementById('controlsArea').style.display='flex';resetCrop();};img.src=e.target.result;};
+r.readAsDataURL(f);
+}
+function resetCrop(){sx=0;sy=0;sw=0;sh=0;cb.style.display='none';document.getElementById('dims').textContent='—';}
+cw.addEventListener('mousedown',e=>{if(!img)return;const r=cv.getBoundingClientRect();startX=e.clientX-r.left;startY=e.clientY-r.top;dragging=true;cb.style.display='block';});
+cw.addEventListener('mousemove',e=>{if(!dragging)return;const r=cv.getBoundingClientRect();let cx=e.clientX-r.left,cy=e.clientY-r.top;cx=Math.max(0,Math.min(cv.width,cx));cy=Math.max(0,Math.min(cv.height,cy));
+let x1=Math.min(startX,cx),y1=Math.min(startY,cy),w=Math.abs(cx-startX),h=Math.abs(cy-startY);
+const asp=document.getElementById('aspect').value;
+if(asp!=='free'){const[aw,ah]=asp.split(':').map(Number);const ratio=aw/ah;if(w/h>ratio)w=h*ratio;else h=w/ratio;if(cx<startX)x1=startX-w;if(cy<startY)y1=startY-h;}
+cb.style.left=x1+'px';cb.style.top=y1+'px';cb.style.width=w+'px';cb.style.height=h+'px';
+sx=x1;sy=y1;sw=w;sh=h;
+document.getElementById('dims').textContent=Math.round(w*scaleX)+'×'+Math.round(h*scaleY)+'px';
+});
+window.addEventListener('mouseup',()=>{dragging=false;});
+function doCrop(){
+if(!img||sw<2||sh<2)return;
+const oc=document.createElement('canvas');const cw2=Math.round(sw*scaleX),ch2=Math.round(sh*scaleY);oc.width=cw2;oc.height=ch2;
+oc.getContext('2d').drawImage(img,sx*scaleX,sy*scaleY,cw2,ch2,0,0,cw2,ch2);
+const a=document.createElement('a');a.download='cropped.png';a.href=oc.toDataURL('image/png');a.click();
+}
+</script>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+</div>
+</body>
+</html>
