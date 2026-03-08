@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Editor — Free Online Tool | ToolPile</title>
+<meta name="description" content="Write and preview Markdown in real-time. Free online Markdown editor with live preview, syntax highlighting, and export.">
+<meta name="keywords" content="markdown editor online, free markdown editor, markdown preview, markdown to html, toolpile">
+<meta property="og:title" content="Markdown Editor — Free Online Tool">
+<meta property="og:description" content="Write and preview Markdown in real-time with live preview and export.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/markdown-editor">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.editor-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1rem;min-height:500px}
+@media(max-width:768px){.editor-wrap{grid-template-columns:1fr;min-height:300px}}
+.pane{background:#1e293b;border-radius:12px;border:1px solid #334155;display:flex;flex-direction:column}
+.pane-header{padding:.75rem 1rem;border-bottom:1px solid #334155;font-size:.875rem;font-weight:600;color:#94a3b8;display:flex;justify-content:space-between;align-items:center}
+textarea{flex:1;width:100%;background:transparent;border:none;padding:1rem;color:#e2e8f0;font-size:.9rem;font-family:'JetBrains Mono',monospace;resize:none;line-height:1.6}
+textarea:focus{outline:none}
+.preview{flex:1;padding:1rem;overflow-y:auto;line-height:1.7;font-size:.95rem}
+.preview h1,.preview h2,.preview h3,.preview h4{color:#38bdf8;margin:1rem 0 .5rem}
+.preview h1{font-size:1.8rem;border-bottom:1px solid #334155;padding-bottom:.3rem}
+.preview h2{font-size:1.4rem;border-bottom:1px solid #334155;padding-bottom:.2rem}
+.preview h3{font-size:1.15rem}
+.preview p{margin:.5rem 0}
+.preview code{background:#334155;padding:.15rem .4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:#f472b6}
+.preview pre{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:1rem;overflow-x:auto;margin:.75rem 0}
+.preview pre code{background:none;padding:0;color:#38bdf8}
+.preview blockquote{border-left:3px solid #818cf8;padding-left:1rem;color:#94a3b8;margin:.75rem 0}
+.preview ul,.preview ol{padding-left:1.5rem;margin:.5rem 0}
+.preview li{margin:.25rem 0}
+.preview a{color:#818cf8}
+.preview strong{color:#f1f5f9}
+.preview em{color:#cbd5e1}
+.preview hr{border:none;border-top:1px solid #475569;margin:1rem 0}
+.preview table{border-collapse:collapse;width:100%;margin:.75rem 0}
+.preview th,.preview td{border:1px solid #475569;padding:.5rem .75rem;text-align:left}
+.preview th{background:#334155;font-weight:600}
+.preview img{max-width:100%;border-radius:8px}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-sm{padding:.4rem .75rem;font-size:.8rem;background:#334155}
+.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.stats{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap}
+.stat{background:#1e293b;border-radius:8px;padding:.75rem 1rem;border:1px solid #334155;text-align:center;flex:1;min-width:100px}
+.stat-value{font-size:1.5rem;font-weight:700;color:#38bdf8}
+.stat-label{font-size:.75rem;color:#94a3b8;margin-top:.25rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Markdown Editor</h1>
+<p class="subtitle">Write Markdown and see a live preview side by side. Export to HTML instantly.</p>
+<div class="toolbar">
+<button class="btn-sm" onclick="ins('**','**')"><b>B</b></button>
+<button class="btn-sm" onclick="ins('*','*')"><i>I</i></button>
+<button class="btn-sm" onclick="ins('~~','~~')"><s>S</s></button>
+<button class="btn-sm" onclick="ins('`','`')">Code</button>
+<button class="btn-sm" onclick="ins('\n```\n','\n```\n')">Block</button>
+<button class="btn-sm" onclick="ins('[','](url)')">Link</button>
+<button class="btn-sm" onclick="ins('- ','')">List</button>
+<button class="btn-sm" onclick="ins('> ','')">Quote</button>
+<button class="btn-sm" onclick="ins('### ','')">H3</button>
+<button onclick="copyHtml()">Copy HTML</button>
+<button onclick="download()">Download .md</button>
+</div>
+<div class="editor-wrap">
+<div class="pane">
+<div class="pane-header"><span>Markdown</span><span id="wc">0 words</span></div>
+<textarea id="input" placeholder="# Hello World
+
+Start writing **Markdown** here...
+
+- Item 1
+- Item 2
+
+> This is a blockquote
+
+`inline code` and more!"></textarea>
+</div>
+<div class="pane">
+<div class="pane-header"><span>Preview</span></div>
+<div class="preview" id="output"></div>
+</div>
+</div>
+<div class="stats">
+<div class="stat"><div class="stat-value" id="s-words">0</div><div class="stat-label">Words</div></div>
+<div class="stat"><div class="stat-value" id="s-chars">0</div><div class="stat-label">Characters</div></div>
+<div class="stat"><div class="stat-value" id="s-lines">0</div><div class="stat-label">Lines</div></div>
+<div class="stat"><div class="stat-value" id="s-read">0m</div><div class="stat-label">Read Time</div></div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+const input=document.getElementById('input'),output=document.getElementById('output');
+function render(){const md=input.value;output.innerHTML=parseMd(md);const words=md.trim()?md.trim().split(/\s+/).length:0;document.getElementById('wc').textContent=words+' words';document.getElementById('s-words').textContent=words;document.getElementById('s-chars').textContent=md.length;document.getElementById('s-lines').textContent=md.split('\n').length;document.getElementById('s-read').textContent=Math.max(1,Math.ceil(words/200))+'m';}
+function parseMd(md){let h=md;h=h.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');h=h.replace(/^```([\s\S]*?)```$/gm,(_,c)=>'<pre><code>'+c.trim()+'</code></pre>');h=h.replace(/```(\w*)\n([\s\S]*?)```/g,(_,l,c)=>'<pre><code>'+c.trim()+'</code></pre>');h=h.replace(/`([^`]+)`/g,'<code>$1</code>');h=h.replace(/^######\s+(.*$)/gm,'<h6>$1</h6>');h=h.replace(/^#####\s+(.*$)/gm,'<h5>$1</h5>');h=h.replace(/^####\s+(.*$)/gm,'<h4>$1</h4>');h=h.replace(/^###\s+(.*$)/gm,'<h3>$1</h3>');h=h.replace(/^##\s+(.*$)/gm,'<h2>$1</h2>');h=h.replace(/^#\s+(.*$)/gm,'<h1>$1</h1>');h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');h=h.replace(/~~(.+?)~~/g,'<del>$1</del>');h=h.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1">');h=h.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');h=h.replace(/^&gt;\s+(.*$)/gm,'<blockquote>$1</blockquote>');h=h.replace(/^---$/gm,'<hr>');h=h.replace(/^\-\s+(.*$)/gm,'<li>$1</li>');h=h.replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>');h=h.replace(/^\d+\.\s+(.*$)/gm,'<li>$1</li>');h=h.replace(/^(?!<[hupblo])(.*\S.*)$/gm,'<p>$1</p>');return h;}
+function ins(before,after){const s=input.selectionStart,e=input.selectionEnd,t=input.value;input.value=t.substring(0,s)+before+t.substring(s,e)+after+t.substring(e);input.focus();input.selectionStart=s+before.length;input.selectionEnd=e+before.length;render();}
+function copyHtml(){navigator.clipboard.writeText(output.innerHTML);alert('HTML copied!');}
+function download(){const b=new Blob([input.value],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='document.md';a.click();}
+input.addEventListener('input',render);render();
+</script>
+</body>
+</html>

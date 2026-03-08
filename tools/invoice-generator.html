@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice Generator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Create professional invoices instantly. Add line items, tax, discounts, and download as PDF. Free invoice maker for freelancers and small businesses.">
+<meta name="keywords" content="invoice generator, free invoice maker, invoice template, create invoice online, toolpile">
+<meta property="og:title" content="Invoice Generator — Free Online Tool">
+<meta property="og:description" content="Create professional invoices instantly. Free invoice generator with PDF download.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/invoice-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,textarea,select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:#818cf8}
+textarea{min-height:60px;resize:vertical}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-sm{padding:.4rem .75rem;font-size:.8rem;background:#334155}
+.btn-danger{background:#dc2626}
+.section{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #334155}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-bottom:.75rem}
+table{width:100%;border-collapse:collapse;margin-top:.5rem}
+th{text-align:left;padding:.5rem;font-size:.8rem;color:#94a3b8;border-bottom:1px solid #475569}
+td{padding:.4rem;vertical-align:middle}
+td input{width:100%;min-width:0}
+.total-row{display:flex;justify-content:space-between;padding:.5rem 0;font-size:.95rem}
+.total-row.grand{font-size:1.2rem;font-weight:800;color:#38bdf8;border-top:2px solid #818cf8;margin-top:.5rem;padding-top:.75rem}
+.actions{display:flex;gap:.75rem;margin-top:1.5rem;flex-wrap:wrap}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Invoice Generator</h1>
+<p class="subtitle">Create professional invoices for free. Add items, set tax & discount, then download as PDF.</p>
+<div class="tool-area">
+<div class="grid2">
+<div>
+<div class="section-title">From (Your Details)</div>
+<label>Business Name</label><input id="fromName" placeholder="Your Company LLC">
+<label>Email</label><input id="fromEmail" placeholder="you@company.com">
+<label>Address</label><textarea id="fromAddr" rows="2" placeholder="123 Main St, City, ST 12345"></textarea>
+</div>
+<div>
+<div class="section-title">Bill To (Client)</div>
+<label>Client Name</label><input id="toName" placeholder="Client Corp">
+<label>Email</label><input id="toEmail" placeholder="client@example.com">
+<label>Address</label><textarea id="toAddr" rows="2" placeholder="456 Oak Ave, City, ST 67890"></textarea>
+</div>
+</div>
+<div class="section">
+<div class="grid2">
+<div><label>Invoice Number</label><input id="invNum" value="INV-001"></div>
+<div><label>Currency</label>
+<select id="currency" onchange="calc()"><option value="$">USD ($)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option><option value="¥">JPY (¥)</option><option value="₹">INR (₹)</option><option value="C$">CAD (C$)</option><option value="A$">AUD (A$)</option></select></div>
+<div><label>Invoice Date</label><input type="date" id="invDate"></div>
+<div><label>Due Date</label><input type="date" id="dueDate"></div>
+</div>
+</div>
+<div class="section">
+<div class="section-title">Line Items</div>
+<table>
+<thead><tr><th>Description</th><th style="width:70px">Qty</th><th style="width:90px">Rate</th><th style="width:90px">Amount</th><th style="width:36px"></th></tr></thead>
+<tbody id="items"></tbody>
+</table>
+<button class="btn-sm" onclick="addItem()" style="margin-top:.5rem">+ Add Item</button>
+</div>
+<div class="section">
+<div class="grid2">
+<div><label>Notes</label><textarea id="notes" rows="2" placeholder="Payment terms, thank you message, etc."></textarea></div>
+<div style="padding-top:1rem">
+<div class="total-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+<div style="display:flex;gap:.5rem;align-items:center;margin-top:.3rem">
+<label style="margin:0;white-space:nowrap">Tax %</label><input type="number" id="tax" value="0" min="0" max="100" style="width:70px" oninput="calc()">
+</div>
+<div class="total-row"><span>Tax</span><span id="taxAmt">$0.00</span></div>
+<div style="display:flex;gap:.5rem;align-items:center;margin-top:.3rem">
+<label style="margin:0;white-space:nowrap">Discount %</label><input type="number" id="discount" value="0" min="0" max="100" style="width:70px" oninput="calc()">
+</div>
+<div class="total-row"><span>Discount</span><span id="discAmt">-$0.00</span></div>
+<div class="total-row grand"><span>Total Due</span><span id="grandTotal">$0.00</span></div>
+</div>
+</div>
+</div>
+<div class="actions">
+<button onclick="downloadPDF()">📄 Download PDF</button>
+<button class="btn-sm" onclick="resetForm()">Reset</button>
+</div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+let items=[{desc:'',qty:1,rate:0}];
+function renderItems(){const tbody=document.getElementById('items');tbody.innerHTML='';items.forEach((it,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input value="${it.desc}" oninput="items[${i}].desc=this.value"></td><td><input type="number" value="${it.qty}" min="0" oninput="items[${i}].qty=parseFloat(this.value)||0;calc()"></td><td><input type="number" value="${it.rate}" min="0" step="0.01" oninput="items[${i}].rate=parseFloat(this.value)||0;calc()"></td><td style="color:#38bdf8;font-family:monospace;font-weight:600;text-align:right">${cur()}${(it.qty*it.rate).toFixed(2)}</td><td><button class="btn-sm btn-danger" onclick="removeItem(${i})" style="padding:.3rem .5rem">×</button></td>`;tbody.appendChild(tr);});}
+function cur(){return document.getElementById('currency').value;}
+function addItem(){items.push({desc:'',qty:1,rate:0});renderItems();}
+function removeItem(i){if(items.length>1){items.splice(i,1);renderItems();calc();}}
+function calc(){const sub=items.reduce((s,it)=>s+it.qty*it.rate,0);const taxP=parseFloat(document.getElementById('tax').value)||0;const discP=parseFloat(document.getElementById('discount').value)||0;const taxA=sub*taxP/100;const discA=sub*discP/100;const total=sub+taxA-discA;const c=cur();document.getElementById('subtotal').textContent=c+sub.toFixed(2);document.getElementById('taxAmt').textContent=c+taxA.toFixed(2);document.getElementById('discAmt').textContent='-'+c+discA.toFixed(2);document.getElementById('grandTotal').textContent=c+total.toFixed(2);renderItems();}
+function downloadPDF(){const c=cur();const sub=items.reduce((s,it)=>s+it.qty*it.rate,0);const taxP=parseFloat(document.getElementById('tax').value)||0;const discP=parseFloat(document.getElementById('discount').value)||0;const taxA=sub*taxP/100;const discA=sub*discP/100;const total=sub+taxA-discA;
+let html=`<html><head><style>body{font-family:Helvetica,Arial,sans-serif;padding:40px;color:#1e293b}h1{color:#6366f1;font-size:28px;margin-bottom:5px}.inv-num{color:#94a3b8;font-size:14px}.grid{display:flex;justify-content:space-between;margin:30px 0}.col{flex:1}.col h3{color:#6366f1;font-size:12px;text-transform:uppercase;margin-bottom:8px}.meta{margin:20px 0;display:flex;gap:40px}.meta div{font-size:13px;color:#64748b}.meta strong{color:#1e293b}table{width:100%;border-collapse:collapse;margin-top:20px}th{background:#f1f5f9;color:#64748b;font-size:12px;text-transform:uppercase;padding:10px;text-align:left;border-bottom:2px solid #e2e8f0}td{padding:10px;border-bottom:1px solid #f1f5f9;font-size:14px}.amt{text-align:right;font-weight:600}.totals{margin-left:auto;width:280px;margin-top:20px}.totals .row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}.totals .grand{font-size:20px;font-weight:800;color:#6366f1;border-top:2px solid #6366f1;padding-top:10px;margin-top:6px}.notes{margin-top:40px;padding-top:20px;border-top:1px solid #e2e8f0;font-size:13px;color:#64748b}</style></head><body>`;
+html+=`<h1>INVOICE</h1><p class="inv-num">${document.getElementById('invNum').value}</p>`;
+html+=`<div class="grid"><div class="col"><h3>From</h3><p><strong>${document.getElementById('fromName').value}</strong><br>${document.getElementById('fromEmail').value}<br>${document.getElementById('fromAddr').value.replace(/\n/g,'<br>')}</p></div>`;
+html+=`<div class="col"><h3>Bill To</h3><p><strong>${document.getElementById('toName').value}</strong><br>${document.getElementById('toEmail').value}<br>${document.getElementById('toAddr').value.replace(/\n/g,'<br>')}</p></div></div>`;
+html+=`<div class="meta"><div>Date: <strong>${document.getElementById('invDate').value||'N/A'}</strong></div><div>Due: <strong>${document.getElementById('dueDate').value||'N/A'}</strong></div></div>`;
+html+=`<table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th class="amt">Amount</th></tr></thead><tbody>`;
+items.forEach(it=>{html+=`<tr><td>${it.desc}</td><td>${it.qty}</td><td>${c}${it.rate.toFixed(2)}</td><td class="amt">${c}${(it.qty*it.rate).toFixed(2)}</td></tr>`;});
+html+=`</tbody></table><div class="totals"><div class="row"><span>Subtotal</span><span>${c}${sub.toFixed(2)}</span></div>`;
+if(taxP)html+=`<div class="row"><span>Tax (${taxP}%)</span><span>${c}${taxA.toFixed(2)}</span></div>`;
+if(discP)html+=`<div class="row"><span>Discount (${discP}%)</span><span>-${c}${discA.toFixed(2)}</span></div>`;
+html+=`<div class="row grand"><span>Total Due</span><span>${c}${total.toFixed(2)}</span></div></div>`;
+const notes=document.getElementById('notes').value;if(notes)html+=`<div class="notes">${notes}</div>`;
+html+=`</body></html>`;
+const w=window.open('','_blank');w.document.write(html);w.document.close();w.print();}
+function resetForm(){items=[{desc:'',qty:1,rate:0}];document.querySelectorAll('input,textarea').forEach(el=>{if(el.type==='number')el.value=el.id==='tax'||el.id==='discount'?'0':'';else if(el.type==='date')el.value='';else if(el.id==='invNum')el.value='INV-001';else el.value='';});renderItems();calc();}
+document.getElementById('invDate').valueAsDate=new Date();const due=new Date();due.setDate(due.getDate()+30);document.getElementById('dueDate').valueAsDate=due;
+renderItems();calc();
+</script>
+</body>
+</html>

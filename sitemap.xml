@@ -116,4 +116,14 @@
   <url><loc>https://toolpile.tools/tools/xml-formatter.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://toolpile.tools/tools/binary-to-hex.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://toolpile.tools/tools/htpasswd-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/paycheck-calculator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/body-fat-calculator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/business-name-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/glassmorphism-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/neumorphism-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/ascii-art-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/image-watermark.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/color-wheel.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/json-path-finder.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/regex-explainer.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

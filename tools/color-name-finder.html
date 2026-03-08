@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Name Finder — Free Online Tool | ToolPile</title>
+<meta name="description" content="Enter any hex color code and instantly find its closest named color. Browse 148 CSS named colors with search and copy.">
+<meta name="keywords" content="color name finder, hex to color name, css color names, named colors, color identifier, toolpile">
+<meta property="og:title" content="Color Name Finder — Free Online Tool">
+<meta property="og:description" content="Enter any hex color and find its closest named color. Browse all 148 CSS named colors.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/color-name-finder">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+.input-row{display:flex;gap:.75rem;align-items:center}
+input[type="text"]{flex:1;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1.1rem;font-family:'JetBrains Mono',monospace}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+input[type="color"]{width:50px;height:44px;border:none;border-radius:8px;cursor:pointer;background:none}
+.result{margin-top:1.5rem;display:none}
+.result-card{background:#0f172a;border:1px solid #475569;border-radius:12px;overflow:hidden}
+.color-preview{height:120px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:600}
+.result-info{padding:1.25rem}
+.result-name{font-size:1.5rem;font-weight:800;color:#f1f5f9}
+.result-hex{font-family:'JetBrains Mono',monospace;color:#818cf8;margin-top:.25rem}
+.result-dist{color:#94a3b8;font-size:.85rem;margin-top:.25rem}
+.result-row{display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap}
+.result-chip{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:.5rem .75rem;font-size:.85rem;cursor:pointer;transition:border-color .15s}
+.result-chip:hover{border-color:#818cf8}
+.browse{margin-top:2rem}
+.browse-title{font-size:1.1rem;font-weight:700;color:#818cf8;margin-bottom:.75rem}
+.browse input{margin-bottom:1rem}
+.color-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem}
+.color-item{border-radius:8px;overflow:hidden;border:1px solid #334155;cursor:pointer;transition:transform .1s}
+.color-item:hover{transform:scale(1.03)}
+.color-swatch{height:50px}
+.color-label{padding:.4rem .6rem;font-size:.75rem;background:#0f172a}
+.color-label strong{color:#f1f5f9;display:block}
+.color-label span{color:#94a3b8;font-family:'JetBrains Mono',monospace;font-size:.7rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Color Name Finder</h1>
+<p class="subtitle">Enter any hex color code to find its closest CSS named color. Browse all 148 named colors.</p>
+<div class="tool-area">
+<div class="input-row">
+<input type="color" id="picker" value="#6366f1" oninput="fromPicker()">
+<input type="text" id="hexInput" placeholder="#6366f1" oninput="lookup()">
+</div>
+<div class="result" id="result">
+<div class="result-card">
+<div class="color-preview" id="preview"></div>
+<div class="result-info">
+<div class="result-name" id="rName"></div>
+<div class="result-hex" id="rHex"></div>
+<div class="result-dist" id="rDist"></div>
+<div class="result-row">
+<div class="result-chip" id="rRgb" onclick="navigator.clipboard.writeText(this.textContent)"></div>
+<div class="result-chip" id="rHsl" onclick="navigator.clipboard.writeText(this.textContent)"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="browse">
+<div class="browse-title">All 148 CSS Named Colors</div>
+<input type="text" id="browseSearch" placeholder="Search colors..." oninput="filterColors()">
+<div class="color-grid" id="grid"></div>
+</div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+</footer>
+<script>
+const COLORS={"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff","beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887","cadetblue":"#5f9ea0","chartreuse":"#7fff00","chocolate":"#d2691e","coral":"#ff7f50","cornflowerblue":"#6495ed","cornsilk":"#fff8dc","crimson":"#dc143c","cyan":"#00ffff","darkblue":"#00008b","darkcyan":"#008b8b","darkgoldenrod":"#b8860b","darkgray":"#a9a9a9","darkgreen":"#006400","darkkhaki":"#bdb76b","darkmagenta":"#8b008b","darkolivegreen":"#556b2f","darkorange":"#ff8c00","darkorchid":"#9932cc","darkred":"#8b0000","darksalmon":"#e9967a","darkseagreen":"#8fbc8f","darkslateblue":"#483d8b","darkslategray":"#2f4f4f","darkturquoise":"#00ced1","darkviolet":"#9400d3","deeppink":"#ff1493","deepskyblue":"#00bfff","dimgray":"#696969","dodgerblue":"#1e90ff","firebrick":"#b22222","floralwhite":"#fffaf0","forestgreen":"#228b22","fuchsia":"#ff00ff","gainsboro":"#dcdcdc","ghostwhite":"#f8f8ff","gold":"#ffd700","goldenrod":"#daa520","gray":"#808080","green":"#008000","greenyellow":"#adff2f","honeydew":"#f0fff0","hotpink":"#ff69b4","indianred":"#cd5c5c","indigo":"#4b0082","ivory":"#fffff0","khaki":"#f0e68c","lavender":"#e6e6fa","lavenderblush":"#fff0f5","lawngreen":"#7cfc00","lemonchiffon":"#fffacd","lightblue":"#add8e6","lightcoral":"#f08080","lightcyan":"#e0ffff","lightgoldenrodyellow":"#fafad2","lightgray":"#d3d3d3","lightgreen":"#90ee90","lightpink":"#ffb6c1","lightsalmon":"#ffa07a","lightseagreen":"#20b2aa","lightskyblue":"#87cefa","lightslategray":"#778899","lightsteelblue":"#b0c4de","lightyellow":"#ffffe0","lime":"#00ff00","limegreen":"#32cd32","linen":"#faf0e6","magenta":"#ff00ff","maroon":"#800000","mediumaquamarine":"#66cdaa","mediumblue":"#0000cd","mediumorchid":"#ba55d3","mediumpurple":"#9370db","mediumseagreen":"#3cb371","mediumslateblue":"#7b68ee","mediumspringgreen":"#00fa9a","mediumturquoise":"#48d1cc","mediumvioletred":"#c71585","midnightblue":"#191970","mintcream":"#f5fffa","mistyrose":"#ffe4e1","moccasin":"#ffe4b5","navajowhite":"#ffdead","navy":"#000080","oldlace":"#fdf5e6","olive":"#808000","olivedrab":"#6b8e23","orange":"#ffa500","orangered":"#ff4500","orchid":"#da70d6","palegoldenrod":"#eee8aa","palegreen":"#98fb98","paleturquoise":"#afeeee","palevioletred":"#db7093","papayawhip":"#ffefd5","peachpuff":"#ffdab9","peru":"#cd853f","pink":"#ffc0cb","plum":"#dda0dd","powderblue":"#b0e0e6","purple":"#800080","rebeccapurple":"#663399","red":"#ff0000","rosybrown":"#bc8f8f","royalblue":"#4169e1","saddlebrown":"#8b4513","salmon":"#fa8072","sandybrown":"#f4a460","seagreen":"#2e8b57","seashell":"#fff5ee","sienna":"#a0522d","silver":"#c0c0c0","skyblue":"#87ceeb","slateblue":"#6a5acd","slategray":"#708090","snow":"#fffafa","springgreen":"#00ff7f","steelblue":"#4682b4","tan":"#d2b48c","teal":"#008080","thistle":"#d8bfd8","tomato":"#ff6347","turquoise":"#40e0d0","violet":"#ee82ee","wheat":"#f5deb3","white":"#ffffff","whitesmoke":"#f5f5f5","yellow":"#ffff00","yellowgreen":"#9acd32"};
+function hex2rgb(h){h=h.replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];return[parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
+function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;if(max===min){h=s=0;}else{const d=max-min;s=l>.5?d/(2-max-min):d/(max+min);switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];}
+function colorDist(a,b){return Math.sqrt(Math.pow(a[0]-b[0],2)+Math.pow(a[1]-b[1],2)+Math.pow(a[2]-b[2],2));}
+function findClosest(hex){const rgb=hex2rgb(hex);let best=null,bestDist=Infinity;for(const[name,h]of Object.entries(COLORS)){const d=colorDist(rgb,hex2rgb(h));if(d<bestDist){bestDist=d;best={name,hex:h};}}return{...best,dist:bestDist,inputRgb:rgb};}
+function lum(r,g,b){return(0.299*r+0.587*g+0.114*b)/255;}
+function lookup(){let v=document.getElementById('hexInput').value.trim();if(!v.startsWith('#'))v='#'+v;if(!/^#[0-9a-fA-F]{3,6}$/.test(v))return;document.getElementById('picker').value=v.length===4?'#'+v[1]+v[1]+v[2]+v[2]+v[3]+v[3]:v;const r=findClosest(v);const rgb=r.inputRgb;const hsl=rgb2hsl(...rgb);const fg=lum(...rgb)>.5?'#1e293b':'#f1f5f9';const el=document.getElementById('result');el.style.display='block';document.getElementById('preview').style.background=v;document.getElementById('preview').style.color=fg;document.getElementById('preview').textContent=v;document.getElementById('rName').textContent=r.name;document.getElementById('rHex').textContent=r.hex+(r.dist<1?' (exact match!)':' (closest match)');document.getElementById('rDist').textContent=r.dist<1?'Perfect match':'Distance: '+r.dist.toFixed(1)+' — click color name to copy';document.getElementById('rRgb').textContent=`rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;document.getElementById('rHsl').textContent=`hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`;}
+function fromPicker(){document.getElementById('hexInput').value=document.getElementById('picker').value;lookup();}
+function filterColors(){const q=document.getElementById('browseSearch').value.toLowerCase();renderGrid(q);}
+function renderGrid(q=''){const grid=document.getElementById('grid');grid.innerHTML='';for(const[name,hex]of Object.entries(COLORS)){if(q&&!name.includes(q)&&!hex.includes(q))continue;const rgb=hex2rgb(hex);const fg=lum(...rgb)>.5?'#1e293b':'#f1f5f9';grid.innerHTML+=`<div class="color-item" onclick="document.getElementById('hexInput').value='${hex}';lookup()"><div class="color-swatch" style="background:${hex}"></div><div class="color-label"><strong>${name}</strong><span>${hex}</span></div></div>`;}}
+renderGrid();
+document.getElementById('hexInput').value='#6366f1';lookup();
+</script>
+</body>
+</html>

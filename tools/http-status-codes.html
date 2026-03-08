@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP Status Code Lookup — Free Online Tool | ToolPile</title>
+<meta name="description" content="Look up any HTTP status code. Get the meaning, description, and usage of every HTTP response code from 100 to 599.">
+<meta name="keywords" content="http status codes, http response codes, status code lookup, http error codes, toolpile">
+<meta property="og:title" content="HTTP Status Code Lookup — Free Online Tool">
+<meta property="og:description" content="Look up any HTTP status code meaning, description and common usage.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/http-status-codes">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input[type="text"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1.1rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+.codes{margin-top:1.5rem;display:flex;flex-direction:column;gap:.5rem}
+.code-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;cursor:pointer;transition:border-color .15s}
+.code-card:hover{border-color:#818cf8}
+.code-card.active{border-color:#38bdf8;background:#1e293b}
+.code-num{font-size:1.3rem;font-weight:800;font-family:'JetBrains Mono',monospace;margin-right:.75rem}
+.c1xx{color:#38bdf8}.c2xx{color:#4ade80}.c3xx{color:#facc15}.c4xx{color:#fb923c}.c5xx{color:#f87171}
+.code-title{font-weight:600;color:#f1f5f9}
+.code-desc{color:#94a3b8;font-size:.9rem;margin-top:.4rem;display:none;line-height:1.5}
+.code-card.active .code-desc{display:block}
+.category{font-size:1.1rem;font-weight:700;color:#818cf8;margin-top:1.5rem;margin-bottom:.5rem;padding-top:.75rem;border-top:1px solid #334155}
+.category:first-child{border-top:none;margin-top:0}
+.badge{display:inline-block;font-size:.7rem;padding:.15rem .5rem;border-radius:12px;font-weight:600;margin-left:.5rem}
+.b1{background:#1e3a5f;color:#38bdf8}.b2{background:#14532d;color:#4ade80}.b3{background:#422006;color:#facc15}.b4{background:#431407;color:#fb923c}.b5{background:#450a0a;color:#f87171}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>HTTP Status Code Lookup</h1>
+<p class="subtitle">Search and browse all HTTP status codes with descriptions and usage examples.</p>
+<div class="tool-area">
+<input type="text" id="search" placeholder="Search by code or name... e.g. 404, not found, redirect" oninput="filter()">
+<div class="codes" id="codes"></div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+const codes=[
+{c:100,t:"Continue",d:"The server has received the request headers, and the client should proceed to send the request body. Used in large uploads with Expect: 100-continue header."},
+{c:101,t:"Switching Protocols",d:"The server is switching protocols as requested by the client via Upgrade header. Commonly used for WebSocket upgrades."},
+{c:200,t:"OK",d:"The request succeeded. The response body contains the requested resource. The most common HTTP response code."},
+{c:201,t:"Created",d:"The request succeeded and a new resource was created. Typically returned after POST requests that create a new resource. Include Location header."},
+{c:202,t:"Accepted",d:"The request has been accepted for processing, but the processing has not been completed. Used for async operations."},
+{c:204,t:"No Content",d:"The server successfully processed the request but returns no content. Common for DELETE requests or PUT that don't need a response body."},
+{c:206,t:"Partial Content",d:"The server is delivering only part of the resource due to a Range header sent by the client. Used for resumable downloads and video streaming."},
+{c:301,t:"Moved Permanently",d:"The requested resource has been permanently moved to a new URL. Browsers cache this redirect. Use for permanent URL changes and SEO migrations."},
+{c:302,t:"Found (Temporary Redirect)",d:"The requested resource temporarily resides at a different URL. The client should continue using the original URL for future requests."},
+{c:303,t:"See Other",d:"The response to the request can be found at another URL using GET. Often used after a POST to redirect to a result page."},
+{c:304,t:"Not Modified",d:"The resource has not been modified since the last request. The client can use its cached copy. Saves bandwidth via conditional requests (ETag/If-Modified-Since)."},
+{c:307,t:"Temporary Redirect",d:"Similar to 302 but guarantees that the HTTP method will not change. If you POST to a 307, the redirect will also be a POST."},
+{c:308,t:"Permanent Redirect",d:"Similar to 301 but guarantees that the HTTP method will not change. The permanent equivalent of 307."},
+{c:400,t:"Bad Request",d:"The server cannot process the request due to a client error — malformed syntax, invalid parameters, or bad formatting. Review request body/query params."},
+{c:401,t:"Unauthorized",d:"Authentication is required and has failed or not been provided. The client must send valid credentials (e.g., Bearer token, API key, cookies)."},
+{c:403,t:"Forbidden",d:"The server understood the request but refuses to authorize it. Unlike 401, re-authenticating will not help. The user lacks permissions for this resource."},
+{c:404,t:"Not Found",d:"The requested resource could not be found on the server. The most recognized HTTP error. Check the URL path and ensure the resource exists."},
+{c:405,t:"Method Not Allowed",d:"The HTTP method (GET, POST, PUT, DELETE, etc.) is not allowed for the requested resource. Check the Allow response header for valid methods."},
+{c:408,t:"Request Timeout",d:"The server timed out waiting for the client to finish sending the request. Retry the request or check network connectivity."},
+{c:409,t:"Conflict",d:"The request conflicts with the current state of the resource. Common in version control, concurrent edits, or duplicate resource creation."},
+{c:410,t:"Gone",d:"The resource is permanently gone and will not be available again. Unlike 404, this is intentional and permanent. Search engines will de-index the URL."},
+{c:413,t:"Payload Too Large",d:"The request body is larger than the server is willing to process. Increase upload limits in your server config (e.g., nginx client_max_body_size)."},
+{c:415,t:"Unsupported Media Type",d:"The server refuses the request because the Content-Type is not supported. Check that you're sending the correct Content-Type header (e.g., application/json)."},
+{c:418,t:"I'm a Teapot",d:"An April Fools' joke from RFC 2324 (Hyper Text Coffee Pot Control Protocol). The server refuses to brew coffee because it is a teapot. 🫖"},
+{c:422,t:"Unprocessable Entity",d:"The request is well-formed but semantically incorrect. Common in REST APIs when validation fails — e.g., missing required fields, invalid email format."},
+{c:429,t:"Too Many Requests",d:"The user has sent too many requests in a given time period (rate limiting). Check the Retry-After header for when to retry. Implement exponential backoff."},
+{c:451,t:"Unavailable For Legal Reasons",d:"The resource is unavailable due to legal demands (e.g., government censorship, copyright takedown). Named after Fahrenheit 451."},
+{c:500,t:"Internal Server Error",d:"A generic server-side error. Something went wrong but the server can't be more specific. Check server logs for the actual error. Most common server error."},
+{c:501,t:"Not Implemented",d:"The server does not support the functionality required to fulfill the request. The server does not recognize the request method."},
+{c:502,t:"Bad Gateway",d:"The server acting as a gateway or proxy received an invalid response from the upstream server. Common with nginx/load balancers when the backend is down."},
+{c:503,t:"Service Unavailable",d:"The server is temporarily unable to handle the request — typically due to maintenance or overload. Check the Retry-After header."},
+{c:504,t:"Gateway Timeout",d:"The server acting as a gateway or proxy did not get a timely response from the upstream server. Increase timeout settings or check backend performance."},
+{c:505,t:"HTTP Version Not Supported",d:"The server does not support the HTTP version used in the request. Rare in modern applications."}
+];
+const cats={"1xx — Informational":[100,199],"2xx — Success":[200,299],"3xx — Redirection":[300,399],"4xx — Client Error":[400,499],"5xx — Server Error":[500,599]};
+function clr(c){if(c<200)return'c1xx';if(c<300)return'c2xx';if(c<400)return'c3xx';if(c<500)return'c4xx';return'c5xx';}
+function badge(c){if(c<200)return'b1';if(c<300)return'b2';if(c<400)return'b3';if(c<500)return'b4';return'b5';}
+function render(list){const el=document.getElementById('codes');el.innerHTML='';const grouped={};codes.forEach(c=>{const cat=c.c<200?'1xx — Informational':c.c<300?'2xx — Success':c.c<400?'3xx — Redirection':c.c<500?'4xx — Client Error':'5xx — Server Error';if(!grouped[cat])grouped[cat]=[];if(list.includes(c.c))grouped[cat].push(c);});
+for(const[cat,items]of Object.entries(grouped)){if(!items.length)continue;el.innerHTML+=`<div class="category">${cat}</div>`;items.forEach(c=>{el.innerHTML+=`<div class="code-card" onclick="this.classList.toggle('active')"><span class="code-num ${clr(c.c)}">${c.c}</span><span class="code-title">${c.t}</span><div class="code-desc">${c.d}</div></div>`;});}
+if(!el.innerHTML)el.innerHTML='<p style="color:#94a3b8;text-align:center;padding:2rem">No matching status codes found.</p>';}
+function filter(){const q=document.getElementById('search').value.toLowerCase();const list=codes.filter(c=>String(c.c).includes(q)||c.t.toLowerCase().includes(q)||c.d.toLowerCase().includes(q)).map(c=>c.c);render(list);}
+render(codes.map(c=>c.c));
+</script>
+</body>
+</html>

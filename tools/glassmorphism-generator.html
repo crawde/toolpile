@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Glassmorphism Generator — Free Glass Effect CSS Tool | ToolPile</title>
+<meta name="description" content="Create stunning glassmorphism CSS effects with live preview. Adjust blur, transparency, border, and colors. Copy CSS code instantly. Free glassmorphism generator.">
+<meta name="keywords" content="glassmorphism generator, glass effect css, frosted glass css, glassmorphism css, css glass card, toolpile">
+<meta property="og:title" content="CSS Glassmorphism Generator — Free Online Tool">
+<meta property="og:description" content="Design beautiful frosted glass CSS effects with live preview. Copy code instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/glassmorphism-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:700px){.layout{grid-template-columns:1fr}}
+.controls{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+label{font-size:.8rem;color:#94a3b8;display:flex;justify-content:space-between;margin-bottom:.3rem;margin-top:1rem}
+label span{color:#818cf8;font-weight:600}
+input[type=range]{width:100%;-webkit-appearance:none;background:#0f172a;height:6px;border-radius:3px;outline:none;margin-top:.3rem}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#818cf8;cursor:pointer}
+input[type=color]{width:48px;height:32px;border:1px solid #475569;border-radius:6px;background:#0f172a;cursor:pointer;padding:2px}
+.color-row{display:flex;gap:.75rem;align-items:flex-end;margin-top:.75rem}
+.color-row>div{flex:1}
+.preview-wrap{position:relative;border-radius:12px;overflow:hidden;min-height:400px;display:flex;align-items:center;justify-content:center}
+.bg-scene{position:absolute;inset:0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(40px);opacity:.7}
+.blob-1{width:200px;height:200px;background:#6366f1;top:20%;left:10%;animation:float 6s ease-in-out infinite}
+.blob-2{width:180px;height:180px;background:#ec4899;top:50%;right:10%;animation:float 8s ease-in-out infinite reverse}
+.blob-3{width:150px;height:150px;background:#38bdf8;bottom:10%;left:40%;animation:float 7s ease-in-out infinite 1s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
+.glass-card{position:relative;z-index:1;width:280px;padding:2rem;border-radius:16px;text-align:center}
+.glass-card h3{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}
+.glass-card p{font-size:.85rem;opacity:.8;line-height:1.5}
+.code-area{margin-top:1.5rem;background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155;position:relative}
+.code-area pre{background:#0f172a;border-radius:8px;padding:1rem;overflow-x:auto;font-size:.8rem;color:#38bdf8;font-family:'SF Mono',Monaco,monospace;line-height:1.6;white-space:pre-wrap}
+.copy-btn{position:absolute;top:.75rem;right:.75rem;background:#6366f1;color:#fff;border:none;border-radius:6px;padding:.35rem .75rem;font-size:.75rem;cursor:pointer;font-weight:600}
+.copy-btn:hover{background:#818cf8}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CSS Glassmorphism Generator</h1>
+<p class="subtitle">Create frosted glass card effects with live preview. Adjust properties and copy the CSS.</p>
+<div class="layout">
+<div class="controls">
+<div class="section-title">Properties</div>
+<label>Blur <span id="vBlur">10px</span></label>
+<input type="range" id="blur" min="0" max="40" value="10" oninput="update()">
+<label>Transparency <span id="vAlpha">0.25</span></label>
+<input type="range" id="alpha" min="0" max="100" value="25" oninput="update()">
+<label>Border Opacity <span id="vBorder">0.2</span></label>
+<input type="range" id="border" min="0" max="100" value="20" oninput="update()">
+<label>Border Radius <span id="vRadius">16px</span></label>
+<input type="range" id="radius" min="0" max="50" value="16" oninput="update()">
+<label>Shadow Intensity <span id="vShadow">0.1</span></label>
+<input type="range" id="shadow" min="0" max="100" value="10" oninput="update()">
+<div class="color-row">
+<div><label>Background</label><input type="color" id="bgColor" value="#ffffff" oninput="update()"></div>
+<div><label>Border Color</label><input type="color" id="borderColor" value="#ffffff" oninput="update()"></div>
+<div><label>Text Color</label><input type="color" id="textColor" value="#ffffff" oninput="update()"></div>
+</div>
+<label style="margin-top:1rem">Card Width <span id="vWidth">280px</span></label>
+<input type="range" id="cardWidth" min="150" max="400" value="280" oninput="update()">
+<label>Padding <span id="vPad">2rem</span></label>
+<input type="range" id="padding" min="8" max="64" value="32" oninput="update()">
+</div>
+<div class="preview-wrap" id="previewWrap">
+<div class="bg-scene">
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+</div>
+<div class="glass-card" id="glassCard">
+<h3>Glass Card</h3>
+<p>This is a glassmorphism card with frosted glass effect using CSS backdrop-filter.</p>
+</div>
+</div>
+</div>
+<div class="code-area">
+<div class="section-title">CSS Code</div>
+<button class="copy-btn" onclick="copyCode()">Copy CSS</button>
+<pre id="cssCode"></pre>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 120+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+function hexToRgb(hex){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return{r,g,b};}
+function update(){
+const blur=document.getElementById('blur').value;
+const alpha=(document.getElementById('alpha').value/100).toFixed(2);
+const borderOp=(document.getElementById('border').value/100).toFixed(2);
+const radius=document.getElementById('radius').value;
+const shadowInt=(document.getElementById('shadow').value/100).toFixed(2);
+const bgHex=document.getElementById('bgColor').value;
+const borderHex=document.getElementById('borderColor').value;
+const textHex=document.getElementById('textColor').value;
+const width=document.getElementById('cardWidth').value;
+const pad=document.getElementById('padding').value;
+const bg=hexToRgb(bgHex);
+const bd=hexToRgb(borderHex);
+document.getElementById('vBlur').textContent=blur+'px';
+document.getElementById('vAlpha').textContent=alpha;
+document.getElementById('vBorder').textContent=borderOp;
+document.getElementById('vRadius').textContent=radius+'px';
+document.getElementById('vShadow').textContent=shadowInt;
+document.getElementById('vWidth').textContent=width+'px';
+document.getElementById('vPad').textContent=(pad/16).toFixed(1)+'rem';
+const card=document.getElementById('glassCard');
+card.style.cssText=`
+position:relative;z-index:1;width:${width}px;padding:${pad}px;border-radius:${radius}px;text-align:center;
+background:rgba(${bg.r},${bg.g},${bg.b},${alpha});
+backdrop-filter:blur(${blur}px);
+-webkit-backdrop-filter:blur(${blur}px);
+border:1px solid rgba(${bd.r},${bd.g},${bd.b},${borderOp});
+box-shadow:0 8px 32px rgba(0,0,0,${shadowInt});
+color:${textHex};
+`;
+const css=`.glass-card {
+  background: rgba(${bg.r}, ${bg.g}, ${bg.b}, ${alpha});
+  backdrop-filter: blur(${blur}px);
+  -webkit-backdrop-filter: blur(${blur}px);
+  border-radius: ${radius}px;
+  border: 1px solid rgba(${bd.r}, ${bd.g}, ${bd.b}, ${borderOp});
+  box-shadow: 0 8px 32px rgba(0, 0, 0, ${shadowInt});
+  padding: ${pad}px;
+  color: ${textHex};
+}`;
+document.getElementById('cssCode').textContent=css;
+}
+function copyCode(){const code=document.getElementById('cssCode').textContent;navigator.clipboard.writeText(code);const btn=document.querySelector('.copy-btn');btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy CSS',1500);}
+update();
+</script>
+</body>
+</html>

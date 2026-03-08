@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Clip Path Generator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Create custom CSS clip-path shapes visually. Drag control points to design polygons, circles, ellipses, and insets. Copy CSS instantly.">
+<meta name="keywords" content="css clip path generator, clip-path maker, css shape generator, polygon clip path, toolpile">
+<meta property="og:title" content="CSS Clip Path Generator — Free Online Tool">
+<meta property="og:description" content="Create custom CSS clip-path shapes visually with drag-and-drop control points.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/css-clip-path-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+.presets{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.preset{background:#334155;border:1px solid #475569;border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-size:.85rem;color:#94a3b8;transition:all .15s}
+.preset:hover,.preset.active{background:#818cf8;color:#fff;border-color:#818cf8}
+.canvas-wrap{position:relative;width:100%;aspect-ratio:1;max-width:400px;margin:1.5rem auto;background:linear-gradient(135deg,#6366f1,#38bdf8);border-radius:4px;overflow:visible}
+.shape{position:absolute;inset:0;background:linear-gradient(135deg,#818cf8,#6366f1)}
+.point{position:absolute;width:16px;height:16px;background:#38bdf8;border:2px solid #fff;border-radius:50%;cursor:grab;transform:translate(-50%,-50%);z-index:10;box-shadow:0 0 8px rgba(56,189,248,.5)}
+.point:hover{background:#fff;transform:translate(-50%,-50%) scale(1.2)}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:1rem;margin-top:1rem;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:.9rem;white-space:pre-wrap;word-break:break-all}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:1rem;flex-wrap:wrap}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CSS Clip Path Generator</h1>
+<p class="subtitle">Create custom CSS clip-path shapes by dragging control points or choosing presets.</p>
+<div class="tool-area">
+<label>Shape Presets</label>
+<div class="presets">
+<div class="preset active" onclick="setPreset('triangle')">Triangle</div>
+<div class="preset" onclick="setPreset('pentagon')">Pentagon</div>
+<div class="preset" onclick="setPreset('hexagon')">Hexagon</div>
+<div class="preset" onclick="setPreset('star')">Star</div>
+<div class="preset" onclick="setPreset('arrow')">Arrow</div>
+<div class="preset" onclick="setPreset('chevron')">Chevron</div>
+<div class="preset" onclick="setPreset('cross')">Cross</div>
+<div class="preset" onclick="setPreset('diamond')">Diamond</div>
+</div>
+<div class="canvas-wrap" id="canvas">
+<div class="shape" id="shape"></div>
+</div>
+<div class="row">
+<button onclick="addPoint()">+ Add Point</button>
+<button class="btn-secondary" onclick="removePoint()">− Remove Last</button>
+<button onclick="copyCSS()">Copy CSS</button>
+</div>
+<div class="output" id="output"></div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+const presets={
+triangle:[[50,0],[0,100],[100,100]],
+pentagon:[[50,0],[100,38],[81,100],[19,100],[0,38]],
+hexagon:[[25,0],[75,0],[100,50],[75,100],[25,100],[0,50]],
+star:[[50,0],[61,35],[98,35],[68,57],[79,91],[50,70],[21,91],[32,57],[2,35],[39,35]],
+arrow:[[0,30],[70,30],[70,0],[100,50],[70,100],[70,70],[0,70]],
+chevron:[[0,0],[75,0],[100,50],[75,100],[0,100],[25,50]],
+cross:[[35,0],[65,0],[65,35],[100,35],[100,65],[65,65],[65,100],[35,100],[35,65],[0,65],[0,35],[35,35]],
+diamond:[[50,0],[100,50],[50,100],[0,50]]
+};
+let points=[];
+let dragging=null;
+const canvas=document.getElementById('canvas');
+function setPreset(name){points=presets[name].map(p=>({x:p[0],y:p[1]}));document.querySelectorAll('.preset').forEach(el=>el.classList.toggle('active',el.textContent.toLowerCase()===name));renderPoints();updateClip();}
+function renderPoints(){canvas.querySelectorAll('.point').forEach(p=>p.remove());points.forEach((p,i)=>{const el=document.createElement('div');el.className='point';el.style.left=p.x+'%';el.style.top=p.y+'%';el.dataset.idx=i;el.addEventListener('mousedown',startDrag);el.addEventListener('touchstart',startDragTouch,{passive:false});canvas.appendChild(el);});}
+function updateClip(){const clip='polygon('+points.map(p=>p.x.toFixed(1)+'% '+p.y.toFixed(1)+'%').join(', ')+')';document.getElementById('shape').style.clipPath=clip;document.getElementById('output').textContent='clip-path: '+clip+';';}
+function startDrag(e){e.preventDefault();dragging=parseInt(e.target.dataset.idx);document.addEventListener('mousemove',onDrag);document.addEventListener('mouseup',stopDrag);}
+function startDragTouch(e){e.preventDefault();dragging=parseInt(e.target.dataset.idx);document.addEventListener('touchmove',onDragTouch,{passive:false});document.addEventListener('touchend',stopDrag);}
+function onDrag(e){if(dragging===null)return;const rect=canvas.getBoundingClientRect();let x=((e.clientX-rect.left)/rect.width)*100;let y=((e.clientY-rect.top)/rect.height)*100;x=Math.max(0,Math.min(100,x));y=Math.max(0,Math.min(100,y));points[dragging]={x,y};canvas.querySelectorAll('.point')[dragging].style.left=x+'%';canvas.querySelectorAll('.point')[dragging].style.top=y+'%';updateClip();}
+function onDragTouch(e){e.preventDefault();const t=e.touches[0];const rect=canvas.getBoundingClientRect();let x=((t.clientX-rect.left)/rect.width)*100;let y=((t.clientY-rect.top)/rect.height)*100;x=Math.max(0,Math.min(100,x));y=Math.max(0,Math.min(100,y));points[dragging]={x,y};canvas.querySelectorAll('.point')[dragging].style.left=x+'%';canvas.querySelectorAll('.point')[dragging].style.top=y+'%';updateClip();}
+function stopDrag(){dragging=null;document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',stopDrag);document.removeEventListener('touchmove',onDragTouch);document.removeEventListener('touchend',stopDrag);}
+function addPoint(){const last=points[points.length-1]||{x:50,y:50};points.push({x:(last.x+10)%100,y:(last.y+10)%100});renderPoints();updateClip();}
+function removePoint(){if(points.length>3){points.pop();renderPoints();updateClip();}}
+function copyCSS(){navigator.clipboard.writeText(document.getElementById('output').textContent);}
+setPreset('triangle');
+</script>
+</body>
+</html>

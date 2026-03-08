@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Wheel — Interactive Color Wheel Picker | ToolPile</title>
+<meta name="description" content="Interactive color wheel picker. Find complementary, analogous, triadic, and split-complementary color harmonies. Get HEX, RGB, HSL values. Free color wheel tool.">
+<meta name="keywords" content="color wheel, color picker wheel, color harmony, complementary colors, color scheme generator, toolpile">
+<meta property="og:title" content="Color Wheel — Free Interactive Tool">
+<meta property="og:description" content="Interactive color wheel with harmonies — complementary, triadic, analogous. Get HEX, RGB, HSL.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/color-wheel">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+@media(max-width:700px){.layout{grid-template-columns:1fr}}
+.wheel-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+canvas{cursor:crosshair;border-radius:50%}
+.panel{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+.color-display{width:100%;height:80px;border-radius:10px;border:1px solid #334155;margin-bottom:1rem}
+.val-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;font-size:.85rem;border-bottom:1px solid #0f172a}
+.val-row span:first-child{color:#94a3b8;font-size:.75rem;text-transform:uppercase}
+.val-row span:last-child{font-family:'SF Mono',Monaco,monospace;font-weight:600;color:#38bdf8;cursor:pointer}
+.val-row span:last-child:hover{color:#818cf8}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-top:1.25rem;margin-bottom:.5rem}
+.harmony-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem}
+.h-btn{padding:.35rem .65rem;border-radius:6px;background:#0f172a;border:1px solid #475569;color:#94a3b8;cursor:pointer;font-size:.75rem;font-weight:600}
+.h-btn.active{background:#6366f1;color:#fff;border-color:#6366f1}
+.harmony-colors{display:flex;gap:.5rem;flex-wrap:wrap}
+.harmony-swatch{width:60px;height:60px;border-radius:10px;border:2px solid #334155;cursor:pointer;position:relative;display:flex;align-items:flex-end;justify-content:center;padding:.25rem;transition:transform .15s}
+.harmony-swatch:hover{transform:scale(1.1)}
+.harmony-swatch span{font-size:.6rem;font-family:monospace;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8);font-weight:700}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Color Wheel</h1>
+<p class="subtitle">Interactive color wheel with harmonies. Click the wheel to pick colors, explore schemes.</p>
+<div class="layout">
+<div class="wheel-wrap">
+<canvas id="wheel" width="360" height="360"></canvas>
+</div>
+<div class="panel">
+<div class="color-display" id="colorDisplay"></div>
+<div class="val-row"><span>HEX</span><span id="hexVal" onclick="copyVal(this)">#ff0000</span></div>
+<div class="val-row"><span>RGB</span><span id="rgbVal" onclick="copyVal(this)">rgb(255, 0, 0)</span></div>
+<div class="val-row"><span>HSL</span><span id="hslVal" onclick="copyVal(this)">hsl(0, 100%, 50%)</span></div>
+<div class="val-row"><span>HSV</span><span id="hsvVal" onclick="copyVal(this)">hsv(0, 100%, 100%)</span></div>
+<div class="section-title">Color Harmonies</div>
+<div class="harmony-btns">
+<div class="h-btn active" onclick="setHarmony('complementary')">Complementary</div>
+<div class="h-btn" onclick="setHarmony('analogous')">Analogous</div>
+<div class="h-btn" onclick="setHarmony('triadic')">Triadic</div>
+<div class="h-btn" onclick="setHarmony('split')">Split-Comp</div>
+<div class="h-btn" onclick="setHarmony('tetradic')">Tetradic</div>
+<div class="h-btn" onclick="setHarmony('monochromatic')">Mono</div>
+</div>
+<div class="harmony-colors" id="harmonyColors"></div>
+</div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 120+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+let currentH=0,currentS=100,currentL=50,harmony='complementary';
+const canvas=document.getElementById('wheel');
+const ctx=canvas.getContext('2d');
+const cx=180,cy=180,outerR=170,innerR=50;
+
+function drawWheel(){
+for(let angle=0;angle<360;angle+=0.5){
+const rad=angle*Math.PI/180;
+const grad=ctx.createLinearGradient(
+cx+Math.cos(rad)*innerR,cy+Math.sin(rad)*innerR,
+cx+Math.cos(rad)*outerR,cy+Math.sin(rad)*outerR
+);
+grad.addColorStop(0,`hsl(${angle},10%,95%)`);
+grad.addColorStop(0.5,`hsl(${angle},100%,50%)`);
+grad.addColorStop(1,`hsl(${angle},100%,20%)`);
+ctx.beginPath();
+ctx.moveTo(cx+Math.cos(rad)*innerR,cy+Math.sin(rad)*innerR);
+ctx.lineTo(cx+Math.cos(rad)*outerR,cy+Math.sin(rad)*outerR);
+ctx.lineTo(cx+Math.cos((rad+0.02))*outerR,cy+Math.sin((rad+0.02))*outerR);
+ctx.lineTo(cx+Math.cos((rad+0.02))*innerR,cy+Math.sin((rad+0.02))*innerR);
+ctx.fillStyle=grad;
+ctx.fill();
+}
+// Center circle
+ctx.beginPath();ctx.arc(cx,cy,innerR-2,0,Math.PI*2);
+ctx.fillStyle=`hsl(${currentH},${currentS}%,${currentL}%)`;ctx.fill();
+ctx.strokeStyle='#334155';ctx.lineWidth=2;ctx.stroke();
+// Marker
+const mRad=currentH*Math.PI/180;
+const mR=innerR+(outerR-innerR)*((100-currentS)/100*0.5+0.25);
+ctx.beginPath();ctx.arc(cx+Math.cos(mRad)*mR,cy+Math.sin(mRad)*mR,8,0,Math.PI*2);
+ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();
+ctx.fillStyle=`hsl(${currentH},${currentS}%,${currentL}%)`;ctx.fill();
+}
+
+canvas.addEventListener('click',e=>{
+const rect=canvas.getBoundingClientRect();
+const x=e.clientX-rect.left-cx;
+const y=e.clientY-rect.top-cy;
+const dist=Math.sqrt(x*x+y*y);
+if(dist<innerR-5||dist>outerR+5)return;
+let angle=Math.atan2(y,x)*180/Math.PI;
+if(angle<0)angle+=360;
+currentH=Math.round(angle);
+const t=(dist-innerR)/(outerR-innerR);
+currentS=Math.round(50+t*50);
+updateColor();
+});
+
+function hslToHex(h,s,l){s/=100;l/=100;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h/30)%12;const c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0');};return`#${f(0)}${f(8)}${f(4)}`;}
+function hslToRgb(h,s,l){s/=100;l/=100;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h/30)%12;return Math.round(255*(l-a*Math.max(Math.min(k-3,9-k,1),-1)));};return{r:f(0),g:f(8),b:f(4)};}
+
+function updateColor(){
+const hex=hslToHex(currentH,currentS,currentL);
+const rgb=hslToRgb(currentH,currentS,currentL);
+document.getElementById('colorDisplay').style.background=hex;
+document.getElementById('hexVal').textContent=hex;
+document.getElementById('rgbVal').textContent=`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+document.getElementById('hslVal').textContent=`hsl(${currentH}, ${currentS}%, ${currentL}%)`;
+const v=Math.round(currentL+currentS*(1-currentL/100)*0.5);
+document.getElementById('hsvVal').textContent=`hsv(${currentH}, ${currentS}%, ${v}%)`;
+drawWheel();
+updateHarmony();
+}
+
+function setHarmony(h){harmony=h;document.querySelectorAll('.h-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');updateHarmony();}
+
+function updateHarmony(){
+let angles=[];
+switch(harmony){
+case'complementary':angles=[0,180];break;
+case'analogous':angles=[-30,0,30];break;
+case'triadic':angles=[0,120,240];break;
+case'split':angles=[0,150,210];break;
+case'tetradic':angles=[0,90,180,270];break;
+case'monochromatic':angles=[0,0,0,0,0];break;
+}
+const container=document.getElementById('harmonyColors');
+container.innerHTML='';
+angles.forEach((offset,i)=>{
+let h=(currentH+offset+360)%360;
+let s=currentS,l=currentL;
+if(harmony==='monochromatic'){l=20+i*15;s=currentS;}
+const hex=hslToHex(h,s,l);
+const swatch=document.createElement('div');
+swatch.className='harmony-swatch';
+swatch.style.background=hex;
+swatch.innerHTML=`<span>${hex}</span>`;
+swatch.onclick=()=>{navigator.clipboard.writeText(hex);swatch.querySelector('span').textContent='Copied!';setTimeout(()=>swatch.querySelector('span').textContent=hex,1000);};
+container.appendChild(swatch);
+});
+}
+
+function copyVal(el){navigator.clipboard.writeText(el.textContent);const orig=el.textContent;el.textContent='Copied!';el.style.color='#10b981';setTimeout(()=>{el.textContent=orig;el.style.color='';},1000);}
+
+drawWheel();updateColor();
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Encrypt / Decrypt — Free Online Tool | ToolPile</title>
+<meta name="description" content="Encrypt and decrypt text using AES-256-GCM encryption in your browser. Your data never leaves your device. Free and secure.">
+<meta name="keywords" content="text encryptor, text decryptor, encrypt text online, aes encryption tool, toolpile">
+<meta property="og:title" content="Text Encrypt / Decrypt — Free Online Tool">
+<meta property="og:description" content="Encrypt and decrypt text using AES-256-GCM encryption in your browser. Data never leaves your device.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/text-encrypt-decrypt">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea,input[type="password"],input[type="text"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:1rem;font-family:inherit;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+textarea{min-height:120px;font-family:'JetBrains Mono',monospace}
+label{font-size:.875rem;color:#94a3b8;display:block;margin-bottom:.5rem;margin-top:1rem}
+.output{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;min-height:80px;color:#38bdf8;font-family:'JetBrains Mono',monospace;font-size:.85rem;white-space:pre-wrap;word-break:break-all}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.75rem;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-secondary{background:#334155;margin-left:.5rem}
+.btn-danger{background:linear-gradient(135deg,#dc2626,#f87171)}
+.row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+.tabs{display:flex;gap:0;margin-bottom:1rem}
+.tab{flex:1;padding:.75rem;text-align:center;background:#0f172a;border:1px solid #475569;cursor:pointer;font-weight:600;color:#94a3b8;transition:all .15s}
+.tab:first-child{border-radius:8px 0 0 8px}
+.tab:last-child{border-radius:0 8px 8px 0}
+.tab.active{background:#818cf8;color:#fff;border-color:#818cf8}
+.note{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem;margin-top:1rem;font-size:.85rem;color:#94a3b8}
+.note strong{color:#4ade80}
+#error{color:#f87171;margin-top:.5rem;display:none}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Text Encrypt / Decrypt</h1>
+<p class="subtitle">AES-256-GCM encryption in your browser. Your data never leaves your device.</p>
+<div class="tool-area">
+<div class="tabs">
+<div class="tab active" onclick="setMode('encrypt')">🔒 Encrypt</div>
+<div class="tab" onclick="setMode('decrypt')">🔓 Decrypt</div>
+</div>
+<label for="input" id="inputLabel">Text to encrypt</label>
+<textarea id="input" placeholder="Enter your text here..."></textarea>
+<label for="pass">Password / Secret Key</label>
+<input type="password" id="pass" placeholder="Enter your secret key...">
+<div class="row">
+<button id="actionBtn" onclick="doAction()">Encrypt</button>
+<button class="btn-secondary" onclick="copyOutput()">Copy Output</button>
+<button class="btn-secondary" onclick="clearAll()">Clear</button>
+</div>
+<div id="error"></div>
+<div class="output" id="output"></div>
+<div class="note">
+<strong>🛡️ 100% Client-Side</strong> — All encryption and decryption happens in your browser using the Web Crypto API. No data is sent to any server. Your text and password never leave your device.
+</div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 100+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+let mode='encrypt';
+function setMode(m){mode=m;document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===(m==='encrypt'?0:1)));document.getElementById('inputLabel').textContent=m==='encrypt'?'Text to encrypt':'Encrypted text to decrypt';document.getElementById('actionBtn').textContent=m==='encrypt'?'Encrypt':'Decrypt';document.getElementById('input').placeholder=m==='encrypt'?'Enter your text here...':'Paste encrypted text here...';document.getElementById('output').textContent='';document.getElementById('error').style.display='none';}
+async function getKey(password,salt){const enc=new TextEncoder();const keyMaterial=await crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveBits','deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:100000,hash:'SHA-256'},keyMaterial,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);}
+function buf2hex(buf){return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function hex2buf(hex){const bytes=new Uint8Array(hex.length/2);for(let i=0;i<hex.length;i+=2)bytes[i/2]=parseInt(hex.substr(i,2),16);return bytes;}
+async function doAction(){const text=document.getElementById('input').value.trim();const pass=document.getElementById('pass').value;const errEl=document.getElementById('error');errEl.style.display='none';if(!text){errEl.textContent='Please enter some text.';errEl.style.display='block';return;}if(!pass){errEl.textContent='Please enter a password.';errEl.style.display='block';return;}try{if(mode==='encrypt'){const enc=new TextEncoder();const salt=crypto.getRandomValues(new Uint8Array(16));const iv=crypto.getRandomValues(new Uint8Array(12));const key=await getKey(pass,salt);const encrypted=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(text));const result=buf2hex(salt)+':'+buf2hex(iv)+':'+buf2hex(encrypted);document.getElementById('output').textContent=result;}else{const parts=text.split(':');if(parts.length!==3)throw new Error('Invalid encrypted format. Expected salt:iv:data');const salt=hex2buf(parts[0]);const iv=hex2buf(parts[1]);const data=hex2buf(parts[2]);const key=await getKey(pass,salt);const decrypted=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,data);document.getElementById('output').textContent=new TextDecoder().decode(decrypted);}}catch(e){errEl.textContent=mode==='decrypt'?'Decryption failed — wrong password or corrupted data.':'Encryption failed: '+e.message;errEl.style.display='block';}}
+function copyOutput(){navigator.clipboard.writeText(document.getElementById('output').textContent);}
+function clearAll(){document.getElementById('input').value='';document.getElementById('pass').value='';document.getElementById('output').textContent='';document.getElementById('error').style.display='none';}
+</script>
+</body>
+</html>

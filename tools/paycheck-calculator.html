@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paycheck Calculator — Free Salary & Hourly Pay Calculator | ToolPile</title>
+<meta name="description" content="Calculate your take-home pay after taxes. Enter salary or hourly rate, federal/state tax, deductions. Free paycheck calculator for W-2 employees.">
+<meta name="keywords" content="paycheck calculator, salary calculator, take home pay calculator, hourly pay calculator, net pay calculator, toolpile">
+<meta property="og:title" content="Paycheck Calculator — Free Online Tool">
+<meta property="og:description" content="Calculate your take-home pay after federal & state taxes, deductions, and withholdings.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/paycheck-calculator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s;margin-top:1rem}
+button:hover{transform:translateY(-1px)}
+.section{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #334155}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-bottom:.75rem}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.result-card{background:#0f172a;border-radius:10px;padding:1rem;border:1px solid #334155;text-align:center}
+.result-card .label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em}
+.result-card .value{font-size:1.5rem;font-weight:800;color:#38bdf8;margin-top:.25rem;font-family:'SF Mono',monospace}
+.result-card.highlight{border-color:#818cf8;background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(56,189,248,.05))}
+.result-card.highlight .value{font-size:2rem;color:#818cf8}
+.breakdown{margin-top:1.5rem}
+.breakdown-row{display:flex;justify-content:space-between;padding:.5rem 0;font-size:.9rem;border-bottom:1px solid #1e293b}
+.breakdown-row.total{border-top:2px solid #818cf8;border-bottom:none;font-weight:700;color:#38bdf8;font-size:1.05rem;padding-top:.75rem;margin-top:.25rem}
+.breakdown-row .neg{color:#f87171}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem}
+.tab{padding:.5rem 1rem;border-radius:8px;background:#0f172a;border:1px solid #475569;color:#94a3b8;cursor:pointer;font-size:.85rem;font-weight:600}
+.tab.active{background:#6366f1;color:#fff;border-color:#6366f1}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Paycheck Calculator</h1>
+<p class="subtitle">Calculate your take-home pay after federal & state taxes, Social Security, Medicare, and deductions.</p>
+<div class="tool-area">
+<div class="tabs">
+<div class="tab active" onclick="setType('salary')">Salary</div>
+<div class="tab" onclick="setType('hourly')">Hourly</div>
+</div>
+<div id="salaryInputs">
+<div class="grid2">
+<div><label>Annual Salary ($)</label><input type="number" id="salary" value="75000" oninput="calc()"></div>
+<div><label>Pay Frequency</label>
+<select id="freq" onchange="calc()">
+<option value="52">Weekly</option>
+<option value="26" selected>Bi-Weekly</option>
+<option value="24">Semi-Monthly</option>
+<option value="12">Monthly</option>
+</select></div>
+</div>
+</div>
+<div id="hourlyInputs" style="display:none">
+<div class="grid3">
+<div><label>Hourly Rate ($)</label><input type="number" id="hourlyRate" value="35" oninput="calc()"></div>
+<div><label>Hours / Week</label><input type="number" id="hoursWeek" value="40" oninput="calc()"></div>
+<div><label>Pay Frequency</label>
+<select id="freqH" onchange="calc()">
+<option value="52">Weekly</option>
+<option value="26" selected>Bi-Weekly</option>
+<option value="24">Semi-Monthly</option>
+<option value="12">Monthly</option>
+</select></div>
+</div>
+</div>
+<div class="section">
+<div class="section-title">Tax & Filing</div>
+<div class="grid3">
+<div><label>Filing Status</label>
+<select id="filing" onchange="calc()">
+<option value="single">Single</option>
+<option value="married">Married Filing Jointly</option>
+<option value="head">Head of Household</option>
+</select></div>
+<div><label>Federal Tax Rate (%)</label><input type="number" id="fedRate" value="22" min="0" max="50" step="0.1" oninput="calc()"></div>
+<div><label>State Tax Rate (%)</label><input type="number" id="stateRate" value="5" min="0" max="15" step="0.1" oninput="calc()"></div>
+</div>
+</div>
+<div class="section">
+<div class="section-title">Pre-Tax Deductions (per paycheck)</div>
+<div class="grid3">
+<div><label>401(k) / Retirement ($)</label><input type="number" id="retirement" value="0" min="0" oninput="calc()"></div>
+<div><label>Health Insurance ($)</label><input type="number" id="health" value="0" min="0" oninput="calc()"></div>
+<div><label>Other Pre-Tax ($)</label><input type="number" id="otherPre" value="0" min="0" oninput="calc()"></div>
+</div>
+</div>
+</div>
+
+<div id="results" style="margin-top:1.5rem">
+<div class="result-grid">
+<div class="result-card highlight" style="grid-column:1/-1"><div class="label">Take-Home Pay (Per Paycheck)</div><div class="value" id="takeHome">$0.00</div></div>
+<div class="result-card"><div class="label">Gross Pay</div><div class="value" id="grossPay">$0.00</div></div>
+<div class="result-card"><div class="label">Total Deductions</div><div class="value" id="totalDed" style="color:#f87171">$0.00</div></div>
+<div class="result-card"><div class="label">Annual Take-Home</div><div class="value" id="annualNet">$0.00</div></div>
+<div class="result-card"><div class="label">Effective Tax Rate</div><div class="value" id="effRate">0%</div></div>
+</div>
+<div class="tool-area breakdown" style="margin-top:1rem">
+<div class="section-title">Per-Paycheck Breakdown</div>
+<div class="breakdown-row"><span>Gross Pay</span><span id="bGross">$0.00</span></div>
+<div class="breakdown-row"><span>Federal Tax</span><span class="neg" id="bFed">-$0.00</span></div>
+<div class="breakdown-row"><span>State Tax</span><span class="neg" id="bState">-$0.00</span></div>
+<div class="breakdown-row"><span>Social Security (6.2%)</span><span class="neg" id="bSS">-$0.00</span></div>
+<div class="breakdown-row"><span>Medicare (1.45%)</span><span class="neg" id="bMed">-$0.00</span></div>
+<div class="breakdown-row"><span>401(k) / Retirement</span><span class="neg" id="bRet">-$0.00</span></div>
+<div class="breakdown-row"><span>Health Insurance</span><span class="neg" id="bHealth">-$0.00</span></div>
+<div class="breakdown-row"><span>Other Pre-Tax</span><span class="neg" id="bOther">-$0.00</span></div>
+<div class="breakdown-row total"><span>Net Pay</span><span id="bNet">$0.00</span></div>
+</div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 120+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+let payType='salary';
+function setType(t){payType=t;document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));document.querySelector(`.tab:${t==='salary'?'first':'last'}-child`).classList.add('active');document.getElementById('salaryInputs').style.display=t==='salary'?'':'none';document.getElementById('hourlyInputs').style.display=t==='hourly'?'':'none';calc();}
+function fmt(n){return'$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function calc(){
+let annual,freq;
+if(payType==='salary'){annual=parseFloat(document.getElementById('salary').value)||0;freq=parseInt(document.getElementById('freq').value);}
+else{const rate=parseFloat(document.getElementById('hourlyRate').value)||0;const hrs=parseFloat(document.getElementById('hoursWeek').value)||0;annual=rate*hrs*52;freq=parseInt(document.getElementById('freqH').value);}
+const gross=annual/freq;
+const ret=parseFloat(document.getElementById('retirement').value)||0;
+const health=parseFloat(document.getElementById('health').value)||0;
+const other=parseFloat(document.getElementById('otherPre').value)||0;
+const preTax=ret+health+other;
+const taxable=gross-preTax;
+const fedRate=(parseFloat(document.getElementById('fedRate').value)||0)/100;
+const stateRate=(parseFloat(document.getElementById('stateRate').value)||0)/100;
+const fed=taxable*fedRate;
+const state=taxable*stateRate;
+const ss=Math.min(gross,168600/freq)*0.062;
+const med=gross*0.0145;
+const totalDed=fed+state+ss+med+preTax;
+const net=gross-totalDed;
+document.getElementById('takeHome').textContent=fmt(net);
+document.getElementById('grossPay').textContent=fmt(gross);
+document.getElementById('totalDed').textContent=fmt(totalDed);
+document.getElementById('annualNet').textContent=fmt(net*freq);
+document.getElementById('effRate').textContent=((totalDed/gross)*100).toFixed(1)+'%';
+document.getElementById('bGross').textContent=fmt(gross);
+document.getElementById('bFed').textContent='-'+fmt(fed);
+document.getElementById('bState').textContent='-'+fmt(state);
+document.getElementById('bSS').textContent='-'+fmt(ss);
+document.getElementById('bMed').textContent='-'+fmt(med);
+document.getElementById('bRet').textContent=ret>0?'-'+fmt(ret):'-$0.00';
+document.getElementById('bHealth').textContent=health>0?'-'+fmt(health):'-$0.00';
+document.getElementById('bOther').textContent=other>0?'-'+fmt(other):'-$0.00';
+document.getElementById('bNet').textContent=fmt(net);
+}
+calc();
+</script>
+</body>
+</html>

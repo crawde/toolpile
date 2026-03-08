@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Watermark Tool — Add Watermark to Images Free | ToolPile</title>
+<meta name="description" content="Add text watermarks to your images for free. Customize font, size, position, opacity, and color. Download watermarked images instantly. No upload needed.">
+<meta name="keywords" content="image watermark tool, add watermark to image, watermark generator, photo watermark free, watermark maker, toolpile">
+<meta property="og:title" content="Image Watermark Tool — Free Online Tool">
+<meta property="og:description" content="Add text watermarks to images right in your browser. No upload, fully private.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/image-watermark">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8}
+input[type=color]{width:48px;height:36px;padding:2px;cursor:pointer}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2,.grid3,.grid4{grid-template-columns:1fr 1fr}}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.drop-zone{border:2px dashed #475569;border-radius:12px;padding:3rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:1rem}
+.drop-zone:hover,.drop-zone.dragover{border-color:#818cf8;background:rgba(99,102,241,.05)}
+.drop-zone p{color:#94a3b8;font-size:.9rem}
+.drop-zone .icon{font-size:2.5rem;margin-bottom:.5rem}
+.canvas-wrap{background:#0f172a;border-radius:12px;border:1px solid #334155;padding:1rem;margin-top:1rem;text-align:center;overflow:auto}
+canvas{max-width:100%;border-radius:8px}
+.controls{margin-top:1rem}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-bottom:.5rem;margin-top:1rem}
+input[type=range]{-webkit-appearance:none;height:6px;border-radius:3px;background:#0f172a;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#818cf8;cursor:pointer}
+.pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;width:150px}
+.pos-btn{padding:.4rem;border-radius:6px;background:#0f172a;border:1px solid #475569;color:#94a3b8;cursor:pointer;font-size:.7rem;text-align:center}
+.pos-btn.active{background:#6366f1;color:#fff;border-color:#6366f1}
+.actions{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Image Watermark Tool</h1>
+<p class="subtitle">Add text watermarks to your images. Everything runs in your browser — no files uploaded.</p>
+<div class="tool-area">
+<div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+<div class="icon">🖼️</div>
+<p>Drop an image here or click to upload</p>
+<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="loadImage(event)">
+</div>
+<div class="controls" id="controls" style="display:none">
+<div class="section-title">Watermark Text</div>
+<input type="text" id="wmText" value="© Your Name" oninput="drawWatermark()">
+<div class="grid3" style="margin-top:.75rem">
+<div><label>Font</label>
+<select id="wmFont" onchange="drawWatermark()">
+<option>Arial</option><option>Georgia</option><option>Courier New</option><option>Verdana</option><option>Times New Roman</option><option>Impact</option><option>Comic Sans MS</option>
+</select></div>
+<div><label>Size (px)</label><input type="number" id="wmSize" value="48" min="12" max="200" oninput="drawWatermark()"></div>
+<div><label>Color</label><input type="color" id="wmColor" value="#ffffff" oninput="drawWatermark()"></div>
+</div>
+<div class="grid3" style="margin-top:.5rem">
+<div><label>Opacity</label><input type="range" id="wmOpacity" min="5" max="100" value="40" oninput="drawWatermark()"></div>
+<div><label>Rotation (°)</label><input type="range" id="wmRotation" min="-90" max="90" value="-30" oninput="drawWatermark()"></div>
+<div><label>Repeat</label>
+<select id="wmRepeat" onchange="drawWatermark()">
+<option value="single">Single</option>
+<option value="tile" selected>Tiled</option>
+</select></div>
+</div>
+<div style="margin-top:.75rem">
+<div class="section-title">Position (for single watermark)</div>
+<div class="pos-grid">
+<div class="pos-btn" onclick="setPos('top-left')">↖ TL</div>
+<div class="pos-btn" onclick="setPos('top-center')">↑ TC</div>
+<div class="pos-btn" onclick="setPos('top-right')">↗ TR</div>
+<div class="pos-btn" onclick="setPos('center-left')">← CL</div>
+<div class="pos-btn active" onclick="setPos('center')">● C</div>
+<div class="pos-btn" onclick="setPos('center-right')">→ CR</div>
+<div class="pos-btn" onclick="setPos('bottom-left')">↙ BL</div>
+<div class="pos-btn" onclick="setPos('bottom-center')">↓ BC</div>
+<div class="pos-btn" onclick="setPos('bottom-right')">↘ BR</div>
+</div>
+</div>
+<div class="actions">
+<button onclick="download()">📥 Download Watermarked Image</button>
+</div>
+</div>
+</div>
+<div class="canvas-wrap" id="canvasWrap" style="display:none">
+<canvas id="canvas"></canvas>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 120+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+let img=null,pos='center';
+const dz=document.getElementById('dropZone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+function loadImage(e){if(e.target.files[0])handleFile(e.target.files[0]);}
+function handleFile(file){if(!file.type.startsWith('image/'))return;const reader=new FileReader();reader.onload=ev=>{img=new Image();img.onload=()=>{document.getElementById('controls').style.display='';document.getElementById('canvasWrap').style.display='';drawWatermark();};img.src=ev.target.result;};reader.readAsDataURL(file);}
+function setPos(p){pos=p;document.querySelectorAll('.pos-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');drawWatermark();}
+function drawWatermark(){
+if(!img)return;
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+canvas.width=img.width;canvas.height=img.height;
+ctx.drawImage(img,0,0);
+const text=document.getElementById('wmText').value;
+const font=document.getElementById('wmFont').value;
+const size=parseInt(document.getElementById('wmSize').value)||48;
+const color=document.getElementById('wmColor').value;
+const opacity=(parseInt(document.getElementById('wmOpacity').value)||40)/100;
+const rotation=(parseInt(document.getElementById('wmRotation').value)||0)*Math.PI/180;
+const repeat=document.getElementById('wmRepeat').value;
+ctx.globalAlpha=opacity;
+ctx.font=`${size}px "${font}"`;
+ctx.fillStyle=color;
+ctx.textAlign='center';
+ctx.textBaseline='middle';
+if(repeat==='tile'){
+const gap=size*4;
+const diag=Math.sqrt(canvas.width**2+canvas.height**2);
+ctx.save();
+ctx.translate(canvas.width/2,canvas.height/2);
+ctx.rotate(rotation);
+for(let y=-diag;y<diag;y+=gap){
+for(let x=-diag;x<diag;x+=gap){
+ctx.fillText(text,x,y);
+}}
+ctx.restore();
+}else{
+let x,y;
+const m=size;
+switch(pos){
+case'top-left':x=m;y=m;ctx.textAlign='left';break;
+case'top-center':x=canvas.width/2;y=m;break;
+case'top-right':x=canvas.width-m;y=m;ctx.textAlign='right';break;
+case'center-left':x=m;y=canvas.height/2;ctx.textAlign='left';break;
+case'center':x=canvas.width/2;y=canvas.height/2;break;
+case'center-right':x=canvas.width-m;y=canvas.height/2;ctx.textAlign='right';break;
+case'bottom-left':x=m;y=canvas.height-m;ctx.textAlign='left';break;
+case'bottom-center':x=canvas.width/2;y=canvas.height-m;break;
+case'bottom-right':x=canvas.width-m;y=canvas.height-m;ctx.textAlign='right';break;
+default:x=canvas.width/2;y=canvas.height/2;
+}
+ctx.save();ctx.translate(x,y);ctx.rotate(rotation);ctx.fillText(text,0,0);ctx.restore();
+}
+ctx.globalAlpha=1;
+}
+function download(){
+if(!img)return;
+const canvas=document.getElementById('canvas');
+const link=document.createElement('a');
+link.download='watermarked-image.png';
+link.href=canvas.toDataURL('image/png');
+link.click();
+}
+</script>
+</body>
+</html>

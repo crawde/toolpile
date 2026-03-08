@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Name Generator — Free Company Name Ideas | ToolPile</title>
+<meta name="description" content="Generate creative business name ideas instantly. Enter keywords and industry to get unique, brandable company names. Free business name generator.">
+<meta name="keywords" content="business name generator, company name generator, brand name generator, startup name ideas, business name ideas, toolpile">
+<meta property="og:title" content="Business Name Generator — Free Online Tool">
+<meta property="og:description" content="Generate creative, brandable business names from your keywords. Instant & free.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/business-name-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:#818cf8}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s;margin-top:1rem;width:100%}
+button:hover{transform:translateY(-1px)}
+.names-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-top:1.5rem}
+.name-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:1rem;cursor:pointer;transition:all .2s;position:relative}
+.name-card:hover{border-color:#818cf8;transform:translateY(-2px);box-shadow:0 4px 12px rgba(99,102,241,.2)}
+.name-card .name{font-size:1.1rem;font-weight:700;color:#e2e8f0}
+.name-card .style{font-size:.7rem;color:#94a3b8;margin-top:.3rem;text-transform:uppercase;letter-spacing:.05em}
+.name-card .check{position:absolute;top:.5rem;right:.5rem;opacity:0;color:#10b981;font-size:1.2rem;transition:opacity .2s}
+.name-card.copied .check{opacity:1}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-top:1.5rem;margin-bottom:.5rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+.chip{padding:.35rem .75rem;border-radius:20px;background:#0f172a;border:1px solid #475569;color:#94a3b8;cursor:pointer;font-size:.8rem;transition:all .15s}
+.chip.active{background:#6366f1;color:#fff;border-color:#6366f1}
+.count{text-align:center;color:#94a3b8;font-size:.85rem;margin-top:1rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Business Name Generator</h1>
+<p class="subtitle">Generate creative, brandable business names from your keywords and industry.</p>
+<div class="tool-area">
+<label>Keywords (comma-separated)</label>
+<input type="text" id="keywords" placeholder="e.g., cloud, fast, analytics, green" value="">
+<div class="grid2">
+<div><label>Industry</label>
+<select id="industry">
+<option value="tech">Technology</option>
+<option value="health">Health & Wellness</option>
+<option value="finance">Finance & Fintech</option>
+<option value="food">Food & Beverage</option>
+<option value="fashion">Fashion & Beauty</option>
+<option value="education">Education</option>
+<option value="real-estate">Real Estate</option>
+<option value="marketing">Marketing & Creative</option>
+<option value="ecommerce">E-commerce & Retail</option>
+<option value="travel">Travel & Hospitality</option>
+<option value="general">General / Other</option>
+</select></div>
+<div><label>Style</label>
+<select id="style">
+<option value="modern">Modern & Clean</option>
+<option value="playful">Playful & Fun</option>
+<option value="professional">Professional & Serious</option>
+<option value="techy">Techy & Futuristic</option>
+<option value="organic">Organic & Natural</option>
+<option value="luxury">Luxury & Premium</option>
+</select></div>
+</div>
+<button onclick="generate()">✨ Generate Names</button>
+</div>
+<div id="results"></div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 120+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+const prefixes={tech:['Cyber','Data','Nex','Pixel','Byte','Cloud','Sync','Node','Core','Flux','Algo','Vex','Codex','Bit','Logic'],health:['Vita','Zen','Pure','Heal','Glow','Bloom','Well','Aura','Pulse','Calm','Life','Nova','Core','Sol','Thrive'],finance:['Fin','Capital','Ledger','Mint','Vault','Summit','Peak','Arc','Edge','Apex','Prime','Quant','Forte','Crest','Trust'],food:['Fresh','Green','Harvest','Savour','Flame','Spice','Grain','Pure','Gold','Root','Fork','Plate','Crust','Berry','Sage'],fashion:['Luxe','Vogue','Noir','Silk','Velvet','Chic','Bloom','Ivory','Gem','Pearl','Rouge','Lace','Plume','Slate','Aura'],education:['Bright','Mind','Sage','Scholar','Owl','Quest','Skill','Apex','Peak','Edge','Nova','Wit','Spark','Path','Rise'],
+'real-estate':['Haven','Nest','Prime','Summit','Gate','Stone','Oak','Pine','Vista','Crest','Ridge','Park','Harbor','Metro','Urban'],marketing:['Brand','Spark','Hype','Buzz','Viral','Pixel','Prism','Bold','Pulse','Flash','Ink','Flair','Boost','Echo','Vibe'],ecommerce:['Cart','Shop','Deal','Swift','Prime','Box','Hub','Mart','Click','Quick','Buy','Stock','Snap','Trade','Vault'],travel:['Voyage','Drift','Wander','Trek','Atlas','Compass','Horizon','Roam','Atlas','Shore','Coast','Trail','Summit','Haven','Escape'],general:['Nova','Apex','Core','Zen','Flux','Spark','Bold','Prime','Edge','Vibe','Rise','Shift','Path','Link','Forge']};
+const suffixes={modern:['ly','io','ify','Hub','Lab','Base','Stack','Flow','Wave','Sync','Grid','Kit','Spot','Port','Zone'],playful:['zy','oo','ly','Pop','Buzz','Bop','Doodle','Joy','Fun','Go','Hop','Zip','Boom','Yay','Pal'],professional:['Corp','Pro','Group','Solutions','Works','Partners','Global','Ventures','Dynamics','Systems','Advisory','Insight','Atlas','Bridge','Prime'],techy:['AI','OS','X','Tech','Bot','Dev','Code','App','Net','Sys','Data','API','Cloud','Byte','Link'],organic:['Root','Leaf','Bloom','Earth','Green','Garden','Forest','Seed','Sol','Terra','Meadow','River','Stone','Bay','Glen'],luxury:['Noir','Atelier','Maison','Elite','Royal','Prestige','Grand','Premier','Sovereign','Sterling','Heritage','Legacy','Crown','Regal','Icon']};
+const patterns=['PREFIX+SUFFIX','KEYWORD+SUFFIX','PREFIX+KEYWORD','WORD_BLEND','KEYWORD_MORPH'];
+function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
+function generate(){
+const kw=(document.getElementById('keywords').value||'brand').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+const ind=document.getElementById('industry').value;
+const sty=document.getElementById('style').value;
+const pList=prefixes[ind]||prefixes.general;
+const sList=suffixes[sty]||suffixes.modern;
+const names=new Set();
+const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+const blend=(a,b)=>{const cut=Math.ceil(a.length*0.6);return capitalize(a.slice(0,cut))+b.slice(Math.floor(b.length*0.4));};
+let attempts=0;
+while(names.size<24&&attempts<500){attempts++;
+const pattern=pick(patterns);
+let name;
+switch(pattern){
+case'PREFIX+SUFFIX':name=pick(pList)+pick(sList);break;
+case'KEYWORD+SUFFIX':name=capitalize(pick(kw))+pick(sList);break;
+case'PREFIX+KEYWORD':name=pick(pList)+capitalize(pick(kw));break;
+case'WORD_BLEND':name=blend(pick(pList),pick(kw));break;
+case'KEYWORD_MORPH':{const k=pick(kw);const morphs=['ify','ly','eo','ia','ix','ex','us','or','ar','on'];name=capitalize(k)+pick(morphs);break;}
+}
+if(name&&name.length>=4&&name.length<=16)names.add(name);
+}
+const styles=['Modern','Playful','Techy','Professional','Creative','Bold'];
+let html='<div class="count">'+names.size+' names generated — click to copy</div><div class="names-grid">';
+names.forEach(n=>{html+=`<div class="name-card" onclick="copyName(this,'${n}')"><div class="name">${n}</div><div class="style">${pick(styles)}</div><span class="check">✓ Copied</span></div>`;});
+html+='</div>';
+document.getElementById('results').innerHTML=html;
+}
+function copyName(el,name){navigator.clipboard.writeText(name);document.querySelectorAll('.name-card').forEach(c=>c.classList.remove('copied'));el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),1500);}
+generate();
+</script>
+</body>
+</html>

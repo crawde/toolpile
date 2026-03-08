@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text to ASCII Art Generator — Free ASCII Text Art | ToolPile</title>
+<meta name="description" content="Convert text to ASCII art instantly. Multiple font styles, live preview, and one-click copy. Free text to ASCII art generator for READMEs and comments.">
+<meta name="keywords" content="ascii art generator, text to ascii, ascii text art, figlet online, ascii banner generator, toolpile">
+<meta property="og:title" content="Text to ASCII Art Generator — Free Online Tool">
+<meta property="og:description" content="Convert any text to ASCII art with multiple font styles. Free and instant.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/ascii-art-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.output{background:#0f172a;border-radius:10px;padding:1.25rem;margin-top:1rem;position:relative;border:1px solid #334155;min-height:120px;overflow-x:auto}
+.output pre{font-family:'SF Mono',Monaco,'Courier New',monospace;font-size:.75rem;color:#38bdf8;line-height:1.15;white-space:pre;margin:0}
+.copy-btn{position:absolute;top:.75rem;right:.75rem;background:#6366f1;color:#fff;border:none;border-radius:6px;padding:.35rem .75rem;font-size:.75rem;cursor:pointer;font-weight:600}
+.copy-btn:hover{background:#818cf8}
+.font-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.5rem;margin-top:1rem}
+.font-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.5rem .75rem;cursor:pointer;transition:all .2s;font-size:.75rem}
+.font-card:hover{border-color:#818cf8}
+.font-card.active{border-color:#6366f1;background:rgba(99,102,241,.1)}
+.font-card .fname{font-weight:700;color:#818cf8;font-size:.7rem;margin-bottom:.2rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Text to ASCII Art</h1>
+<p class="subtitle">Convert any text into ASCII art — perfect for READMEs, code comments, and terminal banners.</p>
+<div class="tool-area">
+<div class="grid2">
+<div><label>Your Text</label><input type="text" id="inputText" value="Hello!" oninput="render()" maxlength="30"></div>
+<div><label>Font</label><select id="fontSelect" onchange="render()"></select></div>
+</div>
+</div>
+<div class="output" id="outputArea">
+<button class="copy-btn" onclick="copyArt()">Copy</button>
+<pre id="asciiOutput"></pre>
+</div>
+<div class="tool-area" style="margin-top:1rem">
+<label style="margin-top:0">All Fonts — click to preview</label>
+<div class="font-preview" id="fontList"></div>
+</div>
+</div>
+<footer>
+<p>Free tool by <a href="https://toolpile.tools">ToolPile</a> — 120+ free developer & productivity tools</p>
+<p style="margin-top:.5rem">Also check out: <a href="https://fakescan.site">FakeScan</a> · <a href="https://scamometer.io">Scamometer</a> · <a href="https://roastthissite.com">RoastThisSite</a></p>
+</footer>
+<script>
+const fonts={
+'Standard':{h:6,chars:{' ':[' ',' ',' ',' ',' ',' '],'A':['    _    ','   / \\   ','  / _ \\  ',' / ___ \\ ','/_/   \\_\\','         '],'B':['____  ','| __ ) ','|  _ \\ ','| |_) |','|____/ ','       '],'C':['  ____ ','/ ___|','| |   ','| |___',' \\____|','      '],'D':['____  ','|  _ \\ ','| | | |','| |_| |','|____/ ','       '],'E':['_____ ','| ____|','|  _|  ','| |___ ','|_____|','       '],'F':['_____ ','|  ___|','| |_   ','|  _|  ','|_|    ','       '],'G':['  ____ ','/ ___|','| |  _ ','| |_| |',' \\____|','       '],'H':['_   _ ','| | | |','| |_| |','|  _  |','|_| |_|','       '],'I':['___ ','|_ _|',' | | ',' | | ','|___|','     '],'J'::[' ___','|_ _|',' | | ',' | | ','|_/ ','    '],'K':['_  __','| |/ /','| \' / ','| . \\ ','|_|\\_\\','      '],'L':['_     ','| |   ','| |   ','| |___','|_____|','       '],'M':['__  __ ','|  \\/  |','| |\\/| |','| |  | |','|_|  |_|','        '],'N':['_   _ ','| \\ | |','|  \\| |','| |\\  |','|_| \\_|','       '],'O':['  ___  ',' / _ \\ ','| | | |','| |_| |',' \\___/ ','       '],'P':['____  ','|  _ \\ ','| |_) |','|  __/ ','|_|    ','       '],'Q':['  ___  ',' / _ \\ ','| | | |','| |_| |',' \\__\\_\\','       '],'R':['____  ','|  _ \\ ','| |_) |','|  _ < ','|_| \\_\\','       '],'S':['____ ','/ ___|','\\_ \\  ',' _) | ','|___/ ','      '],'T':['_____ ','|_   _|','  | |  ','  | |  ','  |_|  ','       '],'U':['_   _ ','| | | |','| | | |','| |_| |',' \\___/ ','       '],'V':['__     __','\\ \\   / /',' \\ \\ / / ','  \\ V /  ','   \\_/   ','         '],'W':['__        __','\\ \\      / /',' \\ \\ /\\ / / ','  \\ V  V /  ','   \\_/\\_/   ','            '],'X':['__  __','\\ \\/ /',' \\  / ',' /  \\ ','/_/\\_\\','      '],'Y':['__   __','\\ \\ / /',' \\ V / ','  | |  ','  |_|  ','       '],'Z':['_____','|__  /','  / / ',' / /_ ','/____|','      '],'!':[' _ ','| |','| |','|_|','(_)','   '],'.':[' ','  ','  ','_ ','(_)','  '],'?':['  ___  ',' |__ \\ ','   / / ','  |_|  ','  (_)  ','       ']}},
+'Block':{h:5,chars:{' ':['    ','    ','    ','    ','    '],'A':['█▀█ ','█▀█ ','▀ ▀ ','    ','    '],'B':['█▀▄ ','█▀▄ ','▀▀  ','    ','    '],'C':['█▀▀ ','█   ','▀▀▀ ','    ','    '],'D':['█▀▄ ','█ █ ','▀▀  ','    ','    '],'E':['█▀▀ ','█▀▀ ','▀▀▀ ','    ','    '],'F':['█▀▀ ','█▀▀ ','▀   ','    ','    '],'G':['█▀▀ ','█ █ ','▀▀▀ ','    ','    '],'H':['█ █ ','█▀█ ','▀ ▀ ','    ','    '],'I':['▀█▀ ',' █  ',' ▀  ','    ','    '],'J':['  █ ','  █ ','▀▀  ','    ','    '],'K':['█ █ ','█▀▄ ','▀ ▀ ','    ','    '],'L':['█   ','█   ','▀▀▀ ','    ','    '],'M':['█▄▀▄█ ','█ ▀ █ ','▀   ▀ ','      ','      '],'N':['█▀█ ','█ █ ','▀ ▀ ','    ','    '],'O':['█▀█ ','█ █ ','▀▀▀ ','    ','    '],'P':['█▀█ ','█▀▀ ','▀   ','    ','    '],'Q':['█▀█ ','█ █ ','▀▀▄ ','    ','    '],'R':['█▀█ ','█▀▄ ','▀ ▀ ','    ','    '],'S':['█▀▀ ','▀▀█ ','▀▀▀ ','    ','    '],'T':['▀█▀ ',' █  ',' ▀  ','    ','    '],'U':['█ █ ','█ █ ','▀▀▀ ','    ','    '],'V':['█ █ ','█ █ ',' ▀  ','    ','    '],'W':['█   █ ','█ █ █ ',' ▀ ▀  ','      ','      '],'X':['█ █ ',' █  ','█ █ ','    ','    '],'Y':['█ █ ',' █  ',' ▀  ','    ','    '],'Z':['▀▀█ ',' █  ','█▀▀ ','    ','    '],'!':['█ ','█ ','▀ ','  ','  '],'.':['  ','  ','▀ ','  ','  '],'?':['▀█ ',' █ ',' ▀ ','   ','   ']}},
+'Banner':{h:4,chars:{' ':['   ','   ','   ','   '],'A':['╔═╗','╠═╣','╩ ╩','   '],'B':['╔╗ ','╠╩╗','╚═╝','   '],'C':['╔═╗','║  ','╚═╝','   '],'D':['╔╦╗',' ║║','═╩╝','   '],'E':['╔═╗','║╣ ','╚═╝','   '],'F':['╔═╗','╠╣ ','╚  ','   '],'G':['╔═╗','║ ╦','╚═╝','   '],'H':['╦ ╦','╠═╣','╩ ╩','   '],'I':['╦','║','╩',' '],'J':['  ╦','  ║','╚╝ ','   '],'K':['╦╔═','╠╩╗','╩ ╩','   '],'L':['╦  ','║  ','╩═╝','   '],'M':['╔╦╗','║║║','╩ ╩','   '],'N':['╔╗╔','║║║','╝╚╝','   '],'O':['╔═╗','║ ║','╚═╝','   '],'P':['╔═╗','╠═╝','╩  ','   '],'Q':['╔═╗ ','║═╬╗','╚═╝╚','    '],'R':['╦═╗','╠╦╝','╩╚═','   '],'S':['╔═╗','╚═╗','╚═╝','   '],'T':['╔╦╗',' ║ ',' ╩ ','   '],'U':['╦ ╦','║ ║','╚═╝','   '],'V':['╦  ╦','╚╗╔╝',' ╚╝ ','    '],'W':['╦ ╦','║║║','╚╩╝','   '],'X':['═╗╔═','╔╝╚╗','╝  ╚','    '],'Y':['╦ ╦','╚╦╝',' ╩ ','   '],'Z':['╔═╗','╔═╝','╚══','   '],'!':['║','║','╨',' '],'.':['  ',' ','╨',' '],'?':['╔═╗','  ╠','  ╨','   ']}}
+};
+
+function render(){
+const text=document.getElementById('inputText').value.toUpperCase();
+const fontName=document.getElementById('fontSelect').value;
+const font=fonts[fontName];
+if(!font){document.getElementById('asciiOutput').textContent='Font not found';return;}
+const lines=[];
+for(let row=0;row<font.h;row++){
+let line='';
+for(const ch of text){
+const charArt=font.chars[ch]||font.chars['?']||font.chars[' '];
+line+=(charArt&&charArt[row])?charArt[row]:'';
+}
+lines.push(line);
+}
+// Remove empty trailing lines
+while(lines.length&&!lines[lines.length-1].trim())lines.pop();
+document.getElementById('asciiOutput').textContent=lines.join('\n');
+}
+
+function initFonts(){
+const select=document.getElementById('fontSelect');
+const fontList=document.getElementById('fontList');
+Object.keys(fonts).forEach((name,i)=>{
+const opt=document.createElement('option');
+opt.value=name;opt.textContent=name;
+select.appendChild(opt);
+const card=document.createElement('div');
+card.className='font-card'+(i===0?' active':'');
+card.innerHTML=`<div class="fname">${name}</div>`;
+card.onclick=()=>{select.value=name;document.querySelectorAll('.font-card').forEach(c=>c.classList.remove('active'));card.classList.add('active');render();};
+fontList.appendChild(card);
+});
+}
+function copyArt(){navigator.clipboard.writeText(document.getElementById('asciiOutput').textContent);const btn=document.querySelector('.copy-btn');btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1500);}
+initFonts();render();
+</script>
+</body>
+</html>
