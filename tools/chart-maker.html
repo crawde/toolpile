@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart Maker — Create Bar, Line & Pie Charts Online Free | ToolPile</title>
+<meta name="description" content="Free online chart maker. Create beautiful bar charts, line charts, and pie charts. Enter your data and download as PNG. No sign-up required.">
+<meta name="keywords" content="chart maker, chart generator, bar chart maker, pie chart maker, line chart maker, graph maker, create chart online, toolpile">
+<meta property="og:title" content="Chart Maker — Create Beautiful Charts Free">
+<meta property="og:description" content="Create bar, line, and pie charts from your data. Download as PNG instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/chart-maker">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,select,textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:#818cf8}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button.outline{background:transparent;border:1px solid #475569;color:#94a3b8}
+button.outline:hover{border-color:#818cf8;color:#818cf8}
+button.sm{padding:.4rem .8rem;font-size:.8rem}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem}
+.tab{padding:.5rem 1rem;border-radius:8px;background:#0f172a;border:1px solid #475569;color:#94a3b8;cursor:pointer;font-size:.85rem;font-weight:600}
+.tab.active{background:#6366f1;color:#fff;border-color:#6366f1}
+.section{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #334155}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-bottom:.75rem}
+.data-row{display:flex;gap:.5rem;margin-bottom:.4rem;align-items:center}
+.data-row input{flex:1}
+.data-row .color-cell{width:40px}
+.data-row .color-cell input{width:36px;height:32px;padding:0;border:none;cursor:pointer}
+.data-row .del{color:#f87171;cursor:pointer;font-weight:bold;font-size:1.2rem;width:24px;text-align:center}
+.canvas-wrap{text-align:center;margin-top:1rem;background:#0f172a;border-radius:8px;padding:1rem;border:1px solid #334155}
+#chart{max-width:100%}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Chart Maker</h1>
+<p class="subtitle">Create beautiful bar, line, and pie charts from your data. Download as PNG.</p>
+<div class="tool-area">
+<div class="tabs">
+<div class="tab active" onclick="setType('bar')">📊 Bar</div>
+<div class="tab" onclick="setType('line')">📈 Line</div>
+<div class="tab" onclick="setType('pie')">🥧 Pie</div>
+<div class="tab" onclick="setType('doughnut')">🍩 Doughnut</div>
+</div>
+<label>Chart Title</label>
+<input id="title" placeholder="My Chart" oninput="draw()">
+<div class="section">
+<div class="section-title">Data</div>
+<div id="data-rows"></div>
+<button class="sm outline" onclick="addRow()" style="margin-top:.5rem">+ Add Row</button>
+</div>
+<div class="grid3" style="margin-top:1rem">
+<div><label>Background</label><div style="display:flex;align-items:center;gap:.5rem"><input type="color" id="bgColor" value="#1e293b" style="width:40px;height:32px;padding:0;border:none;cursor:pointer" oninput="draw()"><span style="font-size:.8rem;color:#94a3b8">#1e293b</span></div></div>
+<div><label>Grid Lines</label><select id="gridLines" onchange="draw()"><option value="true">Show</option><option value="false">Hide</option></select></div>
+<div><label>Legend</label><select id="legend" onchange="draw()"><option value="true">Show</option><option value="false">Hide</option></select></div>
+</div>
+</div>
+<div class="canvas-wrap"><canvas id="chart" width="700" height="400"></canvas></div>
+<div class="btn-row">
+<button onclick="downloadChart()">Download PNG</button>
+<button class="outline" onclick="resetChart()">Reset</button>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+let chartType='bar';
+const COLORS=['#6366f1','#38bdf8','#f472b6','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#2dd4bf','#e879f9'];
+let rows=[{label:'Jan',value:30,color:COLORS[0]},{label:'Feb',value:45,color:COLORS[1]},{label:'Mar',value:28,color:COLORS[2]},{label:'Apr',value:60,color:COLORS[3]},{label:'May',value:50,color:COLORS[4]}];
+function setType(t){chartType=t;document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['bar','line','pie','doughnut'].indexOf(t)===i));draw()}
+function renderRows(){
+  const c=document.getElementById('data-rows');
+  c.innerHTML='';
+  rows.forEach((r,i)=>{
+    const d=document.createElement('div');d.className='data-row';
+    d.innerHTML=`<input placeholder="Label" value="${r.label}" oninput="rows[${i}].label=this.value;draw()"><input type="number" placeholder="Value" value="${r.value}" oninput="rows[${i}].value=parseFloat(this.value)||0;draw()"><div class="color-cell"><input type="color" value="${r.color}" oninput="rows[${i}].color=this.value;draw()"></div><span class="del" onclick="rows.splice(${i},1);renderRows();draw()">×</span>`;
+    c.appendChild(d);
+  });
+}
+function addRow(){rows.push({label:'Item',value:Math.round(Math.random()*80+10),color:COLORS[rows.length%COLORS.length]});renderRows();draw()}
+function draw(){
+  const canvas=document.getElementById('chart'),ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const bg=document.getElementById('bgColor').value;
+  const showGrid=document.getElementById('gridLines').value==='true';
+  const showLegend=document.getElementById('legend').value==='true';
+  const title=document.getElementById('title').value;
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  if(!rows.length)return;
+  // Title
+  if(title){ctx.font='bold 18px -apple-system,sans-serif';ctx.fillStyle='#e2e8f0';ctx.textAlign='center';ctx.fillText(title,W/2,30)}
+  const top=title?50:20,bot=showLegend?60:30,left=50,right=20;
+  const cw=W-left-right,ch=H-top-bot;
+  if(chartType==='bar'||chartType==='line'){
+    const maxVal=Math.max(...rows.map(r=>r.value),1);
+    const step=cw/rows.length;
+    // Grid
+    if(showGrid){
+      ctx.strokeStyle='#334155';ctx.lineWidth=1;
+      for(let i=0;i<=4;i++){
+        const y=top+ch-(ch*i/4);
+        ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(left+cw,y);ctx.stroke();
+        ctx.fillStyle='#64748b';ctx.font='11px sans-serif';ctx.textAlign='right';
+        ctx.fillText(Math.round(maxVal*i/4),left-8,y+4);
+      }
+    }
+    // Axis
+    ctx.strokeStyle='#475569';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(left,top+ch);ctx.lineTo(left+cw,top+ch);ctx.stroke();
+    if(chartType==='bar'){
+      const bw=step*0.6;
+      rows.forEach((r,i)=>{
+        const bh=(r.value/maxVal)*ch;
+        const x=left+step*i+(step-bw)/2;
+        const y=top+ch-bh;
+        ctx.fillStyle=r.color;
+        ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,bw,bh,4):ctx.rect(x,y,bw,bh);ctx.fill();
+        ctx.fillStyle='#e2e8f0';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(r.value,x+bw/2,y-6);
+        ctx.fillStyle='#94a3b8';ctx.font='11px sans-serif';ctx.fillText(r.label,x+bw/2,top+ch+16);
+      });
+    } else {
+      ctx.beginPath();ctx.lineWidth=3;ctx.strokeStyle=rows[0]?.color||COLORS[0];
+      rows.forEach((r,i)=>{
+        const x=left+step*i+step/2;
+        const y=top+ch-(r.value/maxVal)*ch;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+      // Dots + labels
+      rows.forEach((r,i)=>{
+        const x=left+step*i+step/2;
+        const y=top+ch-(r.value/maxVal)*ch;
+        ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=r.color;ctx.fill();
+        ctx.strokeStyle=bg;ctx.lineWidth=2;ctx.stroke();
+        ctx.fillStyle='#e2e8f0';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(r.value,x,y-12);
+        ctx.fillStyle='#94a3b8';ctx.font='11px sans-serif';ctx.fillText(r.label,x,top+ch+16);
+      });
+    }
+  } else {
+    // Pie / Doughnut
+    const total=rows.reduce((s,r)=>s+r.value,0);
+    if(!total)return;
+    const cx=W/2,cy=top+ch/2,radius=Math.min(cw,ch)/2-10;
+    let angle=-Math.PI/2;
+    rows.forEach(r=>{
+      const slice=(r.value/total)*Math.PI*2;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,radius,angle,angle+slice);ctx.closePath();
+      ctx.fillStyle=r.color;ctx.fill();
+      // Label
+      const mid=angle+slice/2;
+      const lx=cx+Math.cos(mid)*(radius*0.65);
+      const ly=cy+Math.sin(mid)*(radius*0.65);
+      ctx.fillStyle='#fff';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
+      ctx.fillText(`${Math.round(r.value/total*100)}%`,lx,ly);
+      angle+=slice;
+    });
+    if(chartType==='doughnut'){
+      ctx.beginPath();ctx.arc(cx,cy,radius*0.5,0,Math.PI*2);ctx.fillStyle=bg;ctx.fill();
+    }
+  }
+  // Legend
+  if(showLegend){
+    const lx=left;const ly=H-20;
+    ctx.font='12px sans-serif';ctx.textAlign='left';
+    let ox=lx;
+    rows.forEach(r=>{
+      ctx.fillStyle=r.color;ctx.fillRect(ox,ly-9,12,12);
+      ctx.fillStyle='#94a3b8';ctx.fillText(r.label,ox+16,ly+1);
+      ox+=ctx.measureText(r.label).width+32;
+    });
+  }
+}
+function downloadChart(){
+  const a=document.createElement('a');a.download='chart.png';a.href=document.getElementById('chart').toDataURL('image/png');a.click();
+}
+function resetChart(){
+  rows=[{label:'Jan',value:30,color:COLORS[0]},{label:'Feb',value:45,color:COLORS[1]},{label:'Mar',value:28,color:COLORS[2]}];
+  document.getElementById('title').value='';renderRows();draw();
+}
+renderRows();draw();
+</script>
+</body>
+</html>

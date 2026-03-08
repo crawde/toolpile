@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README Generator — Create GitHub README.md Files Instantly | ToolPile</title>
+<meta name="description" content="Generate professional GitHub README.md files with our free README generator. Add badges, screenshots, table of contents, license, and more.">
+<meta name="keywords" content="readme generator, github readme, readme template, markdown readme, readme maker, readme creator, toolpile">
+<meta property="og:title" content="README Generator — Free GitHub README Creator">
+<meta property="og:description" content="Generate professional GitHub README.md files with badges, ToC, and more.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/readme-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,textarea,select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:#818cf8}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s;margin-top:1rem}
+button:hover{transform:translateY(-1px)}
+button.outline{background:transparent;border:1px solid #475569;color:#94a3b8}
+button.outline:hover{border-color:#818cf8;color:#818cf8}
+.section{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #334155}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-bottom:.75rem}
+.chk{display:flex;align-items:center;gap:.5rem;margin:.4rem 0;font-size:.9rem;color:#94a3b8}
+.chk input{width:auto}
+.output{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.82rem;white-space:pre-wrap;word-break:break-all;color:#38bdf8;max-height:500px;overflow-y:auto;line-height:1.5;margin-top:1rem}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
+.tag{background:#334155;color:#e2e8f0;padding:.25rem .6rem;border-radius:6px;font-size:.8rem;display:flex;align-items:center;gap:.3rem}
+.tag .x{cursor:pointer;color:#f87171;font-weight:bold}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>README Generator</h1>
+<p class="subtitle">Generate professional GitHub README.md files instantly. Fill in the fields and copy the markdown.</p>
+<div class="tool-area">
+<div class="grid2">
+<div><label>Project Name *</label><input id="name" placeholder="My Awesome Project"></div>
+<div><label>Project Logo URL</label><input id="logo" placeholder="https://example.com/logo.png"></div>
+</div>
+<label>Short Description *</label>
+<input id="desc" placeholder="A brief description of what this project does">
+<label>Long Description</label>
+<textarea id="longdesc" rows="3" placeholder="A more detailed explanation of your project..."></textarea>
+<div class="section">
+<div class="section-title">Badges</div>
+<div class="grid2">
+<label class="chk"><input type="checkbox" id="badge-license" checked> License Badge</label>
+<label class="chk"><input type="checkbox" id="badge-stars"> Stars Badge</label>
+<label class="chk"><input type="checkbox" id="badge-forks"> Forks Badge</label>
+<label class="chk"><input type="checkbox" id="badge-issues"> Issues Badge</label>
+<label class="chk"><input type="checkbox" id="badge-build"> Build Status Badge</label>
+<label class="chk"><input type="checkbox" id="badge-npm"> NPM Version Badge</label>
+</div>
+<div class="grid2" style="margin-top:.5rem">
+<div><label>GitHub Username</label><input id="ghuser" placeholder="username"></div>
+<div><label>GitHub Repo</label><input id="ghrepo" placeholder="repo-name"></div>
+</div>
+</div>
+<div class="section">
+<div class="section-title">Sections</div>
+<label class="chk"><input type="checkbox" id="sec-toc" checked> Table of Contents</label>
+<label class="chk"><input type="checkbox" id="sec-features" checked> Features</label>
+<label class="chk"><input type="checkbox" id="sec-install" checked> Installation</label>
+<label class="chk"><input type="checkbox" id="sec-usage" checked> Usage</label>
+<label class="chk"><input type="checkbox" id="sec-api"> API Reference</label>
+<label class="chk"><input type="checkbox" id="sec-config"> Configuration</label>
+<label class="chk"><input type="checkbox" id="sec-contributing" checked> Contributing</label>
+<label class="chk"><input type="checkbox" id="sec-license" checked> License</label>
+<label class="chk"><input type="checkbox" id="sec-contact"> Contact</label>
+</div>
+<div class="section">
+<div class="section-title">Details</div>
+<label>Features (one per line)</label>
+<textarea id="features" rows="3" placeholder="Fast and lightweight&#10;Easy to configure&#10;Cross-platform support"></textarea>
+<label>Installation Command</label>
+<input id="install" placeholder="npm install my-project">
+<label>Usage Example</label>
+<textarea id="usage" rows="3" placeholder="import myProject from 'my-project'&#10;myProject.init()"></textarea>
+<div class="grid2">
+<div><label>License</label>
+<select id="license"><option>MIT</option><option>Apache-2.0</option><option>GPL-3.0</option><option>BSD-3-Clause</option><option>ISC</option><option>Unlicense</option></select></div>
+<div><label>Author Name</label><input id="author" placeholder="Your Name"></div>
+</div>
+<label>Tech Stack (comma-separated)</label>
+<input id="tech" placeholder="React, Node.js, PostgreSQL">
+<label>Contact Email</label>
+<input id="email" placeholder="you@example.com">
+</div>
+<div class="btn-row" style="margin-top:1rem">
+<button onclick="generate()">Generate README</button>
+<button class="outline" onclick="copyMD()">Copy Markdown</button>
+</div>
+</div>
+<div id="preview" class="output" style="display:none"></div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+function esc(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function generate(){
+  const n=document.getElementById('name').value.trim()||'My Project';
+  const d=document.getElementById('desc').value.trim()||'A brief description';
+  const ld=document.getElementById('longdesc').value.trim();
+  const u=document.getElementById('ghuser').value.trim();
+  const r=document.getElementById('ghrepo').value.trim();
+  const logo=document.getElementById('logo').value.trim();
+  const install=document.getElementById('install').value.trim();
+  const usage=document.getElementById('usage').value.trim();
+  const feats=document.getElementById('features').value.trim();
+  const lic=document.getElementById('license').value;
+  const author=document.getElementById('author').value.trim();
+  const tech=document.getElementById('tech').value.trim();
+  const email=document.getElementById('email').value.trim();
+  let md='';
+  if(logo) md+=`<p align="center"><img src="${logo}" alt="${n} logo" width="200"></p>\n\n`;
+  md+=`# ${n}\n\n`;
+  // Badges
+  const repo=u&&r?`${u}/${r}`:'';
+  if(repo){
+    if(document.getElementById('badge-license').checked) md+=`[![License](https://img.shields.io/github/license/${repo})](LICENSE) `;
+    if(document.getElementById('badge-stars').checked) md+=`[![Stars](https://img.shields.io/github/stars/${repo})](https://github.com/${repo}/stargazers) `;
+    if(document.getElementById('badge-forks').checked) md+=`[![Forks](https://img.shields.io/github/forks/${repo})](https://github.com/${repo}/network) `;
+    if(document.getElementById('badge-issues').checked) md+=`[![Issues](https://img.shields.io/github/issues/${repo})](https://github.com/${repo}/issues) `;
+    if(document.getElementById('badge-build').checked) md+=`[![Build](https://img.shields.io/github/actions/workflow/status/${repo}/ci.yml)](https://github.com/${repo}/actions) `;
+    if(document.getElementById('badge-npm').checked) md+=`[![npm](https://img.shields.io/npm/v/${r})](https://www.npmjs.com/package/${r}) `;
+    md+='\n\n';
+  }
+  md+=`${d}\n\n`;
+  if(ld) md+=`${ld}\n\n`;
+  // Tech stack
+  if(tech){
+    const items=tech.split(',').map(t=>t.trim()).filter(Boolean);
+    md+='### Built With\n\n';
+    items.forEach(t=>{md+=`- ${t}\n`});
+    md+='\n';
+  }
+  // ToC
+  const secs=[];
+  if(document.getElementById('sec-features').checked) secs.push('Features');
+  if(document.getElementById('sec-install').checked) secs.push('Installation');
+  if(document.getElementById('sec-usage').checked) secs.push('Usage');
+  if(document.getElementById('sec-api').checked) secs.push('API Reference');
+  if(document.getElementById('sec-config').checked) secs.push('Configuration');
+  if(document.getElementById('sec-contributing').checked) secs.push('Contributing');
+  if(document.getElementById('sec-license').checked) secs.push('License');
+  if(document.getElementById('sec-contact').checked) secs.push('Contact');
+  if(document.getElementById('sec-toc').checked&&secs.length){
+    md+='## Table of Contents\n\n';
+    secs.forEach(s=>{md+=`- [${s}](#${s.toLowerCase().replace(/\s+/g,'-')})\n`});
+    md+='\n';
+  }
+  // Features
+  if(document.getElementById('sec-features').checked){
+    md+='## Features\n\n';
+    if(feats){feats.split('\n').filter(Boolean).forEach(f=>{md+=`- ${f.trim()}\n`})}
+    else md+='- Feature 1\n- Feature 2\n- Feature 3\n';
+    md+='\n';
+  }
+  // Installation
+  if(document.getElementById('sec-install').checked){
+    md+='## Installation\n\n';
+    if(install) md+=`\`\`\`bash\n${install}\n\`\`\`\n\n`;
+    else md+='```bash\nnpm install my-project\n```\n\n';
+  }
+  // Usage
+  if(document.getElementById('sec-usage').checked){
+    md+='## Usage\n\n';
+    if(usage) md+=`\`\`\`\n${usage}\n\`\`\`\n\n`;
+    else md+='```javascript\n// Example usage\n```\n\n';
+  }
+  // API Reference
+  if(document.getElementById('sec-api').checked){
+    md+='## API Reference\n\n| Parameter | Type | Description |\n| :--- | :--- | :--- |\n| `param1` | `string` | **Required**. Description |\n| `param2` | `number` | Optional. Description |\n\n';
+  }
+  // Configuration
+  if(document.getElementById('sec-config').checked){
+    md+='## Configuration\n\n| Option | Default | Description |\n| :--- | :--- | :--- |\n| `option1` | `true` | Description |\n\n';
+  }
+  // Contributing
+  if(document.getElementById('sec-contributing').checked){
+    md+='## Contributing\n\nContributions are welcome! Please follow these steps:\n\n1. Fork the project\n2. Create your feature branch (`git checkout -b feature/amazing-feature`)\n3. Commit your changes (`git commit -m \'Add amazing feature\'`)\n4. Push to the branch (`git push origin feature/amazing-feature`)\n5. Open a Pull Request\n\n';
+  }
+  // License
+  if(document.getElementById('sec-license').checked){
+    md+=`## License\n\nDistributed under the ${lic} License. See \`LICENSE\` for more information.\n\n`;
+  }
+  // Contact
+  if(document.getElementById('sec-contact').checked){
+    md+='## Contact\n\n';
+    if(author) md+=`${author}`;
+    if(email) md+=` - ${email}`;
+    if(repo) md+=`\n\nProject Link: [https://github.com/${repo}](https://github.com/${repo})`;
+    md+='\n\n';
+  }
+  md+='---\n*Generated with [ToolPile README Generator](https://toolpile.tools/tools/readme-generator)*\n';
+  window._md=md;
+  const el=document.getElementById('preview');
+  el.style.display='block';
+  el.textContent=md;
+}
+function copyMD(){
+  if(!window._md){generate()}
+  navigator.clipboard.writeText(window._md).then(()=>{
+    const b=event.target;b.textContent='Copied!';setTimeout(()=>b.textContent='Copy Markdown',1500);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Art Creator — Draw Pixel Art Online Free | ToolPile</title>
+<meta name="description" content="Free online pixel art creator. Draw pixel art with a grid canvas, custom colors, and export as PNG. Create retro game sprites, icons, and artwork.">
+<meta name="keywords" content="pixel art maker, pixel art creator, pixel art online, draw pixel art, pixel art editor, sprite maker, 8bit art, toolpile">
+<meta property="og:title" content="Pixel Art Creator — Draw Pixel Art Free">
+<meta property="og:description" content="Draw pixel art on a grid canvas. Export as PNG. Create sprites, icons, and retro art.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/pixel-art-creator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,select{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.5rem;color:#e2e8f0;font-size:.85rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.5rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button.outline{background:transparent;border:1px solid #475569;color:#94a3b8}
+button.outline:hover{border-color:#818cf8;color:#818cf8}
+button.sm{padding:.35rem .7rem;font-size:.78rem}
+button.active{background:#6366f1;box-shadow:0 0 0 2px #818cf8}
+.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.tool-btn{padding:.4rem .7rem;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#94a3b8;cursor:pointer;font-size:.85rem;transition:all .15s}
+.tool-btn.active{background:#6366f1;color:#fff;border-color:#6366f1}
+.tool-btn:hover{border-color:#818cf8}
+.color-input{display:flex;align-items:center;gap:.4rem}
+.color-input input[type=color]{width:36px;height:30px;border:none;cursor:pointer;padding:0;background:none}
+.palette{display:flex;gap:3px;flex-wrap:wrap;margin:.5rem 0}
+.swatch{width:24px;height:24px;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:border-color .15s}
+.swatch.active{border-color:#fff}
+.swatch:hover{border-color:#818cf8}
+.canvas-wrap{text-align:center;margin-top:.5rem;overflow:auto;background:#0f172a;border-radius:8px;padding:.5rem;border:1px solid #334155}
+#pixelCanvas{image-rendering:pixelated;cursor:crosshair;border:1px solid #475569}
+.grid-settings{display:flex;gap:.75rem;align-items:end;flex-wrap:wrap;margin-bottom:.75rem}
+.grid-settings div{display:flex;flex-direction:column}
+.grid-settings input{width:70px}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Pixel Art Creator</h1>
+<p class="subtitle">Draw pixel art on a grid canvas. Choose colors, use brush and fill tools, and export as PNG.</p>
+<div class="tool-area">
+<div class="grid-settings">
+<div><label>Width (px)</label><input type="number" id="gridW" value="16" min="4" max="128"></div>
+<div><label>Height (px)</label><input type="number" id="gridH" value="16" min="4" max="128"></div>
+<div><label>Zoom</label>
+<select id="zoom" onchange="setZoom()">
+<option value="8">8x</option>
+<option value="16" selected>16x</option>
+<option value="24">24x</option>
+<option value="32">32x</option>
+</select></div>
+<div><button onclick="initCanvas()">Apply</button></div>
+<div><label class="chk" style="margin:0;display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:#94a3b8"><input type="checkbox" id="showGrid" checked onchange="render()" style="width:auto"> Grid</label></div>
+</div>
+<div class="toolbar">
+<div class="tool-btn active" onclick="setTool('brush',this)" title="Brush">🖌 Brush</div>
+<div class="tool-btn" onclick="setTool('eraser',this)" title="Eraser">🧹 Eraser</div>
+<div class="tool-btn" onclick="setTool('fill',this)" title="Fill">🪣 Fill</div>
+<div class="tool-btn" onclick="setTool('picker',this)" title="Color Picker">💉 Picker</div>
+<div class="tool-btn" onclick="setTool('line',this)" title="Line">📏 Line</div>
+<span style="border-left:1px solid #475569;height:24px;margin:0 .25rem"></span>
+<div class="color-input"><input type="color" id="colorPicker" value="#6366f1" oninput="setColor(this.value)"></div>
+</div>
+<div class="palette" id="palette"></div>
+<div class="canvas-wrap"><canvas id="pixelCanvas"></canvas></div>
+<div class="btn-row">
+<button onclick="exportPNG()">Export PNG</button>
+<button class="outline" onclick="exportScaled()">Export 4x Scaled</button>
+<button class="outline" onclick="clearCanvas()">Clear</button>
+<button class="outline" onclick="undo()">Undo</button>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+const PALETTE=['#000000','#ffffff','#ff0000','#00ff00','#0000ff','#ffff00','#ff00ff','#00ffff','#f87171','#fb923c','#fbbf24','#34d399','#38bdf8','#818cf8','#a78bfa','#f472b6','#6366f1','#0ea5e9','#14b8a6','#8b5cf6','#475569','#94a3b8','#1e293b','#334155'];
+let gw=16,gh=16,zoom=16,pixels=[],tool='brush',color='#6366f1',drawing=false,history=[],lineStart=null;
+const canvas=document.getElementById('pixelCanvas'),ctx=canvas.getContext('2d');
+function initCanvas(){
+  gw=Math.max(4,Math.min(128,parseInt(document.getElementById('gridW').value)||16));
+  gh=Math.max(4,Math.min(128,parseInt(document.getElementById('gridH').value)||16));
+  pixels=Array.from({length:gh},()=>Array(gw).fill(null));
+  history=[];
+  setZoom();
+}
+function setZoom(){
+  zoom=parseInt(document.getElementById('zoom').value);
+  canvas.width=gw*zoom;canvas.height=gh*zoom;
+  render();
+}
+function render(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // Checkerboard background (transparent indicator)
+  for(let y=0;y<gh;y++)for(let x=0;x<gw;x++){
+    ctx.fillStyle=(x+y)%2===0?'#1a1a2e':'#16162a';
+    ctx.fillRect(x*zoom,y*zoom,zoom,zoom);
+  }
+  // Pixels
+  for(let y=0;y<gh;y++)for(let x=0;x<gw;x++){
+    if(pixels[y][x]){ctx.fillStyle=pixels[y][x];ctx.fillRect(x*zoom,y*zoom,zoom,zoom)}
+  }
+  // Grid
+  if(document.getElementById('showGrid').checked){
+    ctx.strokeStyle='rgba(71,85,105,0.5)';ctx.lineWidth=1;
+    for(let x=0;x<=gw;x++){ctx.beginPath();ctx.moveTo(x*zoom+.5,0);ctx.lineTo(x*zoom+.5,gh*zoom);ctx.stroke()}
+    for(let y=0;y<=gh;y++){ctx.beginPath();ctx.moveTo(0,y*zoom+.5);ctx.lineTo(gw*zoom,y*zoom+.5);ctx.stroke()}
+  }
+}
+function getPixel(e){
+  const rect=canvas.getBoundingClientRect();
+  const x=Math.floor((e.clientX-rect.left)/zoom);
+  const y=Math.floor((e.clientY-rect.top)/zoom);
+  if(x<0||x>=gw||y<0||y>=gh)return null;
+  return{x,y};
+}
+function saveState(){history.push(pixels.map(r=>[...r]));if(history.length>50)history.shift()}
+function undo(){if(history.length){pixels=history.pop();render()}}
+function setTool(t,el){
+  tool=t;
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+}
+function setColor(c){
+  color=c;
+  document.getElementById('colorPicker').value=c;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.toggle('active',s.dataset.color===c));
+}
+function paint(p){
+  if(!p)return;
+  if(tool==='brush'){pixels[p.y][p.x]=color}
+  else if(tool==='eraser'){pixels[p.y][p.x]=null}
+  render();
+}
+function floodFill(x,y,target,replacement){
+  if(x<0||x>=gw||y<0||y>=gh)return;
+  if(pixels[y][x]!==target)return;
+  if(target===replacement)return;
+  pixels[y][x]=replacement;
+  floodFill(x+1,y,target,replacement);
+  floodFill(x-1,y,target,replacement);
+  floodFill(x,y+1,target,replacement);
+  floodFill(x,y-1,target,replacement);
+}
+canvas.addEventListener('mousedown',e=>{
+  e.preventDefault();
+  const p=getPixel(e);if(!p)return;
+  if(tool==='fill'){saveState();floodFill(p.x,p.y,pixels[p.y][p.x],color);render();return}
+  if(tool==='picker'){const c=pixels[p.y][p.x];if(c)setColor(c);return}
+  if(tool==='line'){lineStart=p;return}
+  saveState();drawing=true;paint(p);
+});
+canvas.addEventListener('mousemove',e=>{if(drawing)paint(getPixel(e))});
+canvas.addEventListener('mouseup',e=>{
+  if(tool==='line'&&lineStart){
+    const p=getPixel(e);
+    if(p){
+      saveState();
+      const dx=Math.abs(p.x-lineStart.x),dy=Math.abs(p.y-lineStart.y);
+      const sx=lineStart.x<p.x?1:-1,sy=lineStart.y<p.y?1:-1;
+      let err=dx-dy,cx=lineStart.x,cy=lineStart.y;
+      while(true){
+        pixels[cy][cx]=color;
+        if(cx===p.x&&cy===p.y)break;
+        const e2=2*err;
+        if(e2>-dy){err-=dy;cx+=sx}
+        if(e2<dx){err+=dx;cy+=sy}
+      }
+      render();
+    }
+    lineStart=null;return;
+  }
+  drawing=false;
+});
+canvas.addEventListener('mouseleave',()=>{drawing=false});
+// Touch support
+canvas.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0];const me=new MouseEvent('mousedown',{clientX:t.clientX,clientY:t.clientY});canvas.dispatchEvent(me)},{passive:false});
+canvas.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0];const me=new MouseEvent('mousemove',{clientX:t.clientX,clientY:t.clientY});canvas.dispatchEvent(me)},{passive:false});
+canvas.addEventListener('touchend',e=>{canvas.dispatchEvent(new MouseEvent('mouseup'))});
+function exportPNG(){
+  const c=document.createElement('canvas');c.width=gw;c.height=gh;
+  const cx=c.getContext('2d');
+  for(let y=0;y<gh;y++)for(let x=0;x<gw;x++){
+    if(pixels[y][x]){cx.fillStyle=pixels[y][x];cx.fillRect(x,y,1,1)}
+  }
+  const a=document.createElement('a');a.download='pixel-art.png';a.href=c.toDataURL('image/png');a.click();
+}
+function exportScaled(){
+  const scale=4;
+  const c=document.createElement('canvas');c.width=gw*scale;c.height=gh*scale;
+  const cx=c.getContext('2d');
+  cx.imageSmoothingEnabled=false;
+  for(let y=0;y<gh;y++)for(let x=0;x<gw;x++){
+    if(pixels[y][x]){cx.fillStyle=pixels[y][x];cx.fillRect(x*scale,y*scale,scale,scale)}
+  }
+  const a=document.createElement('a');a.download='pixel-art-4x.png';a.href=c.toDataURL('image/png');a.click();
+}
+function clearCanvas(){saveState();pixels=Array.from({length:gh},()=>Array(gw).fill(null));render()}
+// Build palette
+const palEl=document.getElementById('palette');
+PALETTE.forEach(c=>{
+  const s=document.createElement('div');s.className='swatch'+(c===color?' active':'');
+  s.style.background=c;s.dataset.color=c;
+  s.onclick=()=>setColor(c);
+  palEl.appendChild(s);
+});
+initCanvas();
+</script>
+</body>
+</html>

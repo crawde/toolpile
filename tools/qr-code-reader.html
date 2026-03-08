@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Reader — Scan QR Codes from Image or Camera | ToolPile</title>
+<meta name="description" content="Free online QR code reader. Scan QR codes from uploaded images or your device camera. Instant results with no app needed.">
+<meta name="keywords" content="qr code reader, qr code scanner, scan qr code, qr code decoder, read qr code online, toolpile">
+<meta property="og:title" content="QR Code Reader — Free Online QR Scanner">
+<meta property="og:description" content="Scan QR codes from images or camera. Free, instant, no app required.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/qr-code-reader">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem}
+.tab{padding:.5rem 1rem;border-radius:8px;background:#0f172a;border:1px solid #475569;color:#94a3b8;cursor:pointer;font-size:.85rem;font-weight:600}
+.tab.active{background:#6366f1;color:#fff;border-color:#6366f1}
+.drop-zone{border:2px dashed #475569;border-radius:12px;padding:3rem;text-align:center;cursor:pointer;transition:border-color .2s;color:#94a3b8}
+.drop-zone:hover,.drop-zone.over{border-color:#818cf8;color:#818cf8}
+.drop-zone p{margin:.5rem 0}
+.drop-zone .icon{font-size:3rem;margin-bottom:.5rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button.outline{background:transparent;border:1px solid #475569;color:#94a3b8}
+button.outline:hover{border-color:#818cf8;color:#818cf8}
+button.danger{background:#dc2626}
+#camera-view{width:100%;border-radius:8px;display:none;background:#000}
+.result-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;margin-top:1rem;display:none}
+.result-box .label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.result-box .value{font-size:1rem;color:#38bdf8;word-break:break-all;font-family:'SF Mono',monospace}
+.result-box a{color:#818cf8}
+.btn-row{display:flex;gap:.5rem;margin-top:.75rem}
+canvas{display:none}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>QR Code Reader</h1>
+<p class="subtitle">Scan QR codes from an uploaded image or your device camera. Instant results, no app needed.</p>
+<div class="tool-area">
+<div class="tabs">
+<div class="tab active" onclick="switchTab('upload')">📷 Upload Image</div>
+<div class="tab" onclick="switchTab('camera')">🎥 Camera</div>
+</div>
+<div id="upload-panel">
+<div class="drop-zone" id="dropzone" onclick="document.getElementById('fileIn').click()">
+<div class="icon">📱</div>
+<p><strong>Drop QR code image here</strong></p>
+<p style="font-size:.8rem">or click to browse — PNG, JPG, GIF, SVG</p>
+</div>
+<input type="file" id="fileIn" accept="image/*" style="display:none">
+</div>
+<div id="camera-panel" style="display:none">
+<video id="camera-view" autoplay playsinline></video>
+<div class="btn-row" style="margin-top:.75rem">
+<button id="cam-btn" onclick="toggleCamera()">Start Camera</button>
+<button class="outline" onclick="captureFrame()">Capture Frame</button>
+</div>
+</div>
+<canvas id="canvas"></canvas>
+<div class="result-box" id="result">
+<div class="label">Decoded QR Content</div>
+<div class="value" id="qr-value"></div>
+<div class="btn-row">
+<button onclick="copyResult()">Copy</button>
+<button class="outline" id="open-btn" style="display:none" onclick="openLink()">Open Link</button>
+</div>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script>
+let stream=null,scanning=false;
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',i===(t==='upload'?0:1)));
+  document.getElementById('upload-panel').style.display=t==='upload'?'':'none';
+  document.getElementById('camera-panel').style.display=t==='camera'?'':'none';
+  if(t==='upload'&&stream){stopCamera()}
+}
+// Drag drop
+const dz=document.getElementById('dropzone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])readImage(e.dataTransfer.files[0])});
+document.getElementById('fileIn').addEventListener('change',e=>{if(e.target.files[0])readImage(e.target.files[0])});
+function readImage(file){
+  const img=new Image();
+  img.onload=()=>{
+    canvas.width=img.width;canvas.height=img.height;
+    ctx.drawImage(img,0,0);
+    const data=ctx.getImageData(0,0,canvas.width,canvas.height);
+    const code=jsQR(data.data,data.width,data.height);
+    showResult(code);
+  };
+  img.src=URL.createObjectURL(file);
+}
+function showResult(code){
+  const box=document.getElementById('result');
+  const val=document.getElementById('qr-value');
+  const openBtn=document.getElementById('open-btn');
+  if(code){
+    box.style.display='block';
+    val.textContent=code.data;
+    try{new URL(code.data);openBtn.style.display='';} catch{openBtn.style.display='none';}
+  } else {
+    box.style.display='block';
+    val.textContent='No QR code detected. Try a clearer image.';
+    val.style.color='#f87171';
+    openBtn.style.display='none';
+    setTimeout(()=>{val.style.color='#38bdf8'},2000);
+  }
+}
+async function toggleCamera(){
+  const btn=document.getElementById('cam-btn');
+  const video=document.getElementById('camera-view');
+  if(stream){stopCamera();return}
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    video.srcObject=stream;video.style.display='block';
+    btn.textContent='Stop Camera';btn.classList.add('danger');
+    scanning=true;scanLoop();
+  }catch(e){alert('Cannot access camera: '+e.message)}
+}
+function stopCamera(){
+  const video=document.getElementById('camera-view');
+  const btn=document.getElementById('cam-btn');
+  scanning=false;
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+  video.style.display='none';
+  btn.textContent='Start Camera';btn.classList.remove('danger');
+}
+function scanLoop(){
+  if(!scanning)return;
+  const video=document.getElementById('camera-view');
+  if(video.readyState===video.HAVE_ENOUGH_DATA){
+    canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+    ctx.drawImage(video,0,0);
+    const data=ctx.getImageData(0,0,canvas.width,canvas.height);
+    const code=jsQR(data.data,data.width,data.height);
+    if(code){showResult(code);stopCamera();return}
+  }
+  requestAnimationFrame(scanLoop);
+}
+function captureFrame(){
+  const video=document.getElementById('camera-view');
+  if(video.readyState>=video.HAVE_ENOUGH_DATA){
+    canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+    ctx.drawImage(video,0,0);
+    const data=ctx.getImageData(0,0,canvas.width,canvas.height);
+    showResult(jsQR(data.data,data.width,data.height));
+  }
+}
+function copyResult(){
+  const t=document.getElementById('qr-value').textContent;
+  navigator.clipboard.writeText(t).then(()=>{event.target.textContent='Copied!';setTimeout(()=>event.target.textContent='Copy',1500)});
+}
+function openLink(){
+  const t=document.getElementById('qr-value').textContent;
+  try{const u=new URL(t);window.open(u.href,'_blank','noopener')}catch{}
+}
+</script>
+</body>
+</html>

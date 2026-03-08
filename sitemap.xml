@@ -126,4 +126,14 @@
   <url><loc>https://toolpile.tools/tools/color-wheel.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://toolpile.tools/tools/json-path-finder.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://toolpile.tools/tools/regex-explainer.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/readme-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/qr-code-reader.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/meme-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/chart-maker.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/speech-to-text.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/photo-filter.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/markdown-table-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/css-specificity-calculator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/screen-recorder.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/pixel-art-creator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

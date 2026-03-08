@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen Recorder — Record Your Screen Online Free | ToolPile</title>
+<meta name="description" content="Free online screen recorder. Record your screen, window, or tab with optional audio. Download as WebM video. No install or sign-up required.">
+<meta name="keywords" content="screen recorder, screen recording, record screen online, screen capture, record browser tab, screen recorder no install, toolpile">
+<meta property="og:title" content="Screen Recorder — Record Your Screen Free">
+<meta property="og:description" content="Record your screen, window, or browser tab with audio. Download as WebM. Free online tool.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/screen-recorder">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button.outline{background:transparent;border:1px solid #475569;color:#94a3b8}
+button.outline:hover{border-color:#818cf8;color:#818cf8}
+button.danger{background:#dc2626}
+button.danger:hover{background:#b91c1c}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.chk{display:flex;align-items:center;gap:.5rem;margin:.5rem 0;font-size:.9rem;color:#94a3b8}
+.chk input{width:auto}
+.recorder-area{text-align:center;padding:2rem}
+.rec-btn{width:100px;height:100px;border-radius:50%;border:none;font-size:2.5rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center}
+.rec-btn.ready{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff}
+.rec-btn.recording{background:#dc2626;color:#fff;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.5)}50%{box-shadow:0 0 0 20px rgba(220,38,38,0)}}
+.rec-btn.paused{background:#f59e0b;color:#fff}
+.status{margin-top:.75rem;font-size:1rem;font-weight:600}
+.status.idle{color:#94a3b8}
+.status.rec{color:#f87171}
+.status.paused{color:#f59e0b}
+.timer{font-size:2rem;font-weight:800;font-family:'SF Mono',monospace;color:#38bdf8;margin-top:.5rem}
+.controls{display:flex;gap:.5rem;justify-content:center;margin-top:1rem}
+.preview-area{margin-top:1.5rem;display:none}
+.preview-area video{width:100%;border-radius:8px;border:1px solid #334155;background:#000}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;justify-content:center}
+.note{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;margin-top:1rem;font-size:.8rem;color:#94a3b8;line-height:1.5}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Screen Recorder</h1>
+<p class="subtitle">Record your screen, window, or browser tab with optional audio. Download as WebM video.</p>
+<div class="tool-area">
+<div class="grid2">
+<div><label>Video Quality</label>
+<select id="quality">
+<option value="high">High (1080p)</option>
+<option value="medium" selected>Medium (720p)</option>
+<option value="low">Low (480p)</option>
+</select></div>
+<div><label>Frame Rate</label>
+<select id="fps">
+<option value="60">60 FPS</option>
+<option value="30" selected>30 FPS</option>
+<option value="15">15 FPS</option>
+</select></div>
+</div>
+<label class="chk"><input type="checkbox" id="audioSystem"> Include system audio (tab audio)</label>
+<label class="chk"><input type="checkbox" id="audioMic"> Include microphone audio</label>
+<div class="recorder-area">
+<button class="rec-btn ready" id="recBtn" onclick="toggleRec()">⏺</button>
+<div class="status idle" id="status">Click to start recording</div>
+<div class="timer" id="timer">0:00</div>
+<div class="controls" id="controls" style="display:none">
+<button class="outline" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+<button class="danger" onclick="stopRec()">⏹ Stop</button>
+</div>
+</div>
+<div class="preview-area" id="preview">
+<video id="playback" controls></video>
+<div class="btn-row">
+<button onclick="downloadRec()">Download WebM</button>
+<button class="outline" onclick="newRecording()">New Recording</button>
+</div>
+</div>
+<div class="note">
+<strong>Note:</strong> Uses the Screen Capture API built into your browser. Works in Chrome, Edge, and Firefox. System audio capture is only available when recording a browser tab in Chrome/Edge.
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+let mediaRecorder=null,chunks=[],stream=null,startTime=0,elapsed=0,timerInterval=null,isPaused=false;
+async function toggleRec(){
+  if(mediaRecorder&&mediaRecorder.state!=='inactive'){stopRec();return}
+  const fps=parseInt(document.getElementById('fps').value);
+  const wantSysAudio=document.getElementById('audioSystem').checked;
+  const wantMic=document.getElementById('audioMic').checked;
+  try{
+    const displayOpts={video:{frameRate:fps},audio:wantSysAudio};
+    stream=await navigator.mediaDevices.getDisplayMedia(displayOpts);
+    // Add mic if requested
+    if(wantMic){
+      try{
+        const micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+        const audioCtx=new AudioContext();
+        const dest=audioCtx.createMediaStreamDestination();
+        // Mix screen audio + mic
+        if(stream.getAudioTracks().length) audioCtx.createMediaStreamSource(stream).connect(dest);
+        audioCtx.createMediaStreamSource(micStream).connect(dest);
+        const combined=new MediaStream([...stream.getVideoTracks(),...dest.stream.getAudioTracks()]);
+        stream=combined;
+      }catch(e){console.warn('Mic not available',e)}
+    }
+    chunks=[];
+    const mimeType=MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm';
+    mediaRecorder=new MediaRecorder(stream,{mimeType});
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data)};
+    mediaRecorder.onstop=()=>{
+      const blob=new Blob(chunks,{type:'video/webm'});
+      window._recBlob=blob;
+      const url=URL.createObjectURL(blob);
+      document.getElementById('playback').src=url;
+      document.getElementById('preview').style.display='block';
+      setStatus('idle','Recording saved');
+      document.getElementById('recBtn').className='rec-btn ready';
+      document.getElementById('recBtn').textContent='⏺';
+      document.getElementById('controls').style.display='none';
+      clearInterval(timerInterval);
+    };
+    // Handle user stopping share
+    stream.getVideoTracks()[0].onended=()=>{if(mediaRecorder.state!=='inactive')stopRec()};
+    mediaRecorder.start(1000);
+    startTime=Date.now();elapsed=0;isPaused=false;
+    timerInterval=setInterval(updateTimer,1000);
+    document.getElementById('recBtn').className='rec-btn recording';
+    document.getElementById('recBtn').textContent='⏹';
+    document.getElementById('controls').style.display='flex';
+    document.getElementById('preview').style.display='none';
+    setStatus('rec','Recording...');
+  }catch(e){
+    setStatus('idle','Recording cancelled or not supported');
+  }
+}
+function stopRec(){
+  if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();
+  if(stream)stream.getTracks().forEach(t=>t.stop());
+}
+function togglePause(){
+  if(!mediaRecorder)return;
+  if(isPaused){
+    mediaRecorder.resume();isPaused=false;
+    startTime=Date.now();
+    timerInterval=setInterval(updateTimer,1000);
+    document.getElementById('recBtn').className='rec-btn recording';
+    document.getElementById('pauseBtn').textContent='⏸ Pause';
+    setStatus('rec','Recording...');
+  }else{
+    mediaRecorder.pause();isPaused=true;
+    elapsed+=(Date.now()-startTime)/1000;
+    clearInterval(timerInterval);
+    document.getElementById('recBtn').className='rec-btn paused';
+    document.getElementById('pauseBtn').textContent='▶ Resume';
+    setStatus('paused','Paused');
+  }
+}
+function updateTimer(){
+  const total=elapsed+(Date.now()-startTime)/1000;
+  const m=Math.floor(total/60);
+  const s=Math.floor(total%60);
+  document.getElementById('timer').textContent=`${m}:${String(s).padStart(2,'0')}`;
+}
+function setStatus(cls,text){
+  const el=document.getElementById('status');
+  el.className='status '+cls;el.textContent=text;
+}
+function downloadRec(){
+  if(!window._recBlob)return;
+  const a=document.createElement('a');
+  a.download='screen-recording.webm';
+  a.href=URL.createObjectURL(window._recBlob);
+  a.click();
+}
+function newRecording(){
+  document.getElementById('preview').style.display='none';
+  document.getElementById('timer').textContent='0:00';
+  setStatus('idle','Click to start recording');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Table Generator — Create Tables in Markdown | ToolPile</title>
+<meta name="description" content="Free Markdown table generator. Create, edit, and format Markdown tables visually. Copy the markdown output instantly. Supports alignment and formatting.">
+<meta name="keywords" content="markdown table generator, markdown table maker, create markdown table, markdown table format, github table, toolpile">
+<meta property="og:title" content="Markdown Table Generator — Create Tables Fast">
+<meta property="og:description" content="Create Markdown tables visually. Edit cells, set alignment, copy output instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/markdown-table-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,select{background:#0f172a;border:1px solid #475569;border-radius:6px;padding:.5rem;color:#e2e8f0;font-size:.85rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button.outline{background:transparent;border:1px solid #475569;color:#94a3b8}
+button.outline:hover{border-color:#818cf8;color:#818cf8}
+button.sm{padding:.35rem .7rem;font-size:.78rem}
+button.danger{background:#dc2626;color:#fff}
+.grid4{display:grid;grid-template-columns:repeat(4,auto);gap:.5rem;align-items:center}
+.table-wrap{overflow-x:auto;margin-top:1rem}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #475569;padding:0}
+th input,td input{border:none;border-radius:0;width:100%;padding:.5rem .6rem;background:transparent}
+th input{font-weight:600;color:#38bdf8}
+th{background:#0f172a}
+.align-row{display:flex;gap:2px;padding:.2rem .4rem;background:#0f172a;border-top:1px solid #475569}
+.align-btn{padding:2px 6px;font-size:.7rem;border-radius:4px;cursor:pointer;background:transparent;border:1px solid #475569;color:#64748b}
+.align-btn.active{background:#6366f1;color:#fff;border-color:#6366f1}
+.output{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:1rem;margin-top:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.82rem;white-space:pre;overflow-x:auto;color:#38bdf8;line-height:1.5}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.section{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #334155}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-bottom:.75rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Markdown Table Generator</h1>
+<p class="subtitle">Create and edit Markdown tables visually. Set column alignment, add/remove rows and columns, and copy the output.</p>
+<div class="tool-area">
+<div class="grid4">
+<div><label>Rows</label><input type="number" id="rowCount" value="3" min="1" max="50" style="width:70px"></div>
+<div><label>Columns</label><input type="number" id="colCount" value="3" min="1" max="20" style="width:70px"></div>
+<div style="align-self:end"><button onclick="resize()">Apply Size</button></div>
+<div style="align-self:end"><button class="outline" onclick="addFromCSV()">Paste CSV</button></div>
+</div>
+<div class="table-wrap">
+<table id="editTable"></table>
+</div>
+<div class="btn-row" style="margin-top:.75rem">
+<button class="sm outline" onclick="addRow()">+ Row</button>
+<button class="sm outline" onclick="addCol()">+ Column</button>
+<button class="sm danger" onclick="removeRow()">- Row</button>
+<button class="sm danger" onclick="removeCol()">- Column</button>
+</div>
+</div>
+<div class="section">
+<div class="section-title">Markdown Output</div>
+<div class="output" id="output"></div>
+<div class="btn-row">
+<button onclick="copyMD()">Copy Markdown</button>
+<button class="outline" onclick="copyHTML()">Copy HTML</button>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+let cols=3,rows=3,headers=[],data=[],aligns=[];
+function init(){
+  headers=['Header 1','Header 2','Header 3'];
+  aligns=['left','left','left'];
+  data=[['Cell','Cell','Cell'],['Cell','Cell','Cell'],['Cell','Cell','Cell']];
+  renderTable();
+}
+function renderTable(){
+  const t=document.getElementById('editTable');
+  let html='<thead><tr>';
+  headers.forEach((h,ci)=>{
+    html+=`<th><input value="${esc(h)}" oninput="headers[${ci}]=this.value;genMD()">`;
+    html+=`<div class="align-row">`;
+    ['left','center','right'].forEach(a=>{
+      html+=`<span class="align-btn${aligns[ci]===a?' active':''}" onclick="aligns[${ci}]='${a}';renderTable()">${a==='left'?'⬅':a==='center'?'↔':'➡'}</span>`;
+    });
+    html+=`</div></th>`;
+  });
+  html+='</tr></thead><tbody>';
+  data.forEach((row,ri)=>{
+    html+='<tr>';
+    row.forEach((cell,ci)=>{
+      html+=`<td><input value="${esc(cell)}" oninput="data[${ri}][${ci}]=this.value;genMD()"></td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody>';
+  t.innerHTML=html;
+  genMD();
+}
+function esc(s){return s.replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function genMD(){
+  const widths=headers.map((h,ci)=>{
+    let max=h.length;
+    data.forEach(r=>{if(r[ci]&&r[ci].length>max)max=r[ci].length});
+    return Math.max(max,3);
+  });
+  let md='| '+headers.map((h,i)=>h.padEnd(widths[i])).join(' | ')+' |\n';
+  md+='| '+widths.map((w,i)=>{
+    const a=aligns[i];
+    if(a==='center') return ':'+'-'.repeat(w-2)+':';
+    if(a==='right') return '-'.repeat(w-1)+':';
+    return ':'+'-'.repeat(w-1);
+  }).join(' | ')+' |\n';
+  data.forEach(row=>{
+    md+='| '+row.map((c,i)=>(c||'').padEnd(widths[i])).join(' | ')+' |\n';
+  });
+  document.getElementById('output').textContent=md;
+  window._md=md;
+}
+function resize(){
+  const nr=Math.max(1,parseInt(document.getElementById('rowCount').value)||3);
+  const nc=Math.max(1,parseInt(document.getElementById('colCount').value)||3);
+  while(headers.length<nc){headers.push('Header '+(headers.length+1));aligns.push('left')}
+  headers.length=nc;aligns.length=nc;
+  while(data.length<nr){data.push(new Array(nc).fill('Cell'))}
+  data.length=nr;
+  data.forEach(r=>{while(r.length<nc)r.push('Cell');r.length=nc});
+  cols=nc;rows=nr;renderTable();
+}
+function addRow(){data.push(new Array(headers.length).fill(''));rows++;document.getElementById('rowCount').value=rows;renderTable()}
+function addCol(){headers.push('Header '+(headers.length+1));aligns.push('left');data.forEach(r=>r.push(''));cols++;document.getElementById('colCount').value=cols;renderTable()}
+function removeRow(){if(data.length>1){data.pop();rows--;document.getElementById('rowCount').value=rows;renderTable()}}
+function removeCol(){if(headers.length>1){headers.pop();aligns.pop();data.forEach(r=>r.pop());cols--;document.getElementById('colCount').value=cols;renderTable()}}
+function copyMD(){navigator.clipboard.writeText(window._md).then(()=>{event.target.textContent='Copied!';setTimeout(()=>event.target.textContent='Copy Markdown',1500)})}
+function copyHTML(){
+  let html='<table>\n<thead>\n<tr>\n';
+  headers.forEach(h=>{html+=`  <th>${h}</th>\n`});
+  html+='</tr>\n</thead>\n<tbody>\n';
+  data.forEach(row=>{html+='<tr>\n';row.forEach((c,i)=>{
+    const a=aligns[i]!=='left'?` style="text-align:${aligns[i]}"`:'';
+    html+=`  <td${a}>${c}</td>\n`;
+  });html+='</tr>\n'});
+  html+='</tbody>\n</table>';
+  navigator.clipboard.writeText(html).then(()=>{event.target.textContent='Copied!';setTimeout(()=>event.target.textContent='Copy HTML',1500)});
+}
+function addFromCSV(){
+  const csv=prompt('Paste CSV data (comma-separated, one row per line):');
+  if(!csv)return;
+  const lines=csv.trim().split('\n').map(l=>l.split(',').map(c=>c.trim()));
+  if(lines.length){headers=lines[0];aligns=headers.map(()=>'left');data=lines.slice(1);if(!data.length)data=[headers.map(()=>'')];
+  cols=headers.length;rows=data.length;document.getElementById('rowCount').value=rows;document.getElementById('colCount').value=cols;renderTable()}
+}
+init();
+</script>
+</body>
+</html>

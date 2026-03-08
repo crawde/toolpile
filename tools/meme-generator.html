@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meme Generator — Create Custom Memes Online Free | ToolPile</title>
+<meta name="description" content="Free online meme generator. Upload your image, add top and bottom text, customize fonts and colors. Download memes instantly.">
+<meta name="keywords" content="meme generator, meme maker, create memes, meme creator, custom meme, funny meme maker, toolpile">
+<meta property="og:title" content="Meme Generator — Create Custom Memes Free">
+<meta property="og:description" content="Upload images, add text, customize fonts. Create and download memes instantly.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/meme-generator">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+input,select{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem;color:#e2e8f0;font-size:.9rem;font-family:inherit}
+input:focus{outline:none;border-color:#818cf8}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.3rem;margin-top:.75rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+button.outline{background:transparent;border:1px solid #475569;color:#94a3b8}
+.drop-zone{border:2px dashed #475569;border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s;color:#94a3b8}
+.drop-zone:hover,.drop-zone.over{border-color:#818cf8;color:#818cf8}
+.drop-zone .icon{font-size:2.5rem;margin-bottom:.5rem}
+.canvas-wrap{text-align:center;margin-top:1rem}
+#memeCanvas{max-width:100%;border-radius:8px;border:1px solid #334155;background:#000}
+.section{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #334155}
+.section-title{font-size:1rem;font-weight:700;color:#818cf8;margin-bottom:.75rem}
+.color-input{display:flex;align-items:center;gap:.5rem}
+.color-input input[type=color]{width:40px;height:32px;border:none;background:none;cursor:pointer;padding:0}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.range-row{display:flex;align-items:center;gap:.5rem}
+.range-row input[type=range]{flex:1;accent-color:#818cf8}
+.range-row span{font-size:.8rem;color:#94a3b8;min-width:2rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Meme Generator</h1>
+<p class="subtitle">Upload an image, add top & bottom text, customize fonts and download your meme.</p>
+<div class="tool-area">
+<div class="drop-zone" id="dropzone" onclick="document.getElementById('fileIn').click()">
+<div class="icon">🖼️</div>
+<p><strong>Drop your image here</strong> or click to browse</p>
+</div>
+<input type="file" id="fileIn" accept="image/*" style="display:none">
+<div class="grid2" style="margin-top:1rem">
+<div><label>Top Text</label><input id="topText" placeholder="TOP TEXT" oninput="render()"></div>
+<div><label>Bottom Text</label><input id="bottomText" placeholder="BOTTOM TEXT" oninput="render()"></div>
+</div>
+<div class="section">
+<div class="section-title">Customize</div>
+<div class="grid3">
+<div><label>Font</label>
+<select id="font" onchange="render()">
+<option value="Impact">Impact</option>
+<option value="Arial Black">Arial Black</option>
+<option value="Comic Sans MS">Comic Sans MS</option>
+<option value="Helvetica">Helvetica</option>
+<option value="Courier New">Courier New</option>
+</select></div>
+<div><label>Font Size</label>
+<div class="range-row"><input type="range" id="fontSize" min="20" max="120" value="48" oninput="render();this.nextElementSibling.textContent=this.value"><span>48</span></div>
+</div>
+<div><label>Stroke Width</label>
+<div class="range-row"><input type="range" id="strokeW" min="0" max="10" value="3" oninput="render();this.nextElementSibling.textContent=this.value"><span>3</span></div>
+</div>
+</div>
+<div class="grid3" style="margin-top:.5rem">
+<div><label>Text Color</label>
+<div class="color-input"><input type="color" id="textColor" value="#ffffff" oninput="render()"><span style="font-size:.85rem">#ffffff</span></div></div>
+<div><label>Stroke Color</label>
+<div class="color-input"><input type="color" id="strokeColor" value="#000000" oninput="render()"><span style="font-size:.85rem">#000000</span></div></div>
+<div><label>Text Align</label>
+<select id="align" onchange="render()"><option value="center">Center</option><option value="left">Left</option><option value="right">Right</option></select></div>
+</div>
+</div>
+<div class="canvas-wrap"><canvas id="memeCanvas" width="600" height="400"></canvas></div>
+<div class="btn-row">
+<button onclick="download()">Download Meme</button>
+<button class="outline" onclick="reset()">Reset</button>
+</div>
+</div>
+</div>
+<footer><a href="/">← Back to ToolPile</a></footer>
+<script>
+let img=null;
+const canvas=document.getElementById('memeCanvas'),ctx=canvas.getContext('2d');
+const dz=document.getElementById('dropzone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])loadImage(e.dataTransfer.files[0])});
+document.getElementById('fileIn').addEventListener('change',e=>{if(e.target.files[0])loadImage(e.target.files[0])});
+function loadImage(file){
+  const r=new FileReader();
+  r.onload=e=>{
+    img=new Image();
+    img.onload=()=>{canvas.width=img.width;canvas.height=img.height;render()};
+    img.src=e.target.result;
+    dz.style.display='none';
+  };
+  r.readAsDataURL(file);
+}
+function render(){
+  if(!img)return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img,0,0);
+  const top=document.getElementById('topText').value.toUpperCase();
+  const bot=document.getElementById('bottomText').value.toUpperCase();
+  const size=parseInt(document.getElementById('fontSize').value);
+  const font=document.getElementById('font').value;
+  const fill=document.getElementById('textColor').value;
+  const stroke=document.getElementById('strokeColor').value;
+  const sw=parseInt(document.getElementById('strokeW').value);
+  const align=document.getElementById('align').value;
+  ctx.font=`bold ${size}px ${font}`;
+  ctx.fillStyle=fill;
+  ctx.strokeStyle=stroke;
+  ctx.lineWidth=sw;
+  ctx.textAlign=align;
+  ctx.lineJoin='round';
+  const x=align==='left'?20:align==='right'?canvas.width-20:canvas.width/2;
+  if(top){
+    const y=size+20;
+    if(sw>0)ctx.strokeText(top,x,y);
+    ctx.fillText(top,x,y);
+  }
+  if(bot){
+    const y=canvas.height-20;
+    if(sw>0)ctx.strokeText(bot,x,y);
+    ctx.fillText(bot,x,y);
+  }
+}
+function download(){
+  if(!img){alert('Upload an image first');return}
+  const a=document.createElement('a');
+  a.download='meme.png';
+  a.href=canvas.toDataURL('image/png');
+  a.click();
+}
+function reset(){
+  img=null;ctx.clearRect(0,0,canvas.width,canvas.height);
+  canvas.width=600;canvas.height=400;
+  document.getElementById('topText').value='';
+  document.getElementById('bottomText').value='';
+  dz.style.display='';
+  document.getElementById('fileIn').value='';
+}
+// Init with placeholder
+ctx.fillStyle='#1e293b';ctx.fillRect(0,0,600,400);
+ctx.font='bold 24px -apple-system,sans-serif';ctx.fillStyle='#475569';ctx.textAlign='center';
+ctx.fillText('Upload an image to get started',300,200);
+</script>
+</body>
+</html>
