@@ -106,4 +106,14 @@
   <url><loc>https://toolpile.tools/tools/crontab-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://toolpile.tools/tools/image-crop-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://toolpile.tools/tools/css-animation-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/css-text-shadow-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/css-filter-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/emoji-picker.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/border-radius-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/placeholder-image-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/html-table-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/yaml-validator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/xml-formatter.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/binary-to-hex.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://toolpile.tools/tools/htpasswd-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

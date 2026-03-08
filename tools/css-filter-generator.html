@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Filter Generator — Free Visual Filter Builder | ToolPile</title>
+<meta name="description" content="Build CSS filter effects visually with sliders for blur, brightness, contrast, grayscale, hue-rotate, invert, opacity, saturate, and sepia. Live preview and copy CSS.">
+<meta name="keywords" content="css filter generator, css filter effects, blur brightness contrast, image filter css, visual filter builder, toolpile">
+<meta property="og:title" content="CSS Filter Generator — Free Visual Filter Builder">
+<meta property="og:description" content="Build CSS filter effects visually. Adjust blur, brightness, contrast, and more with live preview.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/css-filter-generator.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TJEX75MR7M"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-TJEX75MR7M');
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.25rem;margin-top:.75rem}
+input[type="range"]{width:100%;accent-color:#818cf8}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;font-size:.875rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-sm{background:#334155;font-size:.75rem;padding:.4rem .6rem}
+.preview-area{border-radius:12px;overflow:hidden;margin-bottom:1.5rem;min-height:250px;display:flex;align-items:center;justify-content:center}
+#previewSample{width:100%;height:250px;background:linear-gradient(135deg,#667eea 0%,#764ba2 25%,#f093fb 50%,#f5576c 75%,#fda085 100%);border-radius:12px;transition:filter .15s}
+.slider-row{display:flex;align-items:center;gap:.75rem}
+.slider-row>div{flex:1}
+.val{text-align:right;font-size:.75rem;color:#64748b;font-variant-numeric:tabular-nums;min-width:55px}
+.code-box{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;font-size:.8rem;color:#38bdf8;word-break:break-all;margin-top:1rem;cursor:pointer;position:relative}
+.code-box:hover{border-color:#818cf8}
+.actions{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:600px){h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CSS Filter Generator</h1>
+<p class="subtitle">Build CSS filter effects visually. Adjust sliders and see live results.</p>
+<div class="tool-area">
+<div class="preview-area"><div id="previewSample"></div></div>
+<div id="sliders"></div>
+<div class="actions">
+<button class="btn-sm" onclick="resetAll()">Reset All</button>
+<button class="btn-sm" onclick="applyPreset('vintage')">Vintage</button>
+<button class="btn-sm" onclick="applyPreset('dramatic')">Dramatic</button>
+<button class="btn-sm" onclick="applyPreset('muted')">Muted</button>
+<button class="btn-sm" onclick="applyPreset('warm')">Warm</button>
+<button class="btn-sm" onclick="applyPreset('cold')">Cold</button>
+</div>
+<div class="code-box" onclick="copyCode()">
+<span style="position:absolute;top:.5rem;right:.75rem;font-size:.7rem;color:#64748b">Click to copy</span>
+<span id="code"></span>
+</div>
+</div>
+<footer><a href="https://toolpile.tools">← Back to ToolPile</a> · Free tools at toolpile.tools</footer>
+</div>
+<script>
+const filters=[
+{name:'blur',min:0,max:20,step:0.1,def:0,unit:'px'},
+{name:'brightness',min:0,max:300,step:1,def:100,unit:'%'},
+{name:'contrast',min:0,max:300,step:1,def:100,unit:'%'},
+{name:'grayscale',min:0,max:100,step:1,def:0,unit:'%'},
+{name:'hue-rotate',min:0,max:360,step:1,def:0,unit:'deg'},
+{name:'invert',min:0,max:100,step:1,def:0,unit:'%'},
+{name:'opacity',min:0,max:100,step:1,def:100,unit:'%'},
+{name:'saturate',min:0,max:300,step:1,def:100,unit:'%'},
+{name:'sepia',min:0,max:100,step:1,def:0,unit:'%'}
+];
+let vals={};
+function init(){
+filters.forEach(f=>vals[f.name]=f.def);
+renderSliders();update();
+}
+function renderSliders(){
+document.getElementById('sliders').innerHTML=filters.map(f=>`
+<div class="slider-row">
+<div><label>${f.name}</label><input type="range" min="${f.min}" max="${f.max}" step="${f.step}" value="${vals[f.name]}" oninput="vals['${f.name}']=+this.value;update()"></div>
+<div class="val" id="val-${f.name}">${vals[f.name]}${f.unit}</div>
+</div>`).join('');
+}
+function update(){
+const parts=[];
+filters.forEach(f=>{
+document.getElementById('val-'+f.name).textContent=vals[f.name]+f.unit;
+if(vals[f.name]!==f.def) parts.push(f.name+'('+vals[f.name]+f.unit+')');
+});
+const css=parts.length?parts.join(' '):'none';
+document.getElementById('previewSample').style.filter=css;
+document.getElementById('code').textContent='filter: '+css+';';
+// sync slider values
+filters.forEach(f=>{
+const slider=document.querySelector('input[oninput*="\''+f.name+'\'"]');
+if(slider)slider.value=vals[f.name];
+});
+}
+function resetAll(){vals={};filters.forEach(f=>vals[f.name]=f.def);renderSliders();update();}
+function applyPreset(name){
+resetAll();
+if(name==='vintage'){vals.sepia=40;vals.contrast=120;vals.brightness=90;vals.saturate=80;}
+else if(name==='dramatic'){vals.contrast=150;vals.brightness=110;vals.saturate=130;}
+else if(name==='muted'){vals.saturate=50;vals.brightness=95;vals.contrast=90;}
+else if(name==='warm'){vals['hue-rotate']=15;vals.saturate=120;vals.brightness=105;}
+else if(name==='cold'){vals['hue-rotate']=200;vals.saturate=80;vals.brightness=95;}
+renderSliders();update();
+}
+function copyCode(){
+navigator.clipboard.writeText(document.getElementById('code').textContent);
+const el=document.getElementById('code');el.style.color='#22c55e';
+setTimeout(()=>el.style.color='#38bdf8',600);
+}
+init();
+</script>
+</body>
+</html>

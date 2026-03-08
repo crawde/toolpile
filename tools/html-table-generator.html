@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Table Generator — Visual Table Builder | ToolPile</title>
+<meta name="description" content="Build HTML tables visually. Set rows and columns, edit cell content inline, toggle header rows, add or remove rows and columns. Generate clean HTML code.">
+<meta name="keywords" content="html table generator, table builder, html table code, create html table, visual table editor, toolpile">
+<meta property="og:title" content="HTML Table Generator — Visual Table Builder">
+<meta property="og:description" content="Build HTML tables visually. Edit cells inline, toggle headers, generate clean HTML.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/html-table-generator.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TJEX75MR7M"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-TJEX75MR7M');
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.25rem;margin-top:.75rem}
+input[type="number"]{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.5rem .75rem;color:#e2e8f0;font-size:.9rem;width:80px}
+input[type="number"]:focus{outline:none;border-color:#818cf8}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;font-size:.875rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-sm{background:#334155;font-size:.75rem;padding:.4rem .6rem}
+.btn-danger{background:#ef4444}
+.controls{display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem}
+.controls>div{display:flex;flex-direction:column}
+.chk{display:flex;align-items:center;gap:.5rem}
+.chk input{accent-color:#818cf8}
+.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:8px;border:1px solid #334155}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #334155;padding:0}
+th{background:#0f172a}
+td{background:#1e293b}
+th input,td input{width:100%;background:transparent;border:none;padding:.6rem .75rem;color:#e2e8f0;font-size:.85rem;outline:none}
+th input{font-weight:600;color:#38bdf8}
+th input:focus,td input:focus{background:rgba(129,140,248,.08)}
+.row-actions{display:flex;gap:.35rem;justify-content:center;padding:.25rem}
+.code-area{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;font-size:.8rem;color:#38bdf8;white-space:pre-wrap;word-break:break-all;max-height:400px;overflow:auto;margin-top:1rem;position:relative}
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>HTML Table Generator</h1>
+<p class="subtitle">Build HTML tables visually. Edit cells, toggle headers, generate clean code.</p>
+<div class="tool-area">
+<div class="controls">
+<div><label>Rows</label><input type="number" id="rowCount" value="4" min="1" max="50"></div>
+<div><label>Columns</label><input type="number" id="colCount" value="4" min="1" max="20"></div>
+<button onclick="buildTable()">Build</button>
+<div class="chk"><input type="checkbox" id="hasHeader" checked onchange="generateCode()"><label for="hasHeader" style="margin:0;cursor:pointer">Header row</label></div>
+</div>
+<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+<button class="btn-sm" onclick="addRow()">+ Row</button>
+<button class="btn-sm" onclick="addCol()">+ Column</button>
+<button class="btn-sm btn-danger" onclick="removeLastRow()">− Row</button>
+<button class="btn-sm btn-danger" onclick="removeLastCol()">− Column</button>
+</div>
+<div class="table-wrap"><table id="editTable"></table></div>
+<div class="actions">
+<button onclick="copyCode()">Copy HTML</button>
+<button class="btn-sm" onclick="clearTable()">Clear All Cells</button>
+</div>
+<div class="code-area" id="codeOutput"></div>
+</div>
+<footer><a href="https://toolpile.tools">← Back to ToolPile</a> · Free tools at toolpile.tools</footer>
+</div>
+<script>
+let rows=4,cols=4;
+let data=[];
+function initData(r,c){
+data=[];
+for(let i=0;i<r;i++){
+const row=[];
+for(let j=0;j<c;j++){
+row.push(i===0?'Header '+(j+1):'Cell '+(i)+'-'+(j+1));
+}
+data.push(row);
+}
+}
+function buildTable(){
+rows=Math.max(1,Math.min(50,+document.getElementById('rowCount').value||4));
+cols=Math.max(1,Math.min(20,+document.getElementById('colCount').value||4));
+initData(rows,cols);
+renderTable();generateCode();
+}
+function renderTable(){
+const table=document.getElementById('editTable');
+table.innerHTML='';
+data.forEach((row,ri)=>{
+const tr=document.createElement('tr');
+row.forEach((cell,ci)=>{
+const isHeader=ri===0&&document.getElementById('hasHeader').checked;
+const td=document.createElement(isHeader?'th':'td');
+const inp=document.createElement('input');
+inp.type='text';inp.value=cell;
+inp.oninput=function(){data[ri][ci]=this.value;generateCode();};
+td.appendChild(inp);tr.appendChild(td);
+});
+table.appendChild(tr);
+});
+}
+function addRow(){
+const newRow=[];
+for(let j=0;j<(data[0]?data[0].length:cols);j++)newRow.push('');
+data.push(newRow);
+document.getElementById('rowCount').value=data.length;
+renderTable();generateCode();
+}
+function addCol(){
+data.forEach((row,i)=>row.push(i===0?'Header '+(row.length+1):''));
+document.getElementById('colCount').value=data[0].length;
+renderTable();generateCode();
+}
+function removeLastRow(){
+if(data.length<=1)return;
+data.pop();
+document.getElementById('rowCount').value=data.length;
+renderTable();generateCode();
+}
+function removeLastCol(){
+if(!data[0]||data[0].length<=1)return;
+data.forEach(row=>row.pop());
+document.getElementById('colCount').value=data[0].length;
+renderTable();generateCode();
+}
+function clearTable(){
+data.forEach((row,ri)=>row.forEach((_,ci)=>data[ri][ci]=''));
+renderTable();generateCode();
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function generateCode(){
+const hasHeader=document.getElementById('hasHeader').checked;
+let html='<table>\n';
+if(hasHeader&&data.length>0){
+html+='  <thead>\n    <tr>\n';
+data[0].forEach(c=>html+='      <th>'+esc(c)+'</th>\n');
+html+='    </tr>\n  </thead>\n';
+}
+html+='  <tbody>\n';
+const start=hasHeader?1:0;
+for(let i=start;i<data.length;i++){
+html+='    <tr>\n';
+data[i].forEach(c=>html+='      <td>'+esc(c)+'</td>\n');
+html+='    </tr>\n';
+}
+html+='  </tbody>\n</table>';
+document.getElementById('codeOutput').textContent=html;
+}
+function copyCode(){
+navigator.clipboard.writeText(document.getElementById('codeOutput').textContent);
+const el=document.getElementById('codeOutput');
+el.style.borderColor='#22c55e';
+setTimeout(()=>el.style.borderColor='#475569',600);
+}
+buildTable();
+</script>
+</body>
+</html>

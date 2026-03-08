@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placeholder Image Generator — Free Online Tool | ToolPile</title>
+<meta name="description" content="Generate custom placeholder images with adjustable width, height, background color, text color, and custom text. Download as PNG instantly using Canvas API.">
+<meta name="keywords" content="placeholder image generator, dummy image, placeholder png, custom placeholder, image generator, toolpile">
+<meta property="og:title" content="Placeholder Image Generator — Free Online Tool">
+<meta property="og:description" content="Generate custom placeholder images instantly. Set dimensions, colors, and text. Download PNG.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/placeholder-image-generator.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TJEX75MR7M"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-TJEX75MR7M');
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.25rem;margin-top:.75rem}
+input[type="text"],input[type="number"]{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem .75rem;color:#e2e8f0;font-size:.9rem}
+input[type="text"]:focus,input[type="number"]:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+input[type="color"]{width:50px;height:36px;border:none;border-radius:6px;cursor:pointer;background:none}
+select{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.6rem .75rem;color:#e2e8f0;font-size:.9rem;width:100%}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-sm{background:#334155;font-size:.75rem;padding:.4rem .6rem}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.preview-wrap{display:flex;align-items:center;justify-content:center;margin:1.5rem 0;background:#0f172a;border-radius:12px;border:1px solid #334155;padding:1.5rem;overflow:auto}
+.preview-wrap canvas{max-width:100%;border-radius:4px}
+.actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+.presets{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.presets button{background:#334155;font-size:.7rem;padding:.35rem .6rem;margin:0}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:600px){.controls{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Placeholder Image Generator</h1>
+<p class="subtitle">Generate placeholder images with custom dimensions, colors, and text. Download as PNG.</p>
+<div class="tool-area">
+<div class="controls">
+<div><label>Width (px)</label><input type="number" id="imgW" value="800" min="10" max="4000" oninput="generate()"></div>
+<div><label>Height (px)</label><input type="number" id="imgH" value="400" min="10" max="4000" oninput="generate()"></div>
+<div><label>Background Color</label><div style="display:flex;gap:.5rem;align-items:center"><input type="color" id="bgColor" value="#334155" oninput="generate()"><span id="bgHex" style="font-size:.8rem;color:#64748b">#334155</span></div></div>
+<div><label>Text Color</label><div style="display:flex;gap:.5rem;align-items:center"><input type="color" id="txtColor" value="#94a3b8" oninput="generate()"><span id="txtHex" style="font-size:.8rem;color:#64748b">#94a3b8</span></div></div>
+<div><label>Text (leave empty for dimensions)</label><input type="text" id="imgText" placeholder="e.g. Logo Here" oninput="generate()"></div>
+<div><label>Font Size (auto if 0)</label><input type="number" id="fontSize" value="0" min="0" max="200" oninput="generate()"></div>
+</div>
+<div class="presets">
+<button onclick="setPreset(1200,630)">OG Image</button>
+<button onclick="setPreset(1080,1080)">Instagram</button>
+<button onclick="setPreset(1920,1080)">1080p</button>
+<button onclick="setPreset(800,600)">4:3</button>
+<button onclick="setPreset(300,250)">Ad Banner</button>
+<button onclick="setPreset(150,150)">Avatar</button>
+<button onclick="setPreset(728,90)">Leaderboard</button>
+</div>
+<div class="preview-wrap"><canvas id="canvas"></canvas></div>
+<div class="actions">
+<button onclick="download()">⬇ Download PNG</button>
+<button class="btn-sm" onclick="copyDataURL()">Copy Data URL</button>
+</div>
+</div>
+<footer><a href="https://toolpile.tools">← Back to ToolPile</a> · Free tools at toolpile.tools</footer>
+</div>
+<script>
+function generate(){
+const w=Math.max(10,Math.min(4000,+document.getElementById('imgW').value||800));
+const h=Math.max(10,Math.min(4000,+document.getElementById('imgH').value||400));
+const bg=document.getElementById('bgColor').value;
+const tc=document.getElementById('txtColor').value;
+const text=document.getElementById('imgText').value||w+'×'+h;
+const fsInput=+document.getElementById('fontSize').value;
+document.getElementById('bgHex').textContent=bg;
+document.getElementById('txtHex').textContent=tc;
+const canvas=document.getElementById('canvas');
+canvas.width=w;canvas.height=h;
+const ctx=canvas.getContext('2d');
+ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+// Draw crosshatch pattern
+ctx.strokeStyle=tc;ctx.globalAlpha=0.08;ctx.lineWidth=1;
+for(let i=-Math.max(w,h);i<Math.max(w,h)*2;i+=30){
+ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i+h,h);ctx.stroke();
+}
+ctx.globalAlpha=1;
+// Draw border
+ctx.strokeStyle=tc;ctx.globalAlpha=0.2;ctx.lineWidth=2;
+ctx.strokeRect(1,1,w-2,h-2);ctx.globalAlpha=1;
+// Draw text
+const fs=fsInput>0?fsInput:Math.max(14,Math.min(w/8,h/4,72));
+ctx.font='bold '+fs+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';
+ctx.fillStyle=tc;ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.fillText(text,w/2,h/2,w-20);
+}
+function download(){
+const canvas=document.getElementById('canvas');
+const a=document.createElement('a');
+a.download='placeholder-'+canvas.width+'x'+canvas.height+'.png';
+a.href=canvas.toDataURL('image/png');a.click();
+}
+function copyDataURL(){
+const url=document.getElementById('canvas').toDataURL('image/png');
+navigator.clipboard.writeText(url);
+}
+function setPreset(w,h){
+document.getElementById('imgW').value=w;
+document.getElementById('imgH').value=h;
+generate();
+}
+generate();
+</script>
+</body>
+</html>

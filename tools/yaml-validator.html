@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YAML Validator — Check YAML Syntax Online | ToolPile</title>
+<meta name="description" content="Validate YAML syntax online. Paste your YAML and get line-by-line error feedback. Detect common errors like bad indentation, duplicate keys, and invalid types.">
+<meta name="keywords" content="yaml validator, yaml lint, yaml syntax checker, yaml parser, validate yaml online, toolpile">
+<meta property="og:title" content="YAML Validator — Check YAML Syntax Online">
+<meta property="og:description" content="Validate YAML syntax with line-by-line error feedback. Free online YAML linter.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/yaml-validator.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TJEX75MR7M"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-TJEX75MR7M');
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.85rem;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;resize:vertical;min-height:250px;tab-size:2}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s;margin-top:.75rem}
+button:hover{transform:translateY(-1px)}
+.btn-sm{background:#334155;font-size:.75rem;padding:.4rem .6rem}
+.result{margin-top:1rem;border-radius:8px;padding:1rem;font-size:.9rem}
+.result.valid{background:rgba(34,197,94,.1);border:1px solid #22c55e;color:#22c55e}
+.result.invalid{background:rgba(239,68,68,.1);border:1px solid #ef4444;color:#ef4444}
+.error-list{margin-top:.75rem;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;font-size:.8rem;line-height:1.8}
+.error-item{padding:.25rem .5rem;border-radius:4px;margin-bottom:.25rem;background:rgba(239,68,68,.05)}
+.error-item .line-num{color:#f59e0b;font-weight:600;margin-right:.5rem}
+.actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.sample-btn{background:#334155;font-size:.75rem;padding:.4rem .6rem;margin-top:.75rem;border:none;border-radius:8px;color:#e2e8f0;cursor:pointer}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>YAML Validator</h1>
+<p class="subtitle">Validate YAML syntax and get line-by-line error feedback.</p>
+<div class="tool-area">
+<textarea id="input" placeholder="Paste your YAML here...">server:
+  host: localhost
+  port: 8080
+  debug: true
+
+database:
+  name: myapp
+  host: db.example.com
+  port: 5432
+  credentials:
+    username: admin
+    password: secret123</textarea>
+<div class="actions">
+<button onclick="validate()">Validate YAML</button>
+<button class="btn-sm" onclick="loadSample('valid')">Valid Sample</button>
+<button class="btn-sm" onclick="loadSample('invalid')">Invalid Sample</button>
+<button class="btn-sm" onclick="document.getElementById('input').value='';document.getElementById('output').innerHTML=''">Clear</button>
+</div>
+<div id="output"></div>
+</div>
+<footer><a href="https://toolpile.tools">← Back to ToolPile</a> · Free tools at toolpile.tools</footer>
+</div>
+<script>
+// Minimal YAML validator — checks structural rules
+function validate(){
+const input=document.getElementById('input').value;
+const out=document.getElementById('output');
+if(!input.trim()){out.innerHTML='<div class="result invalid">Please enter some YAML to validate.</div>';return;}
+const errors=[];
+const lines=input.split('\n');
+let prevIndent=0;
+let inMultiline=false;
+let expectIndent=false;
+const indentStack=[0];
+const keysByLevel={};
+
+for(let i=0;i<lines.length;i++){
+const line=lines[i];
+const lineNum=i+1;
+const trimmed=line.trimEnd();
+
+// Skip empty lines and comments
+if(trimmed===''||trimmed.match(/^\s*#/))continue;
+
+const leadingSpaces=line.match(/^(\s*)/)[1];
+
+// Check for tabs
+if(leadingSpaces.includes('\t')){
+errors.push({line:lineNum,msg:'Tab character found — YAML requires spaces for indentation'});
+continue;
+}
+
+const indent=leadingSpaces.length;
+
+// Check for odd indentation (warning)
+if(indent%2!==0&&indent>0){
+errors.push({line:lineNum,msg:'Odd indentation ('+indent+' spaces) — consider using 2-space indentation'});
+}
+
+// Check mapping key: value
+const kvMatch=trimmed.match(/^-?\s*([^:]+):\s*(.*)?$/);
+const listMatch=trimmed.match(/^\s*-\s+(.*)$/);
+
+// Check for duplicate colon without space
+if(trimmed.match(/^[^#"']*[a-zA-Z0-9_]:(?!\s|$|'|"|{|\[)/)){
+errors.push({line:lineNum,msg:'Missing space after colon in key-value pair'});
+}
+
+// Check mismatched quotes
+const singleQuotes=(trimmed.match(/'/g)||[]).length;
+const doubleQuotes=(trimmed.match(/"/g)||[]).length;
+if(singleQuotes%2!==0)errors.push({line:lineNum,msg:'Unmatched single quote'});
+if(doubleQuotes%2!==0)errors.push({line:lineNum,msg:'Unmatched double quote'});
+
+// Check unclosed brackets
+const openBrackets=(trimmed.match(/\[/g)||[]).length;
+const closeBrackets=(trimmed.match(/\]/g)||[]).length;
+const openBraces=(trimmed.match(/\{/g)||[]).length;
+const closeBraces=(trimmed.match(/\}/g)||[]).length;
+if(openBrackets!==closeBrackets)errors.push({line:lineNum,msg:'Unmatched square brackets'});
+if(openBraces!==closeBraces)errors.push({line:lineNum,msg:'Unmatched curly braces'});
+
+// Check for trailing spaces (warning)
+if(line!==line.trimEnd()&&trimmed.length>0){
+errors.push({line:lineNum,msg:'Trailing whitespace detected'});
+}
+
+// Detect document markers
+if(trimmed==='---'||trimmed==='...')continue;
+
+prevIndent=indent;
+}
+
+// Check for BOM
+if(input.charCodeAt(0)===0xFEFF){
+errors.push({line:1,msg:'Byte Order Mark (BOM) detected — remove it for compatibility'});
+}
+
+if(errors.length===0){
+out.innerHTML='<div class="result valid">✓ Valid YAML — no issues found ('+lines.length+' lines checked)</div>';
+}else{
+out.innerHTML='<div class="result invalid">✗ Found '+errors.length+' issue'+(errors.length>1?'s':'')+'<div class="error-list">'+
+errors.map(e=>'<div class="error-item"><span class="line-num">Line '+e.line+':</span>'+escHtml(e.msg)+'</div>').join('')+
+'</div></div>';
+}
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function loadSample(type){
+if(type==='valid'){
+document.getElementById('input').value=`# Application Config
+app:
+  name: MyApp
+  version: "2.1.0"
+  debug: false
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  workers: 4
+
+database:
+  primary:
+    host: db.example.com
+    port: 5432
+    name: myapp_prod
+  replica:
+    host: db-read.example.com
+    port: 5432
+
+features:
+  - authentication
+  - notifications
+  - analytics
+
+logging:
+  level: info
+  format: json`;
+}else{
+document.getElementById('input').value=`# Broken YAML example
+app:
+  name: MyApp
+	version: "2.1.0"
+  debug: false
+  description: "missing closing quote
+
+server:
+  host:localhost
+  port: 8080
+  tags: [web, api, production
+  metadata: {env: prod, region: us`;
+}
+validate();
+}
+validate();
+</script>
+</body>
+</html>

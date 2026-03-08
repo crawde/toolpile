@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary to Hex Converter — Free Online Tool | ToolPile</title>
+<meta name="description" content="Convert between binary and hexadecimal instantly. Bidirectional conversion with clean formatting. Supports large numbers and byte grouping.">
+<meta name="keywords" content="binary to hex, hex to binary, binary converter, hexadecimal converter, number conversion, toolpile">
+<meta property="og:title" content="Binary to Hex Converter — Free Online Tool">
+<meta property="og:description" content="Convert between binary and hexadecimal instantly. Bidirectional with clean formatting.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/binary-to-hex.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔢</text></svg>">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TJEX75MR7M"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-TJEX75MR7M');
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.25rem;margin-top:.75rem}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.9rem;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;resize:vertical;min-height:100px}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-sm{background:#334155;font-size:.75rem;padding:.4rem .6rem}
+.swap-btn{background:#334155;font-size:1.5rem;padding:.3rem .8rem;border-radius:50%;margin:0 auto;display:block}
+.output-area{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;font-size:.85rem;color:#38bdf8;word-break:break-all;min-height:60px;cursor:pointer;position:relative}
+.output-area:hover{border-color:#818cf8}
+.error{color:#ef4444}
+.section{margin-bottom:1.5rem}
+.mode-tabs{display:flex;gap:0;margin-bottom:1rem}
+.mode-tabs button{background:#0f172a;border:1px solid #334155;border-radius:0;padding:.5rem 1.25rem;color:#94a3b8;font-weight:600;font-size:.85rem;cursor:pointer}
+.mode-tabs button:first-child{border-radius:8px 0 0 8px}
+.mode-tabs button:last-child{border-radius:0 8px 8px 0}
+.mode-tabs button.active{background:#6366f1;border-color:#6366f1;color:#fff}
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem}
+.info{color:#64748b;font-size:.8rem;margin-top:.5rem}
+.extra-conversions{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem}
+.extra-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem}
+.extra-box .lbl{font-size:.7rem;color:#94a3b8;margin-bottom:.25rem;text-transform:uppercase;font-weight:600}
+.extra-box .val{font-family:'SF Mono',Consolas,monospace;font-size:.85rem;color:#e2e8f0;word-break:break-all}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+@media(max-width:600px){.extra-conversions{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Binary ↔ Hex Converter</h1>
+<p class="subtitle">Convert between binary and hexadecimal. Also shows decimal and octal.</p>
+<div class="tool-area">
+<div class="mode-tabs">
+<button class="active" id="tab-bin" onclick="setMode('bin')">Binary → Hex</button>
+<button id="tab-hex" onclick="setMode('hex')">Hex → Binary</button>
+</div>
+<div class="section">
+<label id="inputLabel">Binary Input</label>
+<textarea id="input" placeholder="Enter binary (e.g. 11010110 10101011)" oninput="convert()">11010110 10101011 11110000 00001111</textarea>
+</div>
+<div class="section">
+<label>Result</label>
+<div class="output-area" id="output" onclick="copyOutput()">
+<span style="position:absolute;top:.5rem;right:.75rem;font-size:.7rem;color:#64748b">Click to copy</span>
+<span id="result"></span>
+</div>
+<div class="info" id="info"></div>
+</div>
+<div class="extra-conversions" id="extras"></div>
+<div class="actions">
+<button class="btn-sm" onclick="swapMode()">⇅ Swap Direction</button>
+<button class="btn-sm" onclick="document.getElementById('input').value='';document.getElementById('result').textContent='';document.getElementById('extras').innerHTML=''">Clear</button>
+<button class="btn-sm" onclick="loadSample()">Sample</button>
+</div>
+</div>
+<footer><a href="https://toolpile.tools">← Back to ToolPile</a> · Free tools at toolpile.tools</footer>
+</div>
+<script>
+let mode='bin';
+function setMode(m){
+mode=m;
+document.getElementById('tab-bin').classList.toggle('active',m==='bin');
+document.getElementById('tab-hex').classList.toggle('active',m==='hex');
+document.getElementById('inputLabel').textContent=m==='bin'?'Binary Input':'Hexadecimal Input';
+document.getElementById('input').placeholder=m==='bin'?'Enter binary (e.g. 11010110 10101011)':'Enter hex (e.g. D6AB F00F)';
+convert();
+}
+function swapMode(){
+const out=document.getElementById('result').textContent;
+if(out&&!out.startsWith('Error')){
+document.getElementById('input').value=out;
+setMode(mode==='bin'?'hex':'bin');
+}else{
+setMode(mode==='bin'?'hex':'bin');
+}
+}
+function convert(){
+const raw=document.getElementById('input').value.trim();
+if(!raw){document.getElementById('result').textContent='';document.getElementById('info').textContent='';document.getElementById('extras').innerHTML='';return;}
+try{
+if(mode==='bin'){binToHex(raw);}
+else{hexToBin(raw);}
+}catch(e){
+document.getElementById('result').innerHTML='<span class="error">'+e.message+'</span>';
+document.getElementById('info').textContent='';
+document.getElementById('extras').innerHTML='';
+}
+}
+function binToHex(input){
+const clean=input.replace(/[\s_\-]/g,'');
+if(!/^[01]+$/.test(clean))throw new Error('Invalid binary — only 0 and 1 allowed');
+// Pad to multiple of 4
+const padded=clean.padStart(Math.ceil(clean.length/4)*4,'0');
+let hex='';
+for(let i=0;i<padded.length;i+=4){
+hex+=parseInt(padded.substr(i,4),2).toString(16).toUpperCase();
+}
+// Format with spaces every 2 chars (bytes)
+const formatted=hex.match(/.{1,2}/g).join(' ');
+document.getElementById('result').textContent=formatted;
+showExtras(clean);
+document.getElementById('info').textContent=clean.length+' bits → '+hex.length+' hex digits ('+Math.ceil(clean.length/8)+' bytes)';
+}
+function hexToBin(input){
+const clean=input.replace(/[\s_\-]/g,'').replace(/^0x/i,'');
+if(!/^[0-9a-fA-F]+$/.test(clean))throw new Error('Invalid hex — only 0-9, A-F allowed');
+let bin='';
+for(let i=0;i<clean.length;i++){
+bin+=parseInt(clean[i],16).toString(2).padStart(4,'0');
+}
+// Format with spaces every 8 chars (bytes)
+const formatted=bin.match(/.{1,8}/g).join(' ');
+document.getElementById('result').textContent=formatted;
+showExtras(bin);
+document.getElementById('info').textContent=clean.length+' hex digits → '+bin.length+' bits ('+Math.ceil(bin.length/8)+' bytes)';
+}
+function showExtras(binStr){
+// Only show for reasonable sizes (up to 53 bits for JS safe integer)
+const extras=document.getElementById('extras');
+if(binStr.length>53){
+extras.innerHTML='<div class="extra-box"><div class="lbl">Decimal</div><div class="val">(too large for precise conversion)</div></div>'+
+'<div class="extra-box"><div class="lbl">Octal</div><div class="val">(too large for precise conversion)</div></div>';
+return;
+}
+const dec=parseInt(binStr,2);
+const oct=dec.toString(8);
+const hex=dec.toString(16).toUpperCase();
+extras.innerHTML=
+'<div class="extra-box"><div class="lbl">Decimal</div><div class="val">'+dec.toLocaleString()+'</div></div>'+
+'<div class="extra-box"><div class="lbl">Octal</div><div class="val">'+oct+'</div></div>';
+}
+function copyOutput(){
+const text=document.getElementById('result').textContent;
+if(!text)return;
+navigator.clipboard.writeText(text);
+document.getElementById('output').style.borderColor='#22c55e';
+setTimeout(()=>document.getElementById('output').style.borderColor='#475569',600);
+}
+function loadSample(){
+if(mode==='bin')document.getElementById('input').value='01001000 01100101 01101100 01101100 01101111';
+else document.getElementById('input').value='48 65 6C 6C 6F';
+convert();
+}
+convert();
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XML Formatter & Beautifier — Free Online Tool | ToolPile</title>
+<meta name="description" content="Format, beautify, and minify XML online. Paste your XML and get properly indented, readable output. Copy formatted or minified XML instantly.">
+<meta name="keywords" content="xml formatter, xml beautifier, xml prettifier, format xml, xml minifier, xml indent, toolpile">
+<meta property="og:title" content="XML Formatter & Beautifier — Free Online Tool">
+<meta property="og:description" content="Format and beautify XML with proper indentation. Minify option included.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://toolpile.tools/tools/xml-formatter.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TJEX75MR7M"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-TJEX75MR7M');
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.subtitle{color:#94a3b8;font-size:1rem;margin-bottom:2rem}
+.tool-area{background:#1e293b;border-radius:12px;padding:1.5rem;border:1px solid #334155}
+label{font-size:.8rem;color:#94a3b8;display:block;margin-bottom:.25rem;margin-top:.75rem}
+textarea{width:100%;background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;color:#e2e8f0;font-size:.85rem;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;resize:vertical;min-height:200px;tab-size:2}
+textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+button{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .1s}
+button:hover{transform:translateY(-1px)}
+.btn-sm{background:#334155;font-size:.75rem;padding:.4rem .6rem}
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+.output-area{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.75rem;font-family:'SF Mono','JetBrains Mono',Consolas,monospace;font-size:.8rem;color:#38bdf8;white-space:pre-wrap;word-break:break-all;max-height:400px;overflow:auto;min-height:100px;position:relative}
+.error{color:#ef4444}
+.info{display:flex;justify-content:space-between;color:#64748b;font-size:.8rem;margin-top:.5rem}
+select{background:#0f172a;border:1px solid #475569;border-radius:8px;padding:.4rem .5rem;color:#e2e8f0;font-size:.85rem}
+footer{text-align:center;padding:2rem 0;color:#64748b;font-size:.875rem}
+footer a{color:#818cf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>XML Formatter</h1>
+<p class="subtitle">Format, beautify, or minify XML with proper indentation.</p>
+<div class="tool-area">
+<label>Input XML</label>
+<textarea id="input" placeholder="Paste your XML here..."><?xml version="1.0" encoding="UTF-8"?><bookstore><book category="fiction"><title lang="en">The Great Gatsby</title><author>F. Scott Fitzgerald</author><year>1925</year><price>10.99</price></book><book category="science"><title lang="en">A Brief History of Time</title><author>Stephen Hawking</author><year>1988</year><price>14.99</price></book></bookstore></textarea>
+<div class="actions">
+<button onclick="formatXml()">Format / Beautify</button>
+<button onclick="minifyXml()">Minify</button>
+<span style="display:flex;align-items:center;gap:.35rem"><label style="margin:0">Indent:</label><select id="indentSize" onchange="formatXml()"><option value="2" selected>2 spaces</option><option value="4">4 spaces</option><option value="\t">Tab</option></select></span>
+<button class="btn-sm" onclick="copyOutput()">Copy Output</button>
+<button class="btn-sm" onclick="loadSample()">Load Sample</button>
+<button class="btn-sm" onclick="document.getElementById('input').value='';document.getElementById('output').textContent=''">Clear</button>
+</div>
+<label>Output</label>
+<div class="output-area" id="output"></div>
+<div class="info"><span id="info"></span></div>
+</div>
+<footer><a href="https://toolpile.tools">← Back to ToolPile</a> · Free tools at toolpile.tools</footer>
+</div>
+<script>
+function formatXml(){
+const input=document.getElementById('input').value.trim();
+if(!input){document.getElementById('output').textContent='';return;}
+try{
+const parser=new DOMParser();
+const doc=parser.parseFromString(input,'text/xml');
+const errorNode=doc.querySelector('parsererror');
+if(errorNode){
+document.getElementById('output').innerHTML='<span class="error">XML Parse Error:\n'+escHtml(errorNode.textContent)+'</span>';
+document.getElementById('info').textContent='';
+return;
+}
+const indentVal=document.getElementById('indentSize').value;
+const indent=indentVal==='\t'?'\t':' '.repeat(+indentVal);
+const formatted=prettifyNode(doc,indent,'');
+document.getElementById('output').textContent=formatted;
+document.getElementById('info').textContent='Formatted: '+formatted.split('\n').length+' lines, '+formatted.length+' chars';
+}catch(e){
+document.getElementById('output').innerHTML='<span class="error">Error: '+escHtml(e.message)+'</span>';
+}
+}
+function prettifyNode(node,indent,currentIndent){
+const serializer=new XMLSerializer();
+let xml=serializer.serializeToString(node);
+
+// Remove existing whitespace between tags
+xml=xml.replace(/>\s+</g,'><').trim();
+
+let formatted='';
+let depth=0;
+const tokens=xml.replace(/></g,'>\n<').split('\n');
+
+tokens.forEach(token=>{
+if(token.match(/^<\//)){ // Closing tag
+depth--;
+formatted+=currentIndent+indent.repeat(depth)+token+'\n';
+}else if(token.match(/\/>$/)||token.match(/^<\?/)||token.match(/<\/[^>]+>$/)){
+// Self-closing, processing instruction, or tag with content
+formatted+=currentIndent+indent.repeat(depth)+token+'\n';
+}else if(token.match(/^<[^\/]/)){
+// Opening tag
+formatted+=currentIndent+indent.repeat(depth)+token+'\n';
+depth++;
+}else{
+formatted+=currentIndent+indent.repeat(depth)+token+'\n';
+}
+});
+return formatted.trimEnd();
+}
+function minifyXml(){
+const input=document.getElementById('input').value.trim();
+if(!input){document.getElementById('output').textContent='';return;}
+try{
+const parser=new DOMParser();
+const doc=parser.parseFromString(input,'text/xml');
+const errorNode=doc.querySelector('parsererror');
+if(errorNode){
+document.getElementById('output').innerHTML='<span class="error">XML Parse Error:\n'+escHtml(errorNode.textContent)+'</span>';
+return;
+}
+const serializer=new XMLSerializer();
+let xml=serializer.serializeToString(doc);
+xml=xml.replace(/>\s+</g,'><').trim();
+document.getElementById('output').textContent=xml;
+document.getElementById('info').textContent='Minified: '+xml.length+' chars (saved '+(input.length-xml.length)+' chars)';
+}catch(e){
+document.getElementById('output').innerHTML='<span class="error">Error: '+escHtml(e.message)+'</span>';
+}
+}
+function copyOutput(){
+const text=document.getElementById('output').textContent;
+if(!text)return;
+navigator.clipboard.writeText(text);
+document.getElementById('output').style.borderColor='#22c55e';
+setTimeout(()=>document.getElementById('output').style.borderColor='#475569',600);
+}
+function loadSample(){
+document.getElementById('input').value=`<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <product id="1" category="electronics">
+    <name>Wireless Mouse</name>
+    <brand>TechCo</brand>
+    <price currency="USD">29.99</price>
+    <specs>
+      <dpi>1600</dpi>
+      <connectivity>Bluetooth 5.0</connectivity>
+      <battery>AA</battery>
+    </specs>
+    <inStock>true</inStock>
+  </product>
+  <product id="2" category="accessories">
+    <name>USB-C Hub</name>
+    <brand>ConnectPro</brand>
+    <price currency="USD">49.99</price>
+    <specs>
+      <ports>7</ports>
+      <type>USB-C to USB-A, HDMI, SD</type>
+    </specs>
+    <inStock>false</inStock>
+  </product>
+</catalog>`;
+formatXml();
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+formatXml();
+</script>
+</body>
+</html>
