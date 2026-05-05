@@ -183,6 +183,24 @@ footer{border-top:1px solid #1e293b;padding:3rem 0 2rem;text-align:center}
 .tool-card:nth-child(16){animation-delay:.8s}.tool-card:nth-child(17){animation-delay:.85s}.tool-card:nth-child(18){animation-delay:.9s}
 .tool-card:nth-child(19){animation-delay:.95s}.tool-card:nth-child(20){animation-delay:1s}
 
+/* ─── Pro ─── */
+.pro-link{color:#f59e0b !important;font-weight:600}
+.pro-link:hover{color:#fbbf24 !important}
+.pro-section{padding:4rem 0;text-align:center}
+.pro-card{max-width:640px;margin:0 auto;background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(251,191,35,.04));border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:3rem 2rem;position:relative;overflow:hidden}
+.pro-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top right,rgba(245,158,11,.1),transparent 60%);pointer-events:none}
+.pro-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:100px;padding:.35rem 1rem;font-size:.75rem;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem}
+.pro-card h2{font-size:1.75rem;font-weight:800;color:#f1f5f9;margin-bottom:.75rem}
+.pro-card p{color:#94a3b8;margin-bottom:1.5rem;line-height:1.6}
+.pro-features{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;text-align:left;margin-bottom:2rem}
+@media(max-width:560px){.pro-features{grid-template-columns:1fr}}
+.pro-feature{display:flex;align-items:center;gap:.5rem;font-size:.9rem;color:#cbd5e1}
+.pro-feature svg{width:18px;height:18px;color:#f59e0b;flex-shrink:0}
+.pro-price{font-size:2.5rem;font-weight:900;color:#f59e0b;margin-bottom:.25rem}
+.pro-price span{font-size:1rem;font-weight:400;color:#94a3b8}
+.pro-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a;border:none;border-radius:12px;padding:1rem 2.5rem;font-size:1.05rem;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .2s;margin-top:1rem}
+.pro-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,158,11,.3)}
+
 /* ─── Accessibility ─── */
 .tool-card:focus-visible{outline:2px solid #818cf8;outline-offset:2px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
@@ -212,6 +230,7 @@ footer{border-top:1px solid #1e293b;padding:3rem 0 2rem;text-align:center}
       <a href="/" class="logo">Tool<span>Pile</span></a>
       <div class="nav-links">
         <a href="#tools">Tools</a>
+        <a href="#pro" class="pro-link">Pro</a>
         <a href="https://crawde.com" target="_blank" rel="noopener">By Crawde</a>
       </div>
     </nav>
@@ -1659,6 +1678,27 @@ footer{border-top:1px solid #1e293b;padding:3rem 0 2rem;text-align:center}
         <div class="no-results" id="noResults">
           No tools match your search. Try a different keyword.
         </div>
+      </div>
+    </section>
+
+    <!-- Pro Section -->
+    <section class="pro-section" id="pro">
+      <div class="pro-card">
+        <div class="pro-badge">Pro</div>
+        <h2>ToolPile Pro</h2>
+        <p>Supercharge your workflow with batch processing, export history, and premium features across all 142 tools.</p>
+        <div class="pro-features">
+          <div class="pro-feature"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg> Batch processing mode</div>
+          <div class="pro-feature"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg> Export & download history</div>
+          <div class="pro-feature"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg> Dark & light themes</div>
+          <div class="pro-feature"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg> No branding on embeds</div>
+          <div class="pro-feature"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg> Priority tool requests</div>
+          <div class="pro-feature"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg> Support development</div>
+        </div>
+        <div class="pro-price">$4.99<span>/mo</span></div>
+        <a href="https://buy.stripe.com/8x25kCb76a8C7Sv33gfjG00" class="pro-btn" onclick="gtag('event','begin_checkout',{currency:'USD',items:[{item_name:'toolpile_pro'}]})">
+          Upgrade to Pro
+        </a>
       </div>
     </section>
 

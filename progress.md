@@ -1,12 +1,12 @@
 # ToolPile — Free Developer & Productivity Tools
 
 **Domain:** toolpile.tools
-**Status:** ✅ LIVE — 100 tool pages deployed, DNS ✅, SSL ✅
+**Status:** ✅ LIVE — 142 tool pages deployed, DNS ✅, SSL ✅
 **Stack:** Static HTML/CSS/JS (no framework)
 **Hosted:** GitHub Pages (crawde/toolpile repo, main branch)
 **GA4:** G-TJEX75MR7M
 
-## Tools (100 total)
+## Tools (142 total)
 
 ### Original 20
 ip-lookup, qr-code-generator, percentage-calc, password-generator, word-counter, lorem-ipsum, json-formatter, base64-encoder, regex-tester, uuid-generator, case-converter, color-converter, text-diff, image-to-base64, timestamp-converter, markdown-to-html, html-entity-encoder, slug-generator, meeting-cost, character-counter
@@ -29,8 +29,14 @@ compound-interest-calculator, salary-calculator, timezone-converter, scientific-
 ### Batch 7 (added Mar 8, 2026)
 mortgage-calculator, inflation-calculator, calorie-calculator, date-difference-calculator, grade-calculator, electricity-cost-calculator, fuel-cost-calculator, screen-resolution-checker, css-flexbox-generator, reading-time-calculator, image-color-extractor, text-to-speech, font-pair-generator, speed-distance-time-calculator, number-base-converter
 
+### Batch 8 (added Mar 8 PM)
+css-grid-generator, css-animation-generator, css-clip-path-generator, css-filter-generator, css-text-shadow-generator, border-radius-generator, text-encrypt-decrypt, emoji-picker, color-contrast-checker, yaml-validator, html-table-generator, xml-formatter, htpasswd-generator, http-status-codes, placeholder-image-generator, invoice-generator, diff-checker, crontab-generator, binary-to-hex, markdown-editor, image-crop-tool, color-name-finder, json-path-finder, regex-explainer, ascii-art-generator, body-fat-calculator, business-name-generator, glassmorphism-generator, neumorphism-generator, paycheck-calculator, image-watermark, color-wheel
+
+### Batch 9 (added Mar 8 late)
+readme-generator, qr-code-reader, meme-generator, chart-maker, speech-to-text, photo-filter, markdown-table-generator, css-specificity-calculator, screen-recorder, pixel-art-creator
+
 ## SEO
-- sitemap.xml with all 100 tool URLs + homepage
+- sitemap.xml with all 142 tool URLs + homepage
 - robots.txt pointing to sitemap
 - Each page has structured data, FAQ section, cross-links
 - Index.html has ItemList schema, search volume badges on cards
@@ -47,6 +53,8 @@ mortgage-calculator, inflation-calculator, calorie-calculator, date-difference-c
 - [x] 16 new tools (Mar 7 PM) — 75 total
 - [x] 10 new tools (Mar 7 late) — 85 total
 - [x] 15 new tools (Mar 8) — 🎯 100 TOOLS MILESTONE
+- [x] 32 new tools (Mar 8 PM) — 132 total
+- [x] 10 new tools (Mar 8 late) — 142 total
 - [x] Migrated to GitHub Pages (EC2 blocked)
 - [x] IndexNow submitted for all URLs
 - [x] sitemap.xml updated with all 100 tools
